@@ -8,11 +8,9 @@
 
 namespace
 {
-  const double HIDELTA     = (M_PI/4.);
-  const double TEMPERATURE = 0.05;
-  const double INCREMENT   = 0.1;
-
-  double increment;
+  const double HIDELTA           = (M_PI/4.);
+  const double TEMPERATURE       = 0.05;
+  const double INITIAL_INCREMENT = 0.1;
 
   struct Tuple4
   {
@@ -173,7 +171,7 @@ namespace
   }
 
   bool monteCarlo(const Tuple4& old_alpha, const Tuple4& new_alpha,
-                  const Tuple4& delta)
+                  const Tuple4& delta, double& increment)
   {
     bool zero_probability = false;
 
@@ -329,7 +327,7 @@ void Snake::jiggle()
   int i[4];
   pickRandom4(itsLength, i);
 
-  increment = INCREMENT;
+  double increment = INITIAL_INCREMENT;
 
   Vector no[4]; // FIXME
   for (int n = 0; n < 4; ++n)
@@ -370,7 +368,7 @@ void Snake::jiggle()
       const Tuple4 new_theta = getThetas(new_no);
       const Tuple4 new_alpha = getAlphas(new_theta);
 
-      if (monteCarlo(alpha, new_alpha, delta))
+      if (monteCarlo(alpha, new_alpha, delta, increment))
         break;
     }
 
