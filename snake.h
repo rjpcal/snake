@@ -15,12 +15,14 @@ struct Element
 class Snake
 {
 public:
-  Snake(int l, float spacing);
+  Snake(int l, float sp);
 
   int getLength() const { return length; }
+  float getSpacing() const { return spacing; }
   int getElement(int n, float* x, float* y, float* theta) const;
 
-  int length;
+  const int length;
+  const float spacing;
   Element foreg[ MAX_FOREG_NUMBER ];
 };
 

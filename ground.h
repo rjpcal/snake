@@ -5,7 +5,6 @@
 
 class FakeWindow;
 class GaborSet;
-class Snake;
 
 class Ground
 {
@@ -24,8 +23,12 @@ public:
   float backgAveSpacing() const { return BACKG_AVE_SPACING; }
 
   int totalNumber() const { return NPatch; }
+  int getForegNumber() const { return snake.getLength(); }
+  float getForegSpacing() const { return snake.getSpacing(); }
   int getPatchNumber() const { return patchNumber; }
   int getBackgNumber() const { return backgNumber; }
+  float getBackgIniSpacing() const { return backgIniSpacing; }
+  float getBackgMinSpacing() const { return backgIniSpacing; }
 
 private:
   const Snake& snake;

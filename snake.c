@@ -464,8 +464,9 @@ namespace
   }
 }
 
-Snake::Snake(int l, float spacing) :
-  length(l)
+Snake::Snake(int l, float sp) :
+  length(l),
+  spacing(sp)
 {
   const float radius = (float)(length * spacing) / TWOPI;
 

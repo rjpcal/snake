@@ -22,43 +22,44 @@ int main( int argc, char** argv )
       Exit();
     }
 
-  PM.FILENAME = argv[1];
-
   SeedRand();
 
-  ReadParams( "sta" );
+  Params pm;
 
-  PrintParams();
+  pm.FILENAME = argv[1];
+
+  pm.read("sta");
+  pm.print();
 
   // alloc mem for our fake window:
-  FakeWindow fakewin(PM.DISPLAY_X, PM.DISPLAY_Y);
+  FakeWindow fakewin(pm.DISPLAY_X, pm.DISPLAY_Y);
 
   SeedRand();
 
-  GaborSet gabors(PM.GABOR_PERIOD, PM.GABOR_SIGMA, PM.GABOR_SIZE);
+  GaborSet gabors(pm.GABOR_PERIOD, pm.GABOR_SIGMA, pm.GABOR_SIZE);
 
   DISPLAY_COUNT = 0;
 
   DISPLAY_SET_NUMBER = 1;
 
-  WriteHeader();
+  pm.writeHeader();
 
-  for(int n = 0; n < PM.DISPLAY_NUMBER; ++n)
+  for(int n = 0; n < pm.DISPLAY_NUMBER; ++n)
     {
       srand48(n);
 
-      Snake s(PM.FOREG_NUMBER, PM.FOREG_SPACING);
+      Snake s(pm.FOREG_NUMBER, pm.FOREG_SPACING);
 
-      Ground* g = new Ground(s, PM.DISPLAY_X, PM.DISPLAY_Y,
-                             PM.BACKG_INI_SPACING,
-                             PM.BACKG_MIN_SPACING);
+      Ground* g = new Ground(s, pm.DISPLAY_X, pm.DISPLAY_Y,
+                             pm.BACKG_INI_SPACING,
+                             pm.BACKG_MIN_SPACING);
 
-      WriteArray(g);
+      WriteArray(pm.FILENAME, g);
 
       g->renderInto(&fakewin, gabors);
 
       char fname[256];
-      snprintf(fname, 256, "%s_%d.pnm", PM.FILENAME, DISPLAY_COUNT);
+      snprintf(fname, 256, "%s_%d.pnm", pm.FILENAME, DISPLAY_COUNT);
       fakewin.writePnm(fname);
 
       DISPLAY_COUNT++;
@@ -66,14 +67,12 @@ int main( int argc, char** argv )
       delete g;
     }
 
-  Exit();
+  pm.write("sta");
 
   return 0;
 }
 
 void Exit( void )
 {
-  WriteParams( "sta" );
-
   exit(0);
 }

@@ -18,9 +18,12 @@ struct Params
   int   GABOR_SIZE;
   int   DISPLAY_NUMBER;
   const char* FILENAME;
-};
 
-extern Params PM;
+  void read(char extension[]);
+  void write(char extension[]) const;
+  void print() const;
+  void writeHeader() const;
+};
 
 #define      READ                  'r'
 #define      WRITE                 'w'
@@ -29,10 +32,4 @@ extern Params PM;
 
 class Ground;
 
-extern void ReadParams( char extension[] );
-extern void WriteParams(char extension[]);
-extern void Openfile( FILE **fp, char mode, char extension[] );
-extern void Closefile( FILE *fp );
-extern void PrintParams();
-extern void WriteHeader( void );
-extern void WriteArray(const Ground* g);
+extern void WriteArray(const char* filestem, const Ground* g);
