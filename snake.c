@@ -88,16 +88,8 @@ namespace
     alpha[3]= Zerototwopi(M_PI - theta[3] + theta[2]);
   }
 
-  int New_apex(Vector *no1, Vector *no2, Vector *no3, float b, float c)
+  int newApex(Vector* no1, Vector* no2, Vector* no3, float b, float c)
   {
-    float dx, dy, e, aleph, bet, gimel, xp, yp, dis_one, dis_two;
-    Vector no2_one, no2_two;
-
-    dx    = no3->x - no1->x;
-    dy    = no3->y - no1->y;
-
-    e     = sqrt((double)(dx*dx+dy*dy));
-
     /*                                                    */
     /*   x'      dx/e   dy/e     x - no1->x               */
     /* (   ) = (             ) (            )             */
@@ -119,32 +111,40 @@ namespace
     /*   y       no1->y       dy/e   dx/e     y'          */
     /*                                                    */
 
-    aleph = (b*b-c*c)/(2.*e);
-    bet   = e/2.;
-    gimel = (b*b+c*c)/2.;
+    Vector no2_one, no2_two;
 
-    if (gimel >= bet*bet + aleph*aleph)
-      {
-        xp = aleph + bet;
-        yp = sqrt((double)(gimel - bet*bet - aleph*aleph));
+    const float dx    = no3->x - no1->x;
+    const float dy    = no3->y - no1->y;
 
-        no2_one.x = no1->x + xp*dx/e - yp*dy/e;
-        no2_one.y = no1->y + xp*dy/e + yp*dx/e;
+    const float e     = sqrt(dx*dx + dy*dy);
 
-        no2_two.x = no1->x + xp*dx/e + yp*dy/e;
-        no2_two.y = no1->y + xp*dy/e - yp*dx/e;
+    const float aleph = (b*b-c*c)/(2.*e);
+    const float bet   = e/2.;
+    const float gimel = (b*b+c*c)/2.;
 
-        dis_one = (no2_one.x - no2->x)*(no2_one.x - no2->x)
-          + (no2_one.y - no2->y)*(no2_one.y - no2->y);
+    if (gimel < bet*bet + aleph*aleph)
+      return 0;
 
-        dis_two = (no2_two.x - no2->x)*(no2_two.x - no2->x)
-          + (no2_two.y - no2->y)*(no2_two.y - no2->y);
+    const float xp = aleph + bet;
+    const float yp = sqrt((double)(gimel - bet*bet - aleph*aleph));
 
-        *no2 = (dis_one < dis_two) ? no2_one : no2_two;
+    no2_one.x = no1->x + xp*dx/e - yp*dy/e;
+    no2_one.y = no1->y + xp*dy/e + yp*dx/e;
 
-        return 1;
-      }
-    return 0;
+    no2_two.x = no1->x + xp*dx/e + yp*dy/e;
+    no2_two.y = no1->y + xp*dy/e - yp*dx/e;
+
+    const float dis_one =
+      (no2_one.x - no2->x)*(no2_one.x - no2->x)
+      + (no2_one.y - no2->y)*(no2_one.y - no2->y);
+
+    const float dis_two =
+      (no2_two.x - no2->x)*(no2_two.x - no2->x)
+      + (no2_two.y - no2->y)*(no2_two.y - no2->y);
+
+    *no2 = (dis_one < dis_two) ? no2_one : no2_two;
+
+    return 1;
   }
 
   int Squash_quadrangle(Vector* no0, Vector* no1, Vector* no2, Vector* no3,
@@ -165,7 +165,7 @@ namespace
     new_no1->x = new_no0->x + a[0] * cos((double)(theta0-incr));
     new_no1->y = new_no0->y + a[0] * sin((double)(theta0-incr));
 
-    int ok = New_apex(new_no1, new_no2, new_no3, a[1], a[2]);
+    int ok = newApex(new_no1, new_no2, new_no3, a[1], a[2]);
 
     return ok;
   }
