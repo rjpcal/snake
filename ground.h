@@ -23,9 +23,9 @@ public:
 private:
   int tooClose(int upto, float x, float y, int except);
   void insideElements( int total_number, int foreg_number, int *ppatch_number );
-  void contourElements( int *pnpts );
-  void gridElements( int *pnpts );
-  void fillElements( int *pnpts );
+  void contourElements();
+  void gridElements();
+  void fillElements();
   void jitterElement( void );
-  void map2array(const GaborSet& g, int npts);
+  void map2array(const GaborSet& g);
 };

@@ -101,78 +101,72 @@ void Ground::insideElements( int total_number, int foreg_number,
   *ppatch_number = pn;
 }
 
-void Ground::contourElements( int *pnpts )
+void Ground::contourElements()
 {
-  int n, npts;
-  float x, y, theta;
-
-  npts = *pnpts;
-
-  for( n=0; n<FOREG_NUMBER; n++ )
+  for(int n = 0; n < FOREG_NUMBER; ++n)
     {
+      float x, y, theta;
+
       if( GetElement( n, &x, &y, &theta ) )
         {
-          array[npts].flag  = 2;
-          array[npts].xpos  = x;
-          array[npts].ypos  = y;
-          array[npts].theta = theta;
-          npts++;
+          array[NPatch].flag  = 2;
+          array[NPatch].xpos  = x;
+          array[NPatch].ypos  = y;
+          array[NPatch].theta = theta;
+          ++NPatch;
         }
     }
 
-  if( npts > MAX_GABOR_NUMBER )
+  if( NPatch > MAX_GABOR_NUMBER )
     {
       printf( " More than %d elements!\n", MAX_GABOR_NUMBER );
       Exit();
     }
-
-  *pnpts = npts;
 }
 
-void Ground::gridElements( int *pnpts )
+void Ground::gridElements()
 {
-  int i, j, nx, ny, npts;
-  float x, y, ix, iy, dx, dy;
-  dx = BACKG_INI_SPACING;
-  nx = (int)( ( 2.0 * HALF_X_FRAME - BACKG_MIN_SPACING - 0.5*dx ) / dx );
-  ix =  -0.5 * (nx-1) * dx - 0.25 * dx;
+  const float dx = BACKG_INI_SPACING;
+  const float dy = SQRT3 * BACKG_INI_SPACING / 2.0;
 
-  dy = SQRT3 * BACKG_INI_SPACING / 2.0;
-  ny = (int)( ( 2.0 * HALF_Y_FRAME - BACKG_MIN_SPACING ) / dy );
-  iy =  -0.5 * (ny-1) * dy;
+  const int nx = (int)( ( 2.0 * HALF_X_FRAME - BACKG_MIN_SPACING - 0.5*dx ) / dx );
+  const int ny = (int)( ( 2.0 * HALF_Y_FRAME - BACKG_MIN_SPACING ) / dy );
 
-  npts = *pnpts;
-  for( j=0, y=iy; j<ny; j++, y+=dy )
+  const float ix =  -0.5 * (nx-1) * dx - 0.25 * dx;
+  const float iy =  -0.5 * (ny-1) * dy;
+
+  int i, j;
+  float x, y;
+
+  for(j = 0, y = iy; j < ny; ++j, y += dy)
     {
-      for( i=0, x=ix+0.5*(j%2)*dx; i<nx; i++, x+=dx )
+      for(i = 0, x = ix+0.5*(j%2)*dx; i < nx; ++i, x += dx)
         {
           if( tooClose( FOREG_NUMBER, x, y, FOREG_NUMBER+1 ) )
             continue;
 
-          array[npts].flag = 0;
-          array[npts].xpos = x;
-          array[npts].ypos = y;
-          array[npts].theta = TWOPI * drand48();
+          array[NPatch].flag = 0;
+          array[NPatch].xpos = x;
+          array[NPatch].ypos = y;
+          array[NPatch].theta = TWOPI * drand48();
 
-          npts++;
+          ++NPatch;
         }
     }
 
-  if( npts > MAX_GABOR_NUMBER )
+  if( NPatch > MAX_GABOR_NUMBER )
     {
       printf( " More than %d elements!\n", MAX_GABOR_NUMBER );
       Exit();
     }
-
-  *pnpts = npts;
 }
 
-void Ground::fillElements( int *pnpts )
+void Ground::fillElements()
 {
-  int i, npts, ntry;
-  float x, y, dx, xl[ TRY_TO_FILL_NUMBER ], yl[ TRY_TO_FILL_NUMBER ];
+  float xl[ TRY_TO_FILL_NUMBER ];
+  float yl[ TRY_TO_FILL_NUMBER ];
 
-  ntry = (int)( DISPLAY_X * DISPLAY_Y / TRY_TO_FILL_AREA );
+  int ntry = (int)( DISPLAY_X * DISPLAY_Y / TRY_TO_FILL_AREA );
 
   if( ntry > TRY_TO_FILL_NUMBER )
     {
@@ -183,18 +177,19 @@ void Ground::fillElements( int *pnpts )
 
   ntry = 0;
 
-  dx = (float) sqrt((double) TRY_TO_FILL_AREA );
+  const float dx = (float) sqrt((double) TRY_TO_FILL_AREA );
 
-  for( x = -HALF_X_FRAME; x <= HALF_X_FRAME; x+=dx )
-    for( y = -HALF_Y_FRAME; y <= HALF_Y_FRAME; y+=dx )
+  for(float x = -HALF_X_FRAME; x <= HALF_X_FRAME; x += dx)
+    for(float y = -HALF_Y_FRAME; y <= HALF_Y_FRAME; y += dx)
       {
         xl[ ntry ] = x;
         yl[ ntry ] = y;
         ntry++;
       }
 
-  npts = *pnpts;
-  for( i=0; i<ntry; i++ )
+  int npts = NPatch;
+
+  for(int i = 0; i < ntry; ++i)
     {
       if( tooClose( npts, xl[i], yl[i], npts+1 ) )
         continue;
@@ -213,10 +208,9 @@ void Ground::fillElements( int *pnpts )
     }
 
   BACKG_AVE_SPACING = sqrt((double)2.0*DISPLAY_X*DISPLAY_Y/(SQRT3*npts));
-  printf( " added %d to ave spacing %f\n",
-          (npts-(*pnpts)), BACKG_AVE_SPACING );
+  printf(" added %d to ave spacing %f\n", npts-NPatch, BACKG_AVE_SPACING );
 
-  *pnpts = npts;
+  NPatch = npts;
 }
 
 void Ground::jitterElement( void )
@@ -257,18 +251,18 @@ void Ground::jitterElement( void )
     }
 }
 
-void Ground::map2array(const GaborSet& g, int npts)
+void Ground::map2array(const GaborSet& g)
 {
   int i;
   float theta, phi, Theta[ MAX_FOREG_NUMBER ], Phi[ MAX_FOREG_NUMBER ];
 
-  for( i=0; i<npts && i<FOREG_NUMBER; i++ )
+  for( i=0; i<NPatch && i<FOREG_NUMBER; i++ )
     {
       Phi[i]   = Zerototwopi( TWOPI * drand48() );
       Theta[i] = Zerototwopi( TWOPI * drand48() );
     }
 
-  for( i=0; i<npts; i++ )
+  for( i=0; i<NPatch; i++ )
     {
       phi   = TWOPI * drand48();
       theta = TWOPI * drand48();
@@ -285,8 +279,6 @@ void Ground::map2array(const GaborSet& g, int npts)
       PPatch[ i ] = g.getPatch( theta, phi );
     }
 
-  NPatch = npts;
-
   SeedRand();
 }
 
@@ -298,27 +290,27 @@ Ground::Ground(const GaborSet& g)
   HALF_Y_FRAME = 0.5 * DISPLAY_Y;
   BACKG_MIN_SPACING_SQR = BACKG_MIN_SPACING*BACKG_MIN_SPACING;
 
-  int npts = 0;
+  NPatch = 0;
 
-  this->contourElements( &npts );
+  this->contourElements();
 
-  this->map2array(g, npts); // FIXME need to do this?
+  this->map2array(g); // FIXME need to do this?
 
-  TOTAL_NUMBER = npts;
+  TOTAL_NUMBER = NPatch;
 
-  this->gridElements( &npts );
+  this->gridElements();
 
-  TOTAL_NUMBER = npts;
+  TOTAL_NUMBER = NPatch;
 
   for(int i = 0; i < DIFFUSION_CYCLES; ++i)
     {
       this->jitterElement();
 
-      this->fillElements( &npts );
+      this->fillElements();
 
-      this->map2array(g, npts);
+      this->map2array(g);
 
-      TOTAL_NUMBER = npts;
+      TOTAL_NUMBER = NPatch;
     }
 
   this->insideElements( TOTAL_NUMBER, FOREG_NUMBER, &PATCH_NUMBER );
