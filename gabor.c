@@ -13,7 +13,7 @@ namespace
   const double OFF_THETA      = 0.5 * DELTA_THETA;
   const double OFF_PHASE      = 0.5 * DELTA_PHASE;
 
-  double* CreatePatch(double sigma, double omega, double theta,
+  double* createPatch(double sigma, double omega, double theta,
                       double phi, double contrast, int xysize)
   {
     double* const result = new double[xysize*xysize];
@@ -48,18 +48,18 @@ namespace
     return result;
   }
 
-  int Theta2Index(double theta)
+  int theta2index(double theta)
   {
-    theta = Zerotopi(theta);
+    theta = zerotopi(theta);
 
     int index = int((theta + OFF_THETA) / DELTA_THETA);
 
     return index % GABOR_MAX_ORIENT;
   }
 
-  int Phi2Index(double phi)
+  int phi2index(double phi)
   {
-    phi   = Zerototwopi(phi);
+    phi   = zerototwopi(phi);
 
     int index = int((phi + OFF_PHASE) / DELTA_PHASE);
 
@@ -75,7 +75,7 @@ GaborSet::GaborSet(double period, double sigma, int size) :
   for (int n=0; n<GABOR_MAX_ORIENT; ++n)
     for (int m=0; m<GABOR_MAX_PHASE; ++m)
       {
-        Patch[n][m] = CreatePatch(sigma,
+        Patch[n][m] = createPatch(sigma,
                                   omega,
                                   n * DELTA_THETA,
                                   m * DELTA_PHASE,
@@ -99,8 +99,8 @@ GaborSet::~GaborSet()
 
 const double* GaborSet::getPatch(double theta, double phi) const
 {
-  const int itheta = Theta2Index(theta);
-  const int iphi   = Phi2Index(phi);
+  const int itheta = theta2index(theta);
+  const int iphi   = phi2index(phi);
 
   return Patch[itheta][iphi];
 }

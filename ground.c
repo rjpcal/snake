@@ -265,7 +265,7 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
 
       const double theta =
         (i < snake.getLength())
-        ? Zerototwopi(array[i].theta + M_PI_2)
+        ? zerototwopi(array[i].theta + M_PI_2)
         : randtheta;
 
       const int xcenter = (int)(array[i].xpos + sizeX / 2.0 + 0.5);

@@ -94,10 +94,10 @@ namespace
 
   Tuple4 getAlphas(const Tuple4& theta)
   {
-    return Tuple4(Zerototwopi(M_PI - theta[0] + theta[3]),
-                  Zerototwopi(M_PI - theta[1] + theta[0]),
-                  Zerototwopi(M_PI - theta[2] + theta[1]),
-                  Zerototwopi(M_PI - theta[3] + theta[2]));
+    return Tuple4(zerototwopi(M_PI - theta[0] + theta[3]),
+                  zerototwopi(M_PI - theta[1] + theta[0]),
+                  zerototwopi(M_PI - theta[2] + theta[1]),
+                  zerototwopi(M_PI - theta[3] + theta[2]));
   }
 
   int newApex(const Vector* no1, Vector* no2, const Vector* no3,
@@ -253,7 +253,7 @@ void Snake::getElement(int n, double* x, double* y, double* theta) const
 
   *x = 0.5 * (itsElem[n].xpos + itsElem[(n+1)%itsLength].xpos);
   *y = 0.5 * (itsElem[n].ypos + itsElem[(n+1)%itsLength].ypos);
-  *theta = Zerototwopi(-itsElem[n].theta);
+  *theta = zerototwopi(-itsElem[n].theta);
 }
 
 void Snake::center()
@@ -286,7 +286,7 @@ void Snake::computeDeltaTheta()
       const double dx = itsElem[n1].xpos - itsElem[n0].xpos;
       const double dy = itsElem[n1].ypos - itsElem[n0].ypos;
 
-      itsElem[n0].theta = Zerototwopi(atan2(dy, dx));
+      itsElem[n0].theta = zerototwopi(atan2(dy, dx));
 
     }
 
@@ -294,7 +294,7 @@ void Snake::computeDeltaTheta()
     {
       const int n1 = (n0+1)%itsLength;
 
-      itsElem[n1].delta = Minuspitopi(itsElem[n1].theta - itsElem[n0].theta);
+      itsElem[n1].delta = minuspitopi(itsElem[n1].theta - itsElem[n0].theta);
     }
 }
 
