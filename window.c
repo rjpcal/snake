@@ -42,6 +42,7 @@ void FakeWindow::writeRaster(const char* fname) const
   if( fp == NULL )
     {
       printf( " %s: file not opened\n", fname );
+      exit(1);
     }
 
   int header[8];
@@ -60,44 +61,14 @@ void FakeWindow::writeRaster(const char* fname) const
 
   fwrite( header, sizeof(int), 8, fp );
 
-  unsigned char cmap[256];
+  // Write colormap to file
+  for (int c = 0; c < 3; ++c) // 3 iterations: red, green, blue
+    for(int i = 0; i < 256; ++i)
+      fputc((unsigned char) i, fp);
 
-  for(int i = 0; i < 256; ++i)
-    cmap[i] = (unsigned char) i;
-
-  fwrite( cmap, sizeof(unsigned char), 256, fp );
-  fwrite( cmap, sizeof(unsigned char), 256, fp );
-  fwrite( cmap, sizeof(unsigned char), 256, fp );
-
-  const int dx = sizeX;
-  const int dy = sizeY / 4;
-
-  const int size = dx*dy;
-
-  Colorindex* ptr = new Colorindex[dx*dy];
-  unsigned char* ctr = new unsigned char[dx*dy];
-
-  for(int i = 0; i < 4; ++i)
-    {
-      const int x = 0;
-      const int y = i*dy;
-
-      for (int yy = y; yy <= y+dy-1; ++yy)
-        for (int xx = x; xx <= x+dx-1; ++xx)
-          if (xx>=0 && xx<sizeX && yy>=0 && yy<sizeY)
-            ptr[xx - x + dx*(yy-y)] = data[xx + yy*sizeX];
-
-      Colorindex* pt = ptr;
-      unsigned char* ct = ctr;
-
-      for(int k = 0; k < size; ++k)
-        *ct++ = I2Char( *pt++ );
-
-      fwrite( ctr, sizeof(unsigned char), size, fp );
-    }
-
-  delete [] ctr;
-  delete [] ptr;
+  // Write pixel data to file
+  for(int k = 0; k < sizeX*sizeY; ++k)
+    fputc(I2Char(data[k]), fp);
 
   fclose( fp );
 }
