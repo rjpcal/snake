@@ -1,5 +1,5 @@
 CC      = g++ -Wall -Werror
-CFLAGS	= -O4
+CFLAGS	= -O4 -pg
 LFLAGS  = -lm
 
 SRC    = gabor.c ground.c params.c snake.c window.c  main.c
