@@ -2,7 +2,6 @@
 
 #include "defs.h"
 #include "gabor.h"
-#include "gamma.h"
 #include "ground.h"
 #include "params.h"
 #include "timing.h"
@@ -29,8 +28,6 @@ int main( int argc, char** argv )
   ReadParams( "sta" );
 
   PrintParams();
-
-  MakeColormap();
 
   // alloc mem for our fake window:
   FakeWindow fakewin(DISPLAY_X, DISPLAY_Y);

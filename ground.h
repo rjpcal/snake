@@ -13,12 +13,12 @@ public:
 
   void renderInto(FakeWindow* wind) const;
 
-  int         NPatch;
-  int         XPatch[ MAX_GABOR_NUMBER ];    /** int pos of patches **/
-  int         YPatch[ MAX_GABOR_NUMBER ];
-  Colorindex  *PPatch[ MAX_GABOR_NUMBER ];
-  Element     array[ MAX_GABOR_NUMBER ];
-  float       BACKG_AVE_SPACING;
+  int           NPatch;
+  int           XPatch[ MAX_GABOR_NUMBER ];    /** int pos of patches **/
+  int           YPatch[ MAX_GABOR_NUMBER ];
+  const double* PPatch[ MAX_GABOR_NUMBER ];
+  Element       array[ MAX_GABOR_NUMBER ];
+  float         BACKG_AVE_SPACING;
 
 private:
   int tooClose(int upto, float x, float y, int except);

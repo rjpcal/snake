@@ -6,7 +6,7 @@ public:
   FakeWindow(int x, int y) :
     sizeX(x),
     sizeY(y),
-    data(new Colorindex[sizeX*sizeY])
+    data(new double[sizeX*sizeY])
   {}
 
   ~FakeWindow()
@@ -14,7 +14,7 @@ public:
     delete [] data;
   }
 
-  void clear(int col)
+  void clear(double col)
   {
     for (int i = 0; i < sizeX*sizeY; ++i)
       data[i] = col;
@@ -24,5 +24,5 @@ public:
 
   const int sizeX;
   const int sizeY;
-  Colorindex* const data;
+  double* const data;
 };

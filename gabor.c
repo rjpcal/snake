@@ -1,7 +1,6 @@
 
 #include "gabor.h"
 
-#include "gamma.h"
 #include "geom.h"
 #include "params.h"
 
@@ -16,17 +15,17 @@ namespace
   const float OFF_THETA      = 0.5 * DELTA_THETA;
   const float OFF_PHASE      = 0.5 * DELTA_PHASE;
 
-  Colorindex* CreatePatch(float sigma, float omega, float theta,
-                          float phi, float contrast, int xysize)
+  double* CreatePatch(double sigma, double omega, double theta,
+                      double phi, double contrast, int xysize)
   {
-    Colorindex* const result = new Colorindex[xysize*xysize];
+    double* const result = new double[xysize*xysize];
 
     const float ssqr  = 2.*sigma*sigma;
 
     const float cos_theta = cos((double) theta );
     const float sin_theta = sin((double) theta );
 
-    Colorindex* ptr = result;
+    double* ptr = result;
 
     for(int iy=0; iy<xysize; ++iy)
       {
@@ -44,7 +43,7 @@ namespace
             const float sinus = cos((double) omega * dx + phi );
 
             const float gauss = exp((double) -dsqr );
-            *ptr++ = F2I( contrast * sinus * gauss );
+            *ptr++ = contrast * sinus * gauss;
           }
       }
 
@@ -99,7 +98,7 @@ GaborSet::~GaborSet()
   fflush( stdout );
 }
 
-Colorindex* GaborSet::getPatch(float theta, float phi) const
+const double* GaborSet::getPatch(float theta, float phi) const
 {
   const int itheta = Theta2Index( theta );
   const int iphi   = Phi2Index( phi );

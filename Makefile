@@ -22,7 +22,7 @@ tags:
 test:
 	rm -f regtest*.ras
 	time ./makesnake regtest
-	for f in regtest*.ras; do echo $$f; diff $$f orig_cpp/$$f; done
+	for f in regtest*.ras; do echo $$f; diff $$f orig_cpp_2/$$f; done
 
 main.o: $(INC)
 window.o: $(INC)

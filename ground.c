@@ -3,7 +3,6 @@
 
 #include "defs.h"
 #include "gabor.h"
-#include "gamma.h"
 #include "geom.h"
 #include "main.h"
 #include "params.h"
@@ -331,11 +330,11 @@ Ground::Ground(const GaborSet& g)
 
 void Ground::renderInto(FakeWindow* wind) const
 {
-  wind->clear(Grey);
+  wind->clear(0.0);
 
-  const int* px         = XPatch;
-  const int* py         = YPatch;
-  Colorindex* const* pp = PPatch;
+  const int* px           = XPatch;
+  const int* py           = YPatch;
+  const double* const* pp = PPatch;
 
   for(int i = 0; i < NPatch; ++i, ++px, ++py, ++pp)
     {
@@ -350,8 +349,8 @@ void Ground::renderInto(FakeWindow* wind) const
         for (int xx = x0; xx < x1; ++xx)
           if (xx>=0 && xx<DISPLAY_X && yy>=0 && yy<DISPLAY_Y)
             {
-              if (fabs(wind->data[xx+yy*DISPLAY_X] - Grey)
-                  < fabs((*pp)[xx-x0+(yy-y0)*GABOR_SIZE] - Grey))
+              if (fabs(wind->data[xx+yy*DISPLAY_X])
+                  < fabs((*pp)[xx-x0+(yy-y0)*GABOR_SIZE]))
                 wind->data[xx+yy*DISPLAY_X] =
                   (*pp)[xx-x0+(yy-y0)*GABOR_SIZE];
             }

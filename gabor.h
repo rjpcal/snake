@@ -10,8 +10,8 @@ public:
   GaborSet();
   ~GaborSet();
 
-  Colorindex* getPatch(float theta, float phi ) const;
+  const double* getPatch(float theta, float phi) const;
 
 private:
-  Colorindex* Patch[GABOR_MAX_ORIENT][GABOR_MAX_PHASE];
+  double* Patch[GABOR_MAX_ORIENT][GABOR_MAX_PHASE];
 };

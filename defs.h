@@ -3,8 +3,6 @@
 
 #include <math.h>
 
-typedef int Colorindex;
-
 #define TWOPI               (2*M_PI)
 
 #define STRINGSIZE           120

@@ -1,7 +1,6 @@
 #include "window.h"
 
-#include "gamma.h"
-
+#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <netinet/in.h> // for conversion to big endian:
@@ -39,7 +38,12 @@ void FakeWindow::writeRaster(const char* fname) const
 
   // Write pixel data to file
   for(int k = 0; k < sizeX*sizeY; ++k)
-    fputc(I2Char(data[k]), fp);
+    {
+      const int val = int((data[k]+1.0)/2.0*255);
+      assert(val >= 0);
+      assert(val <= 255);
+      fputc(val, fp);
+    }
 
   fclose( fp );
 }
