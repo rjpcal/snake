@@ -37,7 +37,7 @@ private:
   void dumpFrame() const;
 
   bool tryPush(const Element& e);
-  int tooClose(const Vector& v, int except);
+  bool tooClose(const Vector& v, int except);
   void insideElements();
   void hexGridElements();
   void fillElements();

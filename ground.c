@@ -30,21 +30,18 @@ bool Ground::tryPush(const Element& e)
   return true;
 }
 
-int Ground::tooClose(const Vector& v, int except)
+bool Ground::tooClose(const Vector& v, int except)
 {
   for (int n = 0; n < totalNumber; ++n)
     {
       const double dx = array[n].pos.x - v.x;
       const double dy = array[n].pos.y - v.y;
 
-      if (dx*dx+dy*dy > backgMinSpacingSqr) continue;
-
-      if (n == except) continue;
-
-      return 1;
+      if (dx*dx+dy*dy <= backgMinSpacingSqr && n != except)
+        return true;
     }
 
-  return 0;
+  return false;
 }
 
 void Ground::insideElements()
