@@ -29,13 +29,12 @@ namespace
   float              HALF_Y_FRAME;
 
   const double SQRT3 = 1.7320508075;
+
+  float              BACKG_MIN_SPACING_SQR;
 }
 
 int Ground::tooClose( int upto, float x, float y, int except )
 {
-  if( upto==0 )
-    return 0;
-
   for(int n = 0; n < upto; ++n)
     {
       float dx = fabs( array[n].xpos - x );
@@ -52,7 +51,7 @@ int Ground::tooClose( int upto, float x, float y, int except )
       if( dy > BACKG_MIN_SPACING )
         continue;
 
-      if( sqrt(dx*dx+dy*dy) > BACKG_MIN_SPACING )
+      if( dx*dx+dy*dy > BACKG_MIN_SPACING_SQR )
         continue;
 
       if( n == except )
@@ -296,12 +295,11 @@ void Ground::map2array(const GaborSet& g, int npts)
 
 Ground::Ground(const GaborSet& g)
 {
-  int i, npts;
-
   HALF_X_FRAME = 0.5 * DISPLAY_X;
   HALF_Y_FRAME = 0.5 * DISPLAY_Y;
+  BACKG_MIN_SPACING_SQR = BACKG_MIN_SPACING*BACKG_MIN_SPACING;
 
-  npts = 0;
+  int npts = 0;
 
   this->contourElements( &npts );
 
@@ -313,7 +311,7 @@ Ground::Ground(const GaborSet& g)
 
   TOTAL_NUMBER = npts;
 
-  for( i=0; i<DIFFUSION_CYCLES; i++ )
+  for(int i = 0; i < DIFFUSION_CYCLES; ++i)
     {
       this->jitterElement();
 
