@@ -12,8 +12,6 @@ namespace
   const double TEMPERATURE = 0.05;
   const double INCREMENT   = 0.1;
 
-  const int    FOREGROUND_ITERS = 400;
-
   double increment;
 
   struct Tuple4
@@ -231,7 +229,9 @@ Snake::Snake(int l, double sp) :
       itsElem[n].pos.y = -radius * sin(alpha+alpha_off);
     }
 
-  for (int count = 0; count < FOREGROUND_ITERS; ++count)
+  const int ITERS = 400;
+
+  for (int count = 0; count < ITERS; ++count)
     {
       this->jiggle();
     }
