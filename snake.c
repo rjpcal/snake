@@ -65,7 +65,7 @@ namespace
 
   double getTheta(const Vector& n1, const Vector& n2)
   {
-    return atan2(n1.y - n2.y, n1.x - n2.x);
+    return zerototwopi(atan2(n1.y - n2.y, n1.x - n2.x));
   }
 
   Tuple4 getThetas(const Vector no[4])
@@ -297,17 +297,6 @@ void Snake::center()
     }
 }
 
-void Snake::computeTheta()
-{
-  for (int n = 0; n < itsLength; ++n)
-    {
-      const double dx = elem(n+1).pos.x - elem(n).pos.x;
-      const double dy = elem(n+1).pos.y - elem(n).pos.y;
-
-      itsElem[n].theta = zerototwopi(atan2(dy, dx));
-    }
-}
-
 /*        (pos.x[n],ypos[n])     position n                               */
 /*        (xpos[n+1],ypos[n+1]) position n+1                              */
 /*        (0.5*(xpos[n]+xpos[n+1]), 0.5*(ypos[n]+ypos[n+1]))              */
@@ -343,7 +332,10 @@ void Snake::computeTheta()
 
 void Snake::jiggle()
 {
-  this->computeTheta();
+  for (int n = 0; n < itsLength; ++n)
+    {
+      itsElem[n].theta = getTheta(elem(n+1).pos, elem(n).pos);
+    }
 
   int i[4];
   pickRandom4(itsLength, i);
@@ -417,7 +409,10 @@ void Snake::jiggle()
       itsElem[i[n]].pos = new_pos[n];
     }
 
-  this->computeTheta();
+  for (int n = 0; n < itsLength; ++n)
+    {
+      itsElem[n].theta = getTheta(elem(n+1).pos, elem(n).pos);
+    }
 }
 
 void Snake::transformPath(int i1, const Vector& new1,

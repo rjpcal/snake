@@ -51,7 +51,6 @@ private:
   }
 
   void center();
-  void computeTheta();
   void jiggle();
   void transformPath(int i1, const Vector& new1,
                      int n2, const Vector& new2);
