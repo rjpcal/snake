@@ -82,9 +82,6 @@ GaborSet::GaborSet(double period, double sigma, int size) :
                                   /* contrast */ 1.0,
                                   size);
       }
-
-  printf(" Gabors allocated\n");
-  fflush(stdout);
 }
 
 GaborSet::~GaborSet()
@@ -92,9 +89,6 @@ GaborSet::~GaborSet()
   for (int i=0; i<GABOR_MAX_ORIENT; ++i)
     for (int j=0; j<GABOR_MAX_PHASE; ++j)
       delete [] Patch[i][j];
-
-  printf(" Gabors de-allocated\n");
-  fflush(stdout);
 }
 
 const double* GaborSet::getPatch(double theta, double phi) const
