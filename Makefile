@@ -20,9 +20,9 @@ tags:
 	etags *.[ch]
 
 test:
-	rm -f regtest*.ras
+	rm -f regtest*.pnm
 	time ./makesnake regtest
-	for f in regtest*.ras; do echo $$f; diff $$f orig_cpp_2/$$f; done
+	for f in regtest*.pnm; do echo $$f; diff $$f orig_cpp_2/$$f; done
 
 main.o: $(INC)
 window.o: $(INC)

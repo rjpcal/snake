@@ -55,9 +55,8 @@ int main( int argc, char** argv )
       g->renderInto(&fakewin);
 
       char fname[256];
-      snprintf(fname, 256, "%s_%d.ras", FILENAME, DISPLAY_COUNT);
-
-      fakewin.writeRaster(fname);
+      snprintf(fname, 256, "%s_%d.pnm", FILENAME, DISPLAY_COUNT);
+      fakewin.writePnm(fname);
 
       DISPLAY_COUNT++;
 

@@ -20,7 +20,7 @@ public:
       data[i] = col;
   }
 
-  void writeRaster(const char* fname) const;
+  void writePnm(const char* fname) const;
 
   const int sizeX;
   const int sizeY;
