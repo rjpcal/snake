@@ -29,62 +29,61 @@ int main( int argc, char** argv )
       Exit();
     }
 
-    sprintf( PROGRAM, "%s", argv[0]);
-    sprintf( FILENAME,"%s", argv[1]);
+  sprintf( PROGRAM, "%s", argv[0]);
+  sprintf( FILENAME,"%s", argv[1]);
 
-    SeedRand();
+  SeedRand();
 
-    ReadParams( "sta" );
+  ReadParams( "sta" );
 
-    PrintParams();
+  PrintParams();
 
-    MakeColormap();
+  MakeColormap();
 
-    /// alloc mem for our fake window:
-    win = (Colorindex*)
-      (malloc(DISPLAY_X * DISPLAY_Y * sizeof(Colorindex)));
+  // alloc mem for our fake window:
+  win = (Colorindex*)
+    (malloc(DISPLAY_X * DISPLAY_Y * sizeof(Colorindex)));
 
+  SeedRand();
 
-    SeedRand();
+  InitGabor();
 
-    InitGabor();
+  DISPLAY_COUNT = 0;
 
-    DISPLAY_COUNT = 0;
+  DISPLAY_SET_NUMBER = 1;
 
-    DISPLAY_SET_NUMBER = 1;
+  WriteHeader();
 
-    WriteHeader();
+  int n;
 
-    int n;
-
-    for( n=0; n<DISPLAY_NUMBER; n++ )
+  for( n=0; n<DISPLAY_NUMBER; n++ )
     {
-        ZeroRand( n );
+      ZeroRand( n );
 
-        MakeForeg();
+      MakeForeg();
 
-        MakeGround();
+      MakeGround();
 
-        WriteArray();
+      WriteArray();
 
-        ShowArray();
+      ShowArray();
 
-        Window2Raster();
+      Window2Raster();
 
-        DISPLAY_COUNT++;
+      DISPLAY_COUNT++;
     }
 
-    Exit();
+  Exit();
 
-    return 0;
+  return 0;
 }
 
 void Exit( void )
 {
-    WrapGabor();
+  WrapGabor();
 
-    WriteParams( "sta" );
+  WriteParams( "sta" );
 
-    exit(0);
+  exit(0);
 }
 
