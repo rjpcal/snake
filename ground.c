@@ -12,8 +12,10 @@ namespace
   const double SQRT3 = 1.7320508075;
 }
 
-void Ground::pushElement(const Element& e)
+bool Ground::tryPush(const Element& e)
 {
+  if (tooClose(e.pos.x, e.pos.y, -1)) return false;
+
   if (totalNumber >= MAX_GABOR_NUMBER)
     {
       printf(" More than %d elements!\n", MAX_GABOR_NUMBER);
@@ -21,6 +23,8 @@ void Ground::pushElement(const Element& e)
     }
 
   array[totalNumber++] = e;
+
+  return true;
 }
 
 int Ground::tooClose(double x, double y, int except)
@@ -97,10 +101,7 @@ void Ground::hexGridElements()
 
       for (int i = 0; i < nx; ++i, x += dx)
         {
-          if (tooClose(x, y, -1))
-            continue;
-
-          pushElement(Element(x, y, 2 * M_PI * drand48(), Element::OUTSIDE));
+          tryPush(Element(x, y, 2 * M_PI * drand48(), Element::OUTSIDE));
         }
     }
 }
@@ -116,12 +117,8 @@ void Ground::fillElements()
   for (double x = -halfX; x <= halfX; x += dx)
     for (double y = -halfY; y <= halfY; y += dx)
       {
-        if (tooClose(x, y, -1))
-          continue;
-
-        pushElement(Element(x, y, 2 * M_PI * drand48(), Element::OUTSIDE));
-
-        ++c;
+        if (tryPush(Element(x, y, 2 * M_PI * drand48(), Element::OUTSIDE)))
+          ++c;
       }
 
   backgAveSpacing = sqrt(2.0*sizeX*sizeY/(SQRT3*totalNumber));
@@ -174,7 +171,11 @@ Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
   // pull in elements from the snake
   for (int n = 0; n < snake.getLength(); ++n)
     {
-      pushElement(snake.getElement(n));
+      if (!tryPush(snake.getElement(n)))
+        {
+          printf("snake elements were too close together!\n");
+          exit(1);
+        }
     }
 
   hexGridElements();

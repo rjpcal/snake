@@ -30,7 +30,7 @@ private:
   Element array[ MAX_GABOR_NUMBER ];
   double backgAveSpacing;
 
-  void pushElement(const Element& e);
+  bool tryPush(const Element& e);
   int tooClose(double x, double y, int except);
   void insideElements();
   void hexGridElements();
