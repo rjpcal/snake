@@ -15,10 +15,11 @@ struct Element
 class Snake
 {
 public:
-  Snake();
+  Snake(int l);
 
   int getElement(int n, float* x, float* y, float* theta) const;
 
+  int length;
   Element foreg[ MAX_FOREG_NUMBER ];
 };
 

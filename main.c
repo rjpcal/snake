@@ -47,7 +47,7 @@ int main( int argc, char** argv )
     {
       srand48(n);
 
-      Snake s;
+      Snake s(FOREG_NUMBER);
 
       Ground* g = new Ground(s);
 
