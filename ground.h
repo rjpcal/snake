@@ -31,7 +31,7 @@ private:
   double backgAveSpacing;
 
   bool tryPush(const Element& e);
-  int tooClose(double x, double y, int except);
+  int tooClose(const Vector& v, int except);
   void insideElements();
   void hexGridElements();
   void fillElements();

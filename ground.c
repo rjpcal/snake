@@ -14,7 +14,7 @@ namespace
 
 bool Ground::tryPush(const Element& e)
 {
-  if (tooClose(e.pos.x, e.pos.y, -1)) return false;
+  if (tooClose(e.pos, -1)) return false;
 
   if (totalNumber >= MAX_GABOR_NUMBER)
     {
@@ -27,12 +27,12 @@ bool Ground::tryPush(const Element& e)
   return true;
 }
 
-int Ground::tooClose(double x, double y, int except)
+int Ground::tooClose(const Vector& v, int except)
 {
   for (int n = 0; n < totalNumber; ++n)
     {
-      const double dx = array[n].pos.x - x;
-      const double dy = array[n].pos.y - y;
+      const double dx = array[n].pos.x - v.x;
+      const double dy = array[n].pos.y - v.y;
 
       if (dx*dx+dy*dy > backgMinSpacingSqr) continue;
 
@@ -144,7 +144,7 @@ void Ground::jitterElement()
           if (v.y < -halfY) v.y += 2.*halfY;
           if (v.y >  halfY) v.y -= 2.*halfY;
 
-          if (!tooClose(v.x, v.y, n))
+          if (!tooClose(v, n))
             {
               array[n].pos = v;
             }
