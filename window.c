@@ -13,9 +13,7 @@
 
 void ShowArray(const Ground* g, FakeWindow* wind)
 {
-  // let's clear our fake window:
-  for (int i = 0; i < DISPLAY_X*DISPLAY_Y; ++i)
-    wind->data[i]=Grey;
+  wind->clear(Grey);
 
   const int* px             = g->XPatch;
   const int* py             = g->YPatch;
@@ -38,28 +36,24 @@ void ShowArray(const Ground* g, FakeWindow* wind)
     }
 }
 
-void Window2Raster(const FakeWindow* wind)
+void FakeWindow::writeRaster(const char* fname) const
 {
   FILE *fp;
-  char fname[STRINGSIZE];
   unsigned char map[256];
   int i, k, x, y, dx, dy, size, header[8];
   Colorindex *ptr, *pt;
   unsigned char *ctr, *ct;
 
-  static int count = 0;
-
-  sprintf( fname, "%s_%d.ras", FILENAME, count++ );
   if( ( fp = fopen( fname, "w" ) ) == NULL )
     {
       printf( " %s: file not opened\n", fname );
     }
 
   header[0] = 0x59a66a95;
-  header[1] = DISPLAY_X;
-  header[2] = DISPLAY_Y;
+  header[1] = sizeX;
+  header[2] = sizeY;
   header[3] = 8;
-  header[4] = DISPLAY_X * DISPLAY_Y;
+  header[4] = sizeX * sizeY;
   header[5] = 1;
   header[6] = 1;
   header[7] = 768;
@@ -76,8 +70,8 @@ void Window2Raster(const FakeWindow* wind)
   fwrite( map, sizeof(unsigned char), 256, fp );
   fwrite( map, sizeof(unsigned char), 256, fp );
 
-  dx = DISPLAY_X;
-  dy = DISPLAY_Y / 4;
+  dx = sizeX;
+  dy = sizeY / 4;
 
   size = dx*dy;
 
@@ -92,8 +86,8 @@ void Window2Raster(const FakeWindow* wind)
       int xx,yy;
       for (yy = y; yy <= y+dy-1; ++yy)
         for (xx = x; xx <= x+dx-1; ++xx)
-          if (xx>=0 && xx<DISPLAY_X && yy>=0 && yy<DISPLAY_Y)
-            ptr[xx - x + dx*(yy-y)] = wind->data[xx + yy*DISPLAY_X];
+          if (xx>=0 && xx<sizeX && yy>=0 && yy<sizeY)
+            ptr[xx - x + dx*(yy-y)] = data[xx + yy*sizeX];
 
       pt = ptr;
       ct = ctr;

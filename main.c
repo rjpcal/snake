@@ -35,8 +35,7 @@ int main( int argc, char** argv )
   MakeColormap();
 
   // alloc mem for our fake window:
-  FakeWindow fakewin;
-  fakewin.data = new Colorindex[DISPLAY_X*DISPLAY_Y];
+  FakeWindow fakewin(DISPLAY_X, DISPLAY_Y);
 
   SeedRand();
 
@@ -60,7 +59,10 @@ int main( int argc, char** argv )
 
       ShowArray(g, &fakewin);
 
-      Window2Raster(&fakewin);
+      char fname[256];
+      snprintf(fname, 256, "%s_%d.ras", FILENAME, DISPLAY_COUNT);
+
+      fakewin.writeRaster(fname);
 
       DISPLAY_COUNT++;
 

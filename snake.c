@@ -15,7 +15,7 @@
 
 int          FOREGROUND_ITERATION =    400;
 
-ELEMENT foreg[ MAX_FOREG_NUMBER ];
+Element foreg[ MAX_FOREG_NUMBER ];
 
 void MakeForeg( void )
 {
@@ -156,7 +156,7 @@ void Jiggle_snake( int length )
     int ok = 0;
     float a[4], delta[4], alpha[4], theta[4], lo_alpha[4], hi_alpha[4],
           incr, new_alpha[4], new_theta[4], new_a[4];
-    VECTOR no[4], new_no[4];
+    Vector no[4], new_no[4];
 
     Pick_nodes( length, i );
 
@@ -284,7 +284,7 @@ void Swap( int *a, int *b )
     *b = t;
 }
 
-void Get_sides( VECTOR no[], float a[] )
+void Get_sides( Vector no[], float a[] )
 {
     float dx0, dy0, dx1, dy1, dx2, dy2, dx3, dy3;
 
@@ -303,7 +303,7 @@ void Get_sides( VECTOR no[], float a[] )
     a[3]    = sqrt((double)(dx3*dx3+dy3*dy3));
 }
 
-void Get_angles( VECTOR no[], float alpha[], float theta[] )
+void Get_angles( Vector no[], float alpha[], float theta[] )
 {
     float dx0, dy0, dx1, dy1, dx2, dy2, dx3, dy3, b0, b1, b2, b3;
 
@@ -327,11 +327,11 @@ void Get_angles( VECTOR no[], float alpha[], float theta[] )
     alpha[3]= Zerototwopi( M_PI - b3 + b2 );
 }
 
-int Squash_quadrangle( VECTOR *no0, VECTOR *no1, VECTOR *no2, VECTOR *no3, VECTOR *new_no0, VECTOR *new_no1, VECTOR *new_no2, VECTOR *new_no3, float theta0, float incr )
+int Squash_quadrangle( Vector *no0, Vector *no1, Vector *no2, Vector *no3, Vector *new_no0, Vector *new_no1, Vector *new_no2, Vector *new_no3, float theta0, float incr )
 {
     int ok;
     float a[4];
-    VECTOR no[4], nn[4];
+    Vector no[4], nn[4];
 
     no[0] = *new_no0 = *no0;
     no[1] =            *no1;
@@ -353,10 +353,10 @@ int Squash_quadrangle( VECTOR *no0, VECTOR *no1, VECTOR *no2, VECTOR *no3, VECTO
     return( ok );
 }
 
-int New_apex( VECTOR *no1, VECTOR *no2, VECTOR *no3, float b, float c )
+int New_apex( Vector *no1, Vector *no2, Vector *no3, float b, float c )
 {
     float dx, dy, e, aleph, bet, gimel, xp, yp, dis_one, dis_two;
-    VECTOR no2_one, no2_two;
+    Vector no2_one, no2_two;
 
     dx    = no3->x - no1->x;
     dy    = no3->y - no1->y;
@@ -457,7 +457,7 @@ int Monte_Carlo( float old_alpha[], float new_alpha[], float lo_alpha[], float h
     return( drand48() <= probability );
 }
 
-void New_nodes( int length, int ni, int nj, VECTOR new_no_i, VECTOR new_no_j )
+void New_nodes( int length, int ni, int nj, Vector new_no_i, Vector new_no_j )
 {
     int n;
     float dx, dy, dxp, dyp, l_2;
