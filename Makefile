@@ -1,5 +1,5 @@
 CC      = g++ -Wall -Werror
-CFLAGS	= -O4 -pg
+CFLAGS	= -O4
 LFLAGS  = -lm
 
 SRC    = gabor.c ground.c params.c snake.c window.c  main.c
@@ -13,7 +13,7 @@ clean:
 	rm -f core *~ *.o *.a makesnake
 
 makesnake: $(OBJ)
-	$(CC) -pg -o $@ $(OBJ) $(LFLAGS)
+	$(CC) $(CFLAGS) -o $@ $(OBJ) $(LFLAGS)
 
 tags:
 	etags *.[ch]
