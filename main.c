@@ -16,17 +16,6 @@ int main( int argc, char** argv )
       return 1;
     }
 
-#if 0
-  struct timeval tp;
-  struct timezone tzp;
-
-  gettimeofday( &tp, &tzp );
-
-  srand48( tp.tv_sec );
-#else
-  srand48( 0 );
-#endif
-
   const Params pm(argv[1], "sta");
 
   pm.print();
@@ -40,23 +29,27 @@ int main( int argc, char** argv )
 
   for(int n = 0; n < pm.pmDisplayNumber; ++n)
     {
+#if 0
+      struct timeval tp;
+      gettimeofday( &tp, (timezone*) 0 );
+      srand48( tp.tv_sec );
+#else
       srand48(n);
+#endif
 
       Snake s(pm.pmForegNumber, pm.pmForegSpacing);
 
-      Ground* g = new Ground(s, pm.pmSizeX, pm.pmSizeY,
-                             pm.pmBackgIniSpacing,
-                             pm.pmBackgMinSpacing);
+      Ground g(s, pm.pmSizeX, pm.pmSizeY,
+               pm.pmBackgIniSpacing,
+               pm.pmBackgMinSpacing);
 
-      g->writeArray(pm.pmFilestem, n);
+      g.writeArray(pm.pmFilestem, n);
 
-      g->renderInto(&fakewin, gabors);
+      g.renderInto(&fakewin, gabors);
 
       char fname[256];
       snprintf(fname, 256, "%s_%d.pnm", pm.pmFilestem, n);
       fakewin.writePnm(fname);
-
-      delete g;
     }
 
   pm.write("sta");
