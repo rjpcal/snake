@@ -207,23 +207,21 @@ namespace
     return true;
   }
 
-  // This function must return true in order to accept the new set of nodes
-  // in jiggle().
-  bool monteCarlo(const Tuple4& newdelta, const Tuple4& olddelta,
-                  double& increment)
+  bool deltaTooBig(const Tuple4& delta)
   {
-    double energy_diff = 0.0f;
+    return (fabs(delta[0]) > MAX_DELTA
+            || fabs(delta[1]) > MAX_DELTA
+            || fabs(delta[2]) > MAX_DELTA
+            || fabs(delta[3]) > MAX_DELTA);
+  }
 
-    for (int n = 0; n < 4; ++n)
-      {
-        if (fabs(newdelta[n]) > MAX_DELTA)
-          {
-            increment *= 0.8;
-            return false;
-          }
-
-        energy_diff += newdelta[n]*newdelta[n] - olddelta[n]*olddelta[n];
-      }
+  bool acceptNewDelta(const Tuple4& newdelta, const Tuple4& olddelta)
+  {
+    const double energy_diff =
+      newdelta[0]*newdelta[0] - olddelta[0]*olddelta[0]
+      + newdelta[1]*newdelta[1] - olddelta[1]*olddelta[1]
+      + newdelta[2]*newdelta[2] - olddelta[2]*olddelta[2]
+      + newdelta[3]*newdelta[3] - olddelta[3]*olddelta[3];
 
     // Note, if energy_diff is < 0, then the probability is > 0, so
     // as expected drand48() will always be < probability.
@@ -388,7 +386,7 @@ void Snake::jiggle()
 
       if (!ok)
         {
-          increment /= 2.0;
+          increment *= 0.5;
           continue;
         }
 
@@ -400,7 +398,13 @@ void Snake::jiggle()
          old_delta[2] + (old_alpha[2]-new_alpha[2]),
          old_delta[3] + (old_alpha[3]-new_alpha[3]));
 
-      if (monteCarlo(new_delta, old_delta, increment))
+      if (deltaTooBig(new_delta))
+        {
+          increment *= 0.8;
+          continue;
+        }
+
+      if (acceptNewDelta(new_delta, old_delta))
         break;
     }
 
