@@ -15,19 +15,19 @@ namespace
 
   const int    FOREGROUND_ITERS = 400;
 
-  float increment;
+  double increment;
 
   struct Tuple4
   {
     Tuple4() {}
 
-    Tuple4(float a0, float a1, float a2, float a3)
+    Tuple4(double a0, double a1, double a2, double a3)
     { arr[0] = a0; arr[1] = a1; arr[2] = a2; arr[3] = a3; }
 
-    float  operator[](int i) const { return arr[i]; }
-    float& operator[](int i)       { return arr[i]; }
+    double  operator[](int i) const { return arr[i]; }
+    double& operator[](int i)       { return arr[i]; }
 
-    float arr[4];
+    double arr[4];
   };
 
   void swap2(int& a, int& b) { int a1 = a; a = b; b = a1;}
@@ -64,10 +64,10 @@ namespace
     sort2(i[2], i[3]);
   }
 
-  float distance(const Vector& n1, const Vector& n2)
+  double distance(const Vector& n1, const Vector& n2)
   {
-    const float dx = n1.x - n2.x;
-    const float dy = n1.y - n2.y;
+    const double dx = n1.x - n2.x;
+    const double dy = n1.y - n2.y;
     return sqrt(dx*dx + dy*dy);
   }
 
@@ -79,7 +79,7 @@ namespace
                   distance(no[3], no[0]));
   }
 
-  float getTheta(const Vector& n1, const Vector& n2)
+  double getTheta(const Vector& n1, const Vector& n2)
   {
     return atan2(n1.y - n2.y, n1.x - n2.x);
   }
@@ -101,7 +101,7 @@ namespace
   }
 
   int newApex(const Vector* no1, Vector* no2, const Vector* no3,
-              float b, float c)
+              double b, double c)
   {
     /*                                                    */
     /*   x'      dx/e   dy/e     x - no1->x               */
@@ -124,20 +124,20 @@ namespace
     /*   y       no1->y       dy/e   dx/e     y'          */
     /*                                                    */
 
-    const float dx    = no3->x - no1->x;
-    const float dy    = no3->y - no1->y;
+    const double dx    = no3->x - no1->x;
+    const double dy    = no3->y - no1->y;
 
-    const float e     = sqrt(dx*dx + dy*dy);
+    const double e     = sqrt(dx*dx + dy*dy);
 
-    const float aleph = (b*b-c*c)/(2.*e);
-    const float bet   = e/2.;
-    const float gimel = (b*b+c*c)/2.;
+    const double aleph = (b*b-c*c)/(2.*e);
+    const double bet   = e/2.;
+    const double gimel = (b*b+c*c)/2.;
 
     if (gimel < bet*bet + aleph*aleph)
       return 0;
 
-    const float xp = aleph + bet;
-    const float yp = sqrt(gimel - bet*bet - aleph*aleph);
+    const double xp = aleph + bet;
+    const double yp = sqrt(gimel - bet*bet - aleph*aleph);
 
     Vector no2_one, no2_two;
 
@@ -147,8 +147,8 @@ namespace
     no2_two.x = no1->x + xp*dx/e + yp*dy/e;
     no2_two.y = no1->y + xp*dy/e - yp*dx/e;
 
-    const float dis_one = distance(no2_one, *no2);
-    const float dis_two = distance(no2_two, *no2);
+    const double dis_one = distance(no2_one, *no2);
+    const double dis_two = distance(no2_two, *no2);
 
     *no2 = (dis_one < dis_two) ? no2_one : no2_two;
 
@@ -159,7 +159,7 @@ namespace
                        const Vector* no2, const Vector* no3,
                        Vector* new_no0, Vector* new_no1,
                        Vector* new_no2, Vector* new_no3,
-                       float theta0, float incr)
+                       double theta0, double incr)
   {
     Vector no[4];
     no[0] = *new_no0 = *no0;
@@ -180,12 +180,12 @@ namespace
   {
     bool zero_probability = false;
 
-    float energy_difference = 0.0f;
+    double energy_difference = 0.0f;
 
     for (int n = 0; n < 4; ++n)
       {
-        const float oldval = fabs(delta[n]);
-        const float newval = fabs(new_alpha[n] - old_alpha[n] - delta[n]);
+        const double oldval = fabs(delta[n]);
+        const double newval = fabs(new_alpha[n] - old_alpha[n] - delta[n]);
 
         if (newval > HIDELTA)
           {
@@ -199,7 +199,7 @@ namespace
           }
       }
 
-    float probability = 0.0f;
+    double probability = 0.0f;
 
     if (!zero_probability)
       if (energy_difference < 0.)
@@ -215,18 +215,18 @@ namespace
   }
 }
 
-Snake::Snake(int l, float sp) :
+Snake::Snake(int l, double sp) :
   itsLength(l),
   itsSpacing(sp),
   itsElem(new Element[itsLength])
 {
-  const float radius = (float)(itsLength * itsSpacing) / (2*M_PI);
+  const double radius = (double)(itsLength * itsSpacing) / (2*M_PI);
 
-  const float alpha_off = 2 * M_PI * drand48();
+  const double alpha_off = 2 * M_PI * drand48();
 
   for (int n = 0; n < itsLength; ++n)
     {
-      const float alpha = 2 * M_PI * n / itsLength;
+      const double alpha = 2 * M_PI * n / itsLength;
 
       itsElem[n].xpos   =  radius * cos(alpha+alpha_off);
       itsElem[n].ypos   = -radius * sin(alpha+alpha_off);
@@ -247,7 +247,7 @@ Snake::~Snake()
   delete [] itsElem;
 }
 
-void Snake::getElement(int n, float* x, float* y, float* theta) const
+void Snake::getElement(int n, double* x, double* y, double* theta) const
 {
   assert(n < itsLength);
 
@@ -258,8 +258,8 @@ void Snake::getElement(int n, float* x, float* y, float* theta) const
 
 void Snake::center()
 {
-  float xc = 0.0f;
-  float yc = 0.0f;
+  double xc = 0.0f;
+  double yc = 0.0f;
 
   for (int n = 0; n < itsLength; ++n)
     {
@@ -283,8 +283,8 @@ void Snake::computeDeltaTheta()
     {
       const int n1 = (n0+1)%itsLength;
 
-      const float dx = itsElem[n1].xpos - itsElem[n0].xpos;
-      const float dy = itsElem[n1].ypos - itsElem[n0].ypos;
+      const double dx = itsElem[n1].xpos - itsElem[n0].xpos;
+      const double dy = itsElem[n1].ypos - itsElem[n0].ypos;
 
       itsElem[n0].theta = Zerototwopi(atan2(dy, dx));
 
@@ -357,7 +357,7 @@ void Snake::jiggle()
 
   for (;;)
     {
-      const float incr = (drand48()<0.5) ? -increment : increment;
+      const double incr = (drand48()<0.5) ? -increment : increment;
 
       const int r = int(4 * drand48());
 
@@ -403,30 +403,30 @@ void Snake::replaceNodes(int i1, const Vector& new1,
   /*   y'      c2        a21   a12     y - b2     */
   /*                                              */
 
-  const float old1x  = itsElem[i1].xpos;
-  const float old1y  = itsElem[i1].ypos;
+  const double old1x  = itsElem[i1].xpos;
+  const double old1y  = itsElem[i1].ypos;
 
-  const float old2x  = itsElem[i2].xpos;
-  const float old2y  = itsElem[i2].ypos;
+  const double old2x  = itsElem[i2].xpos;
+  const double old2y  = itsElem[i2].ypos;
 
-  const float old_dx  = old2x - old1x;
-  const float old_dy  = old2y - old1y;
+  const double old_dx  = old2x - old1x;
+  const double old_dy  = old2y - old1y;
 
-  const float new_dx = new2.x - new1.x;
-  const float new_dy = new2.y - new1.y;
+  const double new_dx = new2.x - new1.x;
+  const double new_dy = new2.y - new1.y;
 
-  const float l_2 = old_dx*old_dx + old_dy*old_dy;
+  const double l_2 = old_dx*old_dx + old_dy*old_dy;
 
-  const float a11 = (new_dx*old_dx + new_dy*old_dy)/l_2;
-  const float a12 = (new_dx*old_dy - new_dy*old_dx)/l_2;
+  const double a11 = (new_dx*old_dx + new_dy*old_dy)/l_2;
+  const double a12 = (new_dx*old_dy - new_dy*old_dx)/l_2;
 
-  const float a21 = (new_dy*old_dx - new_dx*old_dy)/l_2;
-  const float a22 = (new_dy*old_dy + new_dx*old_dx)/l_2;
+  const double a21 = (new_dy*old_dx - new_dx*old_dy)/l_2;
+  const double a22 = (new_dy*old_dy + new_dx*old_dx)/l_2;
 
   for (int n = (i1+1)%itsLength; n != i2; n = (n+1)%itsLength)
     {
-      const float diffx = itsElem[n].xpos - old1x;
-      const float diffy = itsElem[n].ypos - old1y;
+      const double diffx = itsElem[n].xpos - old1x;
+      const double diffy = itsElem[n].ypos - old1y;
 
       itsElem[n].xpos = new1.x + a11*diffx + a12*diffy;
       itsElem[n].ypos = new1.y + a21*diffx + a22*diffy;

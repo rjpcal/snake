@@ -8,7 +8,7 @@ public:
   ~GaborSet();
 
   int getPatchSize() const { return patchSize; }
-  const double* getPatch(float theta, float phi) const;
+  const double* getPatch(double theta, double phi) const;
 
 private:
   const int patchSize;

@@ -2,36 +2,36 @@
 
 #include <math.h>
 
-float Zerototwopi( float angle )
+double Zerototwopi(double angle)
 {
-  while( angle < 0. )
+  while (angle < 0.)
     angle += (2*M_PI);
 
-  while( angle >= (2*M_PI) )
+  while (angle >= (2*M_PI))
     angle -= (2*M_PI);
 
-  return( angle );
+  return angle;
 }
 
-float Minuspitopi( float angle )
+double Minuspitopi(double angle)
 {
-  while( angle < -M_PI )
+  while (angle < -M_PI)
     angle += (2*M_PI);
 
-  while( angle >= M_PI )
+  while (angle >= M_PI)
     angle -= (2*M_PI);
 
-  return( angle );
+  return angle;
 }
 
-float Zerotopi( float angle )
+double Zerotopi(double angle)
 {
-  while( angle < 0. )
+  while (angle < 0.)
     angle += M_PI;
 
-  while( angle >= M_PI )
+  while (angle >= M_PI)
     angle -= M_PI;
 
-  return( angle );
+  return angle;
 }
 

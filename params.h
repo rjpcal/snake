@@ -8,15 +8,15 @@ struct Params
   int   pmSizeX;
   int   pmSizeY;
   int   pmForegNumber;
-  float pmForegSpacing;
-  float pmForegEccentricity;    // FIXME unused
-  float pmForegJitter;          // FIXME unused
+  double pmForegSpacing;
+  double pmForegEccentricity;    // FIXME unused
+  double pmForegJitter;          // FIXME unused
   int   pmForegPositions;
-  float pmForegDifference;
-  float pmBackgIniSpacing;
-  float pmBackgMinSpacing;
-  float pmGaborPeriod;
-  float pmGaborSigma;
+  double pmForegDifference;
+  double pmBackgIniSpacing;
+  double pmBackgMinSpacing;
+  double pmGaborPeriod;
+  double pmGaborSigma;
   int   pmGaborSize;
   int   pmDisplayNumber;
 
@@ -34,16 +34,16 @@ namespace
   inline int getint(FILE* fp)
   {
     int result = -1;
-    fgets(line,120,fp);
-    sscanf(line,"%s %d",text,&result);
+    fgets(line, 120, fp);
+    sscanf(line, "%s %d", text, &result);
     return result;
   }
 
-  inline float getfloat(FILE* fp)
+  inline double getdouble(FILE* fp)
   {
-    float result = -1.0;
-    fgets(line,120,fp);
-    sscanf(line,"%s %f",text,&result);
+    double result = -1.0;
+    fgets(line, 120, fp);
+    sscanf(line, "%s %lf", text, &result);
     return result;
   }
 
@@ -52,7 +52,7 @@ namespace
     fprintf(fp, "%-19s %d\n", name, val);
   }
 
-  inline void putfloat(FILE* fp, float val, const char* name)
+  inline void putdouble(FILE* fp, double val, const char* name)
   {
     fprintf(fp, "%-19s %.2f\n", name, val);
   }

@@ -14,18 +14,18 @@ namespace
   const double SQRT3 = 1.7320508075;
 }
 
-int Ground::tooClose(int upto, float x, float y, int except)
+int Ground::tooClose(int upto, double x, double y, int except)
 {
   for (int n = 0; n < upto; ++n)
     {
-      float dx = fabs(array[n].xpos - x);
+      double dx = fabs(array[n].xpos - x);
       if (dx > halfX)
         dx = sizeX - dx;
 
       if (dx > backgMinSpacing)
         continue;
 
-      float dy = fabs(array[n].ypos - y);
+      double dy = fabs(array[n].ypos - y);
       if (dy > halfY)
         dy = sizeY - dy;
 
@@ -56,13 +56,13 @@ void Ground::insideElements()
         {
           const int j = (i+1) % snake.getLength();
 
-          const float Yij = array[i].xpos - array[j].xpos;
-          const float Xij = array[j].ypos - array[i].ypos;
+          const double Yij = array[i].xpos - array[j].xpos;
+          const double Xij = array[j].ypos - array[i].ypos;
 
-          const float Xin = array[n].xpos - array[i].xpos;
-          const float Yin = array[n].ypos - array[i].ypos;
+          const double Xin = array[n].xpos - array[i].xpos;
+          const double Yin = array[n].ypos - array[i].ypos;
 
-          const float vp = Xij*Xin + Yij*Yin;
+          const double vp = Xij*Xin + Yij*Yin;
 
           if (vp < 0.0)
             side = 0;
@@ -80,7 +80,7 @@ void Ground::contourElements()
 {
   for (int n = 0; n < snake.getLength(); ++n)
     {
-      float x, y, theta;
+      double x, y, theta;
 
       snake.getElement(n, &x, &y, &theta);
 
@@ -100,17 +100,17 @@ void Ground::contourElements()
 
 void Ground::gridElements()
 {
-  const float dx = backgIniSpacing;
-  const float dy = SQRT3 * backgIniSpacing / 2.0;
+  const double dx = backgIniSpacing;
+  const double dy = SQRT3 * backgIniSpacing / 2.0;
 
   const int nx = (int)((2.0 * halfX - backgMinSpacing - 0.5*dx) / dx);
   const int ny = (int)((2.0 * halfY - backgMinSpacing) / dy);
 
-  const float ix =  -0.5 * (nx-1) * dx - 0.25 * dx;
-  const float iy =  -0.5 * (ny-1) * dy;
+  const double ix =  -0.5 * (nx-1) * dx - 0.25 * dx;
+  const double iy =  -0.5 * (ny-1) * dy;
 
   int i, j;
-  float x, y;
+  double x, y;
 
   for (j = 0, y = iy; j < ny; ++j, y += dy)
     {
@@ -151,13 +151,13 @@ void Ground::fillElements()
 
   ntry = 0;
 
-  float xl[ tryFillNumber ];
-  float yl[ tryFillNumber ];
+  double xl[ tryFillNumber ];
+  double yl[ tryFillNumber ];
 
-  const float dx = (float) sqrt((double) tryFillArea);
+  const double dx = (double) sqrt((double) tryFillArea);
 
-  for (float x = -halfX; x <= halfX; x += dx)
-    for (float y = -halfY; y <= halfY; y += dx)
+  for (double x = -halfX; x <= halfX; x += dx)
+    for (double y = -halfY; y <= halfY; y += dx)
       {
         xl[ ntry ] = x;
         yl[ ntry ] = y;
@@ -192,7 +192,7 @@ void Ground::fillElements()
 
 void Ground::jitterElement()
 {
-  const float jitter = (backgMinSpacing/16.0);
+  const double jitter = (backgMinSpacing/16.0);
 
   const int backgroundIters = 1000;
 
@@ -200,11 +200,11 @@ void Ground::jitterElement()
     {
       for (int n = snake.getLength(); n < totalNumber; ++n)
         {
-          const float dx = 2*jitter*drand48() - jitter;
-          const float dy = 2*jitter*drand48() - jitter;
+          const double dx = 2*jitter*drand48() - jitter;
+          const double dy = 2*jitter*drand48() - jitter;
 
-          float x  = array[n].xpos + dx;
-          float y  = array[n].ypos + dy;
+          double x  = array[n].xpos + dx;
+          double y  = array[n].ypos + dy;
 
           if (!tooClose(totalNumber, x, y, n))
             {
@@ -223,8 +223,8 @@ void Ground::jitterElement()
 /*****************************************************************/
 
 Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
-               float backgIniSpacing_,
-               float backgMinSpacing_) :
+               double backgIniSpacing_,
+               double backgMinSpacing_) :
   snake(s),
   sizeX(sizeX_),
   sizeY(sizeY_),
@@ -260,10 +260,10 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
 
   for (int i = 0; i < totalNumber; ++i)
     {
-      const float phi   = 2 * M_PI * drand48();
-      const float randtheta = 2 * M_PI * drand48();
+      const double phi   = 2 * M_PI * drand48();
+      const double randtheta = 2 * M_PI * drand48();
 
-      const float theta =
+      const double theta =
         (i < snake.getLength())
         ? Zerototwopi(array[i].theta + M_PI_2)
         : randtheta;
@@ -302,10 +302,10 @@ void Ground::writeArray(const char* filestem, int displayCount) const
   putint(fp, totalNumber, "TOTAL_NUMBER");
   putint(fp, snake.getLength(), "FOREG_NUMBER");
   putint(fp, insideNumber, "PATCH_NUMBER");
-  putfloat(fp, snake.getSpacing(), "FOREG_SPACING");
-  putfloat(fp, backgAveSpacing, "BACKG_AVE_SPACING");
-  putfloat(fp, backgIniSpacing, "BACKG_INI_SPACING");
-  putfloat(fp, backgMinSpacing, "BACKG_MIN_SPACING");
+  putdouble(fp, snake.getSpacing(), "FOREG_SPACING");
+  putdouble(fp, backgAveSpacing, "BACKG_AVE_SPACING");
+  putdouble(fp, backgIniSpacing, "BACKG_INI_SPACING");
+  putdouble(fp, backgMinSpacing, "BACKG_MIN_SPACING");
 
   const double RAD2DEG = (180./M_PI);
 

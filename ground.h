@@ -9,8 +9,8 @@ class Ground
 {
 public:
   Ground(const Snake& s, int sizeX_, int sizeY_,
-         float backgIniSpacing_,
-         float backgMinSpacing_);
+         double backgIniSpacing_,
+         double backgMinSpacing_);
 
   void renderInto(FakeWindow* wind, const GaborSet& g) const;
 
@@ -20,17 +20,17 @@ private:
   const Snake& snake;
   const int sizeX;
   const int sizeY;
-  const float halfX;
-  const float halfY;
-  const float backgIniSpacing;
-  const float backgMinSpacing;
-  const float backgMinSpacingSqr;
+  const double halfX;
+  const double halfY;
+  const double backgIniSpacing;
+  const double backgMinSpacing;
+  const double backgMinSpacingSqr;
   int insideNumber;
   int totalNumber;
   Element array[ MAX_GABOR_NUMBER ];
-  float backgAveSpacing;
+  double backgAveSpacing;
 
-  int tooClose(int upto, float x, float y, int except);
+  int tooClose(int upto, double x, double y, int except);
   void insideElements();
   void contourElements();
   void gridElements();

@@ -9,39 +9,39 @@
 
 namespace
 {
-  const float DELTA_THETA    = M_PI / GABOR_MAX_ORIENT;
-  const float DELTA_PHASE    = 2 * M_PI / GABOR_MAX_PHASE;
-  const float OFF_THETA      = 0.5 * DELTA_THETA;
-  const float OFF_PHASE      = 0.5 * DELTA_PHASE;
+  const double DELTA_THETA    = M_PI / GABOR_MAX_ORIENT;
+  const double DELTA_PHASE    = 2 * M_PI / GABOR_MAX_PHASE;
+  const double OFF_THETA      = 0.5 * DELTA_THETA;
+  const double OFF_PHASE      = 0.5 * DELTA_PHASE;
 
   double* CreatePatch(double sigma, double omega, double theta,
                       double phi, double contrast, int xysize)
   {
     double* const result = new double[xysize*xysize];
 
-    const float ssqr  = 2.*sigma*sigma;
+    const double ssqr  = 2.*sigma*sigma;
 
-    const float cos_theta = cos((double) theta );
-    const float sin_theta = sin((double) theta );
+    const double cos_theta = cos(theta);
+    const double sin_theta = sin(theta);
 
     double* ptr = result;
 
     for(int iy=0; iy<xysize; ++iy)
       {
-        const float fy = (float)( iy - xysize / 2.0 + 0.5 );
+        const double fy = iy - xysize / 2.0 + 0.5;
 
         for(int ix=0; ix<xysize; ++ix)
           {
-            const float fx = (float)( ix - xysize / 2.0 + 0.5 );
+            const double fx = ix - xysize / 2.0 + 0.5;
 
-            const float dx = cos_theta * fx - sin_theta * fy;
-            const float dy = sin_theta * fx + cos_theta * fy;
+            const double dx = cos_theta * fx - sin_theta * fy;
+            const double dy = sin_theta * fx + cos_theta * fy;
 
-            const float dsqr  = ( dx*dx + dy*dy ) / ssqr;
+            const double dsqr  = (dx*dx + dy*dy) / ssqr;
 
-            const float sinus = cos((double) omega * dx + phi );
+            const double sinus = cos(omega * dx + phi);
 
-            const float gauss = exp((double) -dsqr );
+            const double gauss = exp(-dsqr);
             *ptr++ = contrast * sinus * gauss;
           }
       }
@@ -49,20 +49,20 @@ namespace
     return result;
   }
 
-  int Theta2Index( float theta )
+  int Theta2Index( double theta )
   {
     theta = Zerotopi( theta );
 
-    int index = (int)( ( theta + OFF_THETA ) / DELTA_THETA );
+    int index = int((theta + OFF_THETA) / DELTA_THETA);
 
     return index % GABOR_MAX_ORIENT;
   }
 
-  int Phi2Index( float phi )
+  int Phi2Index( double phi )
   {
     phi   = Zerototwopi( phi );
 
-    int index = (int)( ( phi + OFF_PHASE ) / DELTA_PHASE );
+    int index = int((phi + OFF_PHASE) / DELTA_PHASE);
 
     return index % GABOR_MAX_PHASE;
   }
@@ -71,7 +71,7 @@ namespace
 GaborSet::GaborSet(double period, double sigma, int size) :
   patchSize(size)
 {
-  const float omega = 2 * M_PI / period;
+  const double omega = 2 * M_PI / period;
 
   for(int n=0; n<GABOR_MAX_ORIENT; ++n)
     for(int m=0; m<GABOR_MAX_PHASE; ++m)
@@ -98,7 +98,7 @@ GaborSet::~GaborSet()
   fflush( stdout );
 }
 
-const double* GaborSet::getPatch(float theta, float phi) const
+const double* GaborSet::getPatch(double theta, double phi) const
 {
   const int itheta = Theta2Index( theta );
   const int iphi   = Phi2Index( phi );

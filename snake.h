@@ -6,31 +6,31 @@ struct Element
   enum Type { OUTSIDE, INSIDE, CONTOUR };
 
   Type  type;
-  float theta;  /* angle to x-axis, 0 to TWOPI */
-  float xpos;   /* x-position of node */
-  float ypos;   /* y-position of node */
-  float delta;  /* difference of thetas */
+  double theta;  /* angle to x-axis, 0 to TWOPI */
+  double xpos;   /* x-position of node */
+  double ypos;   /* y-position of node */
+  double delta;  /* difference of thetas */
 };
 
 struct Vector
 {
-  float x;
-  float y;
+  double x;
+  double y;
 };
 
 class Snake
 {
 public:
-  Snake(int l, float sp);
+  Snake(int l, double sp);
   ~Snake();
 
   int getLength() const { return itsLength; }
-  float getSpacing() const { return itsSpacing; }
-  void getElement(int n, float* x, float* y, float* theta) const;
+  double getSpacing() const { return itsSpacing; }
+  void getElement(int n, double* x, double* y, double* theta) const;
 
 private:
   const int itsLength;
-  const float itsSpacing;
+  const double itsSpacing;
   Element* const itsElem;
 
   void center();

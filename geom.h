@@ -1,4 +1,4 @@
 
-extern float Zerototwopi( float angle );
-extern float Minuspitopi( float angle );
-extern float Zerotopi( float angle );
+extern double Zerototwopi( double angle );
+extern double Minuspitopi( double angle );
+extern double Zerotopi( double angle );
