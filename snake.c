@@ -343,7 +343,6 @@ void Snake::jiggle()
   const Tuple4 old_theta = getThetas(old_pos);
   const Tuple4 old_alpha = getAlphas(old_theta);
 
-  // The .theta member is the angle to the *next* element
   const Tuple4 old_delta
     (minuspitopi(getTheta(elem(i[0]+1), elem(i[0])) - getTheta(elem(i[0]), elem(i[0]-1))),
      minuspitopi(getTheta(elem(i[1]+1), elem(i[1])) - getTheta(elem(i[1]), elem(i[1]-1))),
