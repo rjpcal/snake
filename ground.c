@@ -48,7 +48,7 @@ void Ground::insideElements()
 {
   patchNumber = snake.getLength();
 
-  for (int n = snake.getLength(); n < NPatch; ++n)
+  for (int n = snake.getLength(); n < totalNumber; ++n)
     {
       int side = 1;
 
@@ -84,15 +84,15 @@ void Ground::contourElements()
 
       if (snake.getElement(n, &x, &y, &theta))
         {
-          array[NPatch].flag  = 2;
-          array[NPatch].xpos  = x;
-          array[NPatch].ypos  = y;
-          array[NPatch].theta = theta;
-          ++NPatch;
+          array[totalNumber].flag  = 2;
+          array[totalNumber].xpos  = x;
+          array[totalNumber].ypos  = y;
+          array[totalNumber].theta = theta;
+          ++totalNumber;
         }
     }
 
-  if (NPatch > MAX_GABOR_NUMBER)
+  if (totalNumber > MAX_GABOR_NUMBER)
     {
       printf(" More than %d elements!\n", MAX_GABOR_NUMBER);
       exit(1);
@@ -120,16 +120,16 @@ void Ground::gridElements()
           if (tooClose(snake.getLength(), x, y, snake.getLength()+1))
             continue;
 
-          array[NPatch].flag = 0;
-          array[NPatch].xpos = x;
-          array[NPatch].ypos = y;
-          array[NPatch].theta = 2 * M_PI * drand48();
+          array[totalNumber].flag = 0;
+          array[totalNumber].xpos = x;
+          array[totalNumber].ypos = y;
+          array[totalNumber].theta = 2 * M_PI * drand48();
 
-          ++NPatch;
+          ++totalNumber;
         }
     }
 
-  if (NPatch > MAX_GABOR_NUMBER)
+  if (totalNumber > MAX_GABOR_NUMBER)
     {
       printf(" More than %d elements!\n", MAX_GABOR_NUMBER);
       exit(1);
@@ -165,7 +165,7 @@ void Ground::fillElements()
         ntry++;
       }
 
-  int npts = NPatch;
+  int npts = totalNumber;
 
   for (int i = 0; i < ntry; ++i)
     {
@@ -186,9 +186,9 @@ void Ground::fillElements()
     }
 
   backgAveSpacing = sqrt((double)2.0*sizeX*sizeY/(SQRT3*npts));
-  printf(" added %d to ave spacing %f\n", npts-NPatch, backgAveSpacing);
+  printf(" added %d to ave spacing %f\n", npts-totalNumber, backgAveSpacing);
 
-  NPatch = npts;
+  totalNumber = npts;
 }
 
 void Ground::jitterElement()
@@ -199,7 +199,7 @@ void Ground::jitterElement()
 
   for (int niter = 0; niter < backgroundIters; ++niter)
     {
-      for (int n = snake.getLength(); n < NPatch; ++n)
+      for (int n = snake.getLength(); n < totalNumber; ++n)
         {
           const float dx = 2.*jitter*drand48() - jitter;
           const float dy = 2.*jitter*drand48() - jitter;
@@ -207,7 +207,7 @@ void Ground::jitterElement()
           float x  = array[n].xpos + dx;
           float y  = array[n].ypos + dy;
 
-          if (!tooClose(NPatch, x, y, n))
+          if (!tooClose(totalNumber, x, y, n))
             {
               if (x < -halfX) x += 2.*halfX;
               if (x >  halfX) x -= 2.*halfX;
@@ -236,7 +236,7 @@ Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
   backgMinSpacingSqr(backgMinSpacing*backgMinSpacing),
   patchNumber(0),
   backgNumber(0),
-  NPatch(0)
+  totalNumber(0)
 {
   contourElements();
 
@@ -253,15 +253,15 @@ Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
   insideElements();
 
   printf(" FOREG_NUMBER %d    PATCH_NUMBER %d    TOTAL_NUMBER %d\n",
-          snake.getLength(), patchNumber, NPatch);
-  backgNumber = NPatch - patchNumber;
+          snake.getLength(), patchNumber, totalNumber);
+  backgNumber = totalNumber - patchNumber;
 }
 
 void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
 {
   w->clear(0.0);
 
-  for (int i = 0; i < NPatch; ++i)
+  for (int i = 0; i < totalNumber; ++i)
     {
       const float phi   = 2 * M_PI * drand48();
       const float randtheta = 2 * M_PI * drand48();
@@ -291,8 +291,6 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
 
 void Ground::writeArray(const char* filestem, int displayCount) const
 {
-  int x, y, o, s;
-
   char fname[STRINGSIZE];
   sprintf(fname, "%s.snk", filestem);
 
@@ -304,46 +302,24 @@ void Ground::writeArray(const char* filestem, int displayCount) const
     }
 
   putint(fp, displayCount, "DISPLAY_COUNT");
-  putint(fp, NPatch, "TOTAL_NUMBER");
+  putint(fp, totalNumber, "TOTAL_NUMBER");
   putint(fp, snake.getLength(), "FOREG_NUMBER");
-  putint(fp, this->patchNumber, "PATCH_NUMBER");
+  putint(fp, patchNumber, "PATCH_NUMBER");
   putfloat(fp, snake.getSpacing(), "FOREG_SPACING");
   putfloat(fp, backgAveSpacing, "BACKG_AVE_SPACING");
-  putfloat(fp, this->backgIniSpacing, "BACKG_INI_SPACING");
-  putfloat(fp, this->backgMinSpacing, "BACKG_MIN_SPACING");
+  putfloat(fp, backgIniSpacing, "BACKG_INI_SPACING");
+  putfloat(fp, backgMinSpacing, "BACKG_MIN_SPACING");
 
   const double RAD2DEG = (180./M_PI);
 
-  for (int i = 0; i < NPatch; ++i)
+  for (int i = 0; i < totalNumber; ++i)
     {
-      if (this->flag(i))
-        {
-          o = (int)(RAD2DEG * this->theta(i) + 0.5);
+      const int o = (int)(RAD2DEG * array[i].theta + 0.5);
+      const int x = (int)(array[i].xpos + 0.5);
+      const int y = (int)(array[i].ypos + 0.5);
+      const int s = array[i].flag;
 
-          x = (int)(this->xpos(i) + 0.5);
-
-          y = (int)(this->ypos(i) + 0.5);
-
-          s = this->flag(i);
-
-          fprintf(fp, "%-5d %-5d %-5d %-5d\n", x, y, o, s);
-        }
-    }
-
-  for (int i = 0; i < NPatch; ++i)
-    {
-      if (!this->flag(i))
-        {
-          o = (int)(RAD2DEG * this->theta(i) + 0.5);
-
-          x = (int)(this->xpos(i) + 0.5);
-
-          y = (int)(this->ypos(i) + 0.5);
-
-          s = this->flag(i);
-
-          fprintf(fp, "%-5d %-5d %-5d %-5d\n", x, y, o, s);
-        }
+      fprintf(fp, "%-5d %-5d %-5d %-5d\n", x, y, o, s);
     }
 
   fclose(fp);
