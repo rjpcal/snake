@@ -1,8 +1,6 @@
 #ifndef SNAKE_H_DEFINED
 #define SNAKE_H_DEFINED
 
-#define MAX_FOREG_NUMBER     128
-
 struct Element
 {
   enum Type { OUTSIDE, INSIDE, CONTOUR };
@@ -24,6 +22,7 @@ class Snake
 {
 public:
   Snake(int l, float sp);
+  ~Snake();
 
   int getLength() const { return itsLength; }
   float getSpacing() const { return itsSpacing; }
@@ -32,7 +31,7 @@ public:
 private:
   const int itsLength;
   const float itsSpacing;
-  Element itsElem[ MAX_FOREG_NUMBER ];
+  Element* const itsElem;
 
   void center();
   void newDeltaTheta();

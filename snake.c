@@ -245,7 +245,8 @@ namespace
 
 Snake::Snake(int l, float sp) :
   itsLength(l),
-  itsSpacing(sp)
+  itsSpacing(sp),
+  itsElem(new Element[itsLength])
 {
   const float radius = (float)(itsLength * itsSpacing) / (2*M_PI);
 
@@ -267,6 +268,11 @@ Snake::Snake(int l, float sp) :
     }
 
   this->center();
+}
+
+Snake::~Snake()
+{
+  delete [] itsElem;
 }
 
 int Snake::getElement(int n, float* x, float* y, float* theta) const
