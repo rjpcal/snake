@@ -9,9 +9,9 @@ class GaborSet;
 class Ground
 {
 public:
-  Ground(const GaborSet& g);
+  Ground();
 
-  void renderInto(FakeWindow* wind) const;
+  void renderInto(FakeWindow* wind, const GaborSet& g) const;
 
   int flag(int i) const { return array[i].flag; }
   float xpos(int i) const { return array[i].xpos; }
@@ -22,9 +22,6 @@ public:
 
 private:
   int           NPatch;
-  int           XPatch[ MAX_GABOR_NUMBER ];    /** int pos of patches **/
-  int           YPatch[ MAX_GABOR_NUMBER ];
-  const double* PPatch[ MAX_GABOR_NUMBER ];
   Element       array[ MAX_GABOR_NUMBER ];
   float         BACKG_AVE_SPACING;
 
@@ -34,5 +31,4 @@ private:
   void gridElements();
   void fillElements();
   void jitterElement( void );
-  void map2array(const GaborSet& g);
 };

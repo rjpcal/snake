@@ -22,7 +22,10 @@ tags:
 test:
 	rm -f regtest*.pnm
 	time ./makesnake regtest
-	for f in regtest*.pnm; do echo $$f; diff $$f orig_cpp_2/$$f; done
+	for f in regtest*.pnm; do echo $$f; cmp $$f orig_cpp_3/$$f; done
+	for i in 0 1 2 3; do echo $$i; \
+	  pnmarith -difference regtest_$$i.pnm orig_cpp_3/regtest_$$i.pnm \
+	  > diff_$$i.pnm; done
 
 main.o: $(INC)
 window.o: $(INC)

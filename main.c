@@ -48,11 +48,11 @@ int main( int argc, char** argv )
 
       MakeForeg();
 
-      Ground* g = new Ground(gabors);
+      Ground* g = new Ground();
 
       WriteArray(g);
 
-      g->renderInto(&fakewin);
+      g->renderInto(&fakewin, gabors);
 
       char fname[256];
       snprintf(fname, 256, "%s_%d.pnm", FILENAME, DISPLAY_COUNT);

@@ -251,18 +251,57 @@ void Ground::jitterElement( void )
     }
 }
 
-void Ground::map2array(const GaborSet& g)
-{
-  int i;
-  float theta, phi, Theta[ MAX_FOREG_NUMBER ], Phi[ MAX_FOREG_NUMBER ];
+/*****************************************************************/
 
-  for( i=0; i<NPatch && i<FOREG_NUMBER; i++ )
+Ground::Ground()
+{
+  HALF_X_FRAME = 0.5 * DISPLAY_X;
+  HALF_Y_FRAME = 0.5 * DISPLAY_Y;
+  BACKG_MIN_SPACING_SQR = BACKG_MIN_SPACING*BACKG_MIN_SPACING;
+
+  NPatch = 0;
+
+  this->contourElements();
+
+  TOTAL_NUMBER = NPatch;
+
+  this->gridElements();
+
+  TOTAL_NUMBER = NPatch;
+
+  for(int i = 0; i < DIFFUSION_CYCLES; ++i)
+    {
+      this->jitterElement();
+
+      this->fillElements();
+
+      TOTAL_NUMBER = NPatch;
+    }
+
+  this->insideElements( TOTAL_NUMBER, FOREG_NUMBER, &PATCH_NUMBER );
+
+  printf( " FOREG_NUMBER %d    PATCH_NUMBER ??    TOTAL_NUMBER %d\n",
+          FOREG_NUMBER, TOTAL_NUMBER );
+  BACKG_NUMBER = TOTAL_NUMBER - PATCH_NUMBER;
+}
+
+void Ground::renderInto(FakeWindow* wind, const GaborSet& g) const
+{
+  int           XPatch[ MAX_GABOR_NUMBER ];    /** int pos of patches **/
+  int           YPatch[ MAX_GABOR_NUMBER ];
+  const double* PPatch[ MAX_GABOR_NUMBER ];
+
+  float theta, phi;
+  float Theta[ MAX_FOREG_NUMBER ];
+  float Phi[ MAX_FOREG_NUMBER ];
+
+  for(int i=0; i<NPatch && i<FOREG_NUMBER; ++i)
     {
       Phi[i]   = Zerototwopi( TWOPI * drand48() );
       Theta[i] = Zerototwopi( TWOPI * drand48() );
     }
 
-  for( i=0; i<NPatch; i++ )
+  for(int i=0; i<NPatch; ++i)
     {
       phi   = TWOPI * drand48();
       theta = TWOPI * drand48();
@@ -279,49 +318,6 @@ void Ground::map2array(const GaborSet& g)
       PPatch[ i ] = g.getPatch( theta, phi );
     }
 
-  SeedRand();
-}
-
-/*****************************************************************/
-
-Ground::Ground(const GaborSet& g)
-{
-  HALF_X_FRAME = 0.5 * DISPLAY_X;
-  HALF_Y_FRAME = 0.5 * DISPLAY_Y;
-  BACKG_MIN_SPACING_SQR = BACKG_MIN_SPACING*BACKG_MIN_SPACING;
-
-  NPatch = 0;
-
-  this->contourElements();
-
-  this->map2array(g); // FIXME need to do this?
-
-  TOTAL_NUMBER = NPatch;
-
-  this->gridElements();
-
-  TOTAL_NUMBER = NPatch;
-
-  for(int i = 0; i < DIFFUSION_CYCLES; ++i)
-    {
-      this->jitterElement();
-
-      this->fillElements();
-
-      this->map2array(g);
-
-      TOTAL_NUMBER = NPatch;
-    }
-
-  this->insideElements( TOTAL_NUMBER, FOREG_NUMBER, &PATCH_NUMBER );
-
-  printf( " FOREG_NUMBER %d    PATCH_NUMBER ??    TOTAL_NUMBER %d\n",
-          FOREG_NUMBER, TOTAL_NUMBER );
-  BACKG_NUMBER = TOTAL_NUMBER - PATCH_NUMBER;
-}
-
-void Ground::renderInto(FakeWindow* wind) const
-{
   wind->clear(0.0);
 
   const int* px           = XPatch;
