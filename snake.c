@@ -252,8 +252,8 @@ Element Snake::getElement(int n) const
   Element result;
 
   result.type = Element::CONTOUR;
-  result.xpos = 0.5 * (itsElem[n].xpos + itsElem[(n+1)%itsLength].xpos);
-  result.ypos = 0.5 * (itsElem[n].ypos + itsElem[(n+1)%itsLength].ypos);
+  result.xpos = 0.5 * (elem(n).xpos + elem(n+1).xpos);
+  result.ypos = 0.5 * (elem(n).ypos + elem(n+1).ypos);
   result.theta = zerototwopi(-itsElem[n].theta);
 
   return result;
@@ -282,14 +282,12 @@ void Snake::center()
 
 void Snake::computeTheta()
 {
-  for (int n0 = 0; n0 < itsLength; ++n0)
+  for (int n = 0; n < itsLength; ++n)
     {
-      const int n1 = (n0+1)%itsLength;
+      const double dx = elem(n+1).xpos - elem(n).xpos;
+      const double dy = elem(n+1).ypos - elem(n).ypos;
 
-      const double dx = itsElem[n1].xpos - itsElem[n0].xpos;
-      const double dy = itsElem[n1].ypos - itsElem[n0].ypos;
-
-      itsElem[n0].theta = zerototwopi(atan2(dy, dx));
+      itsElem[n].theta = zerototwopi(atan2(dy, dx));
     }
 }
 
@@ -346,14 +344,10 @@ void Snake::jiggle()
   const Tuple4 alpha = getAlphas(theta);
 
   const Tuple4 delta
-    (minuspitopi(itsElem[i[0]].theta
-                 - itsElem[(i[0]+itsLength-1)%itsLength].theta),
-     minuspitopi(itsElem[i[1]].theta
-                 - itsElem[(i[1]+itsLength-1)%itsLength].theta),
-     minuspitopi(itsElem[i[2]].theta
-                 - itsElem[(i[2]+itsLength-1)%itsLength].theta),
-     minuspitopi(itsElem[i[3]].theta
-                 - itsElem[(i[3]+itsLength-1)%itsLength].theta));
+    (minuspitopi(elem(i[0]).theta - elem(i[0]-1).theta),
+     minuspitopi(elem(i[1]).theta - elem(i[1]-1).theta),
+     minuspitopi(elem(i[2]).theta - elem(i[2]-1).theta),
+     minuspitopi(elem(i[3]).theta - elem(i[3]-1).theta));
 
   Vector new_no[4];
 

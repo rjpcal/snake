@@ -32,6 +32,13 @@ private:
   const double itsSpacing;
   Element* const itsElem;
 
+  Element& elem(int i) const
+  {
+    i = i % itsLength;
+    if (i < 0) i += itsLength;
+    return itsElem[i];
+  }
+
   void center();
   void computeTheta();
   void jiggle();
