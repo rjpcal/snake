@@ -16,14 +16,14 @@ int Ground::tooClose(int upto, double x, double y, int except)
 {
   for (int n = 0; n < upto; ++n)
     {
-      double dx = fabs(array[n].xpos - x);
+      double dx = fabs(array[n].pos.x - x);
       if (dx > halfX)
         dx = sizeX - dx;
 
       if (dx > backgMinSpacing)
         continue;
 
-      double dy = fabs(array[n].ypos - y);
+      double dy = fabs(array[n].pos.y - y);
       if (dy > halfY)
         dy = sizeY - dy;
 
@@ -54,11 +54,11 @@ void Ground::insideElements()
         {
           const int j = (i+1) % snake.getLength();
 
-          const double Yij = array[i].xpos - array[j].xpos;
-          const double Xij = array[j].ypos - array[i].ypos;
+          const double Yij = array[i].pos.x - array[j].pos.x;
+          const double Xij = array[j].pos.y - array[i].pos.y;
 
-          const double Xin = array[n].xpos - array[i].xpos;
-          const double Yin = array[n].ypos - array[i].ypos;
+          const double Xin = array[n].pos.x - array[i].pos.x;
+          const double Yin = array[n].pos.y - array[i].pos.y;
 
           const double vp = Xij*Xin + Yij*Yin;
 
@@ -116,8 +116,8 @@ void Ground::gridElements()
             }
 
           array[totalNumber].type = Element::OUTSIDE;
-          array[totalNumber].xpos = x;
-          array[totalNumber].ypos = y;
+          array[totalNumber].pos.x = x;
+          array[totalNumber].pos.y = y;
           array[totalNumber].theta = 2 * M_PI * drand48();
 
           ++totalNumber;
@@ -168,8 +168,8 @@ void Ground::fillElements()
         }
 
       array[npts].type  = Element::OUTSIDE;
-      array[npts].xpos  = xl[i];
-      array[npts].ypos  = yl[i];
+      array[npts].pos.x  = xl[i];
+      array[npts].pos.y  = yl[i];
       array[npts].theta = 2 * M_PI * drand48();
       npts++;
     }
@@ -193,8 +193,8 @@ void Ground::jitterElement()
           const double dx = 2*jitter*drand48() - jitter;
           const double dy = 2*jitter*drand48() - jitter;
 
-          double x  = array[n].xpos + dx;
-          double y  = array[n].ypos + dy;
+          double x  = array[n].pos.x + dx;
+          double y  = array[n].pos.y + dy;
 
           if (!tooClose(totalNumber, x, y, n))
             {
@@ -203,8 +203,8 @@ void Ground::jitterElement()
               if (y < -halfY) y += 2.*halfY;
               if (y >  halfY) y -= 2.*halfY;
 
-              array[n].xpos = x;
-              array[n].ypos = y;
+              array[n].pos.x = x;
+              array[n].pos.y = y;
             }
         }
     }
@@ -258,8 +258,8 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
         ? zerototwopi(array[i].theta + M_PI_2)
         : randtheta;
 
-      const int xcenter = (int)(array[i].xpos + sizeX / 2.0 + 0.5);
-      const int ycenter = (int)(array[i].ypos + sizeY / 2.0 + 0.5);
+      const int xcenter = (int)(array[i].pos.x + sizeX / 2.0 + 0.5);
+      const int ycenter = (int)(array[i].pos.y + sizeY / 2.0 + 0.5);
 
       const double* p = g.getPatch(theta, phi);
 
@@ -302,8 +302,8 @@ void Ground::writeArray(const char* filestem, int displayCount) const
   for (int i = 0; i < totalNumber; ++i)
     {
       const int o = int(RAD2DEG * array[i].theta + 0.5);
-      const int x = int(array[i].xpos + 0.5);
-      const int y = int(array[i].ypos + 0.5);
+      const int x = int(array[i].pos.x + 0.5);
+      const int y = int(array[i].pos.y + 0.5);
       const int s = int(array[i].type);
 
       fprintf(fp, "%-5d %-5d %-5d %-5d\n", x, y, o, s);

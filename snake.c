@@ -228,8 +228,8 @@ Snake::Snake(int l, double sp) :
     {
       const double alpha = 2 * M_PI * n / itsLength;
 
-      itsElem[n].xpos   =  radius * cos(alpha+alpha_off);
-      itsElem[n].ypos   = -radius * sin(alpha+alpha_off);
+      itsElem[n].pos.x   =  radius * cos(alpha+alpha_off);
+      itsElem[n].pos.y   = -radius * sin(alpha+alpha_off);
     }
 
   for (int count = 0; count < FOREGROUND_ITERS; ++count)
@@ -252,8 +252,8 @@ Element Snake::getElement(int n) const
   Element result;
 
   result.type = Element::CONTOUR;
-  result.xpos = 0.5 * (elem(n).xpos + elem(n+1).xpos);
-  result.ypos = 0.5 * (elem(n).ypos + elem(n+1).ypos);
+  result.pos.x = 0.5 * (elem(n).pos.x + elem(n+1).pos.x);
+  result.pos.y = 0.5 * (elem(n).pos.y + elem(n+1).pos.y);
   result.theta = zerototwopi(-itsElem[n].theta);
 
   return result;
@@ -266,8 +266,8 @@ void Snake::center()
 
   for (int n = 0; n < itsLength; ++n)
     {
-      xc += itsElem[n].xpos;
-      yc += itsElem[n].ypos;
+      xc += itsElem[n].pos.x;
+      yc += itsElem[n].pos.y;
     }
 
   xc /= itsLength;
@@ -275,8 +275,8 @@ void Snake::center()
 
   for (int n = 0; n < itsLength; ++n)
     {
-      itsElem[n].xpos -= xc;
-      itsElem[n].ypos -= yc;
+      itsElem[n].pos.x -= xc;
+      itsElem[n].pos.y -= yc;
     }
 }
 
@@ -284,14 +284,14 @@ void Snake::computeTheta()
 {
   for (int n = 0; n < itsLength; ++n)
     {
-      const double dx = elem(n+1).xpos - elem(n).xpos;
-      const double dy = elem(n+1).ypos - elem(n).ypos;
+      const double dx = elem(n+1).pos.x - elem(n).pos.x;
+      const double dy = elem(n+1).pos.y - elem(n).pos.y;
 
       itsElem[n].theta = zerototwopi(atan2(dy, dx));
     }
 }
 
-/*        (xpos[n],ypos[n])     position n                                   */
+/*        (pos.x[n],ypos[n])     position n                                   */
 /*        (xpos[n+1],ypos[n+1]) position n+1                                 */
 /*        (0.5*(xpos[n]+xpos[n+1]), 0.5*(ypos[n]+ypos[n+1]))                 */
 /*                              location of patch n                          */
@@ -336,8 +336,8 @@ void Snake::jiggle()
   Vector no[4];
   for (int n = 0; n < 4; ++n)
     {
-      no[n].x  = itsElem[i[n]].xpos;
-      no[n].y  = itsElem[i[n]].ypos;
+      no[n].x  = itsElem[i[n]].pos.x;
+      no[n].y  = itsElem[i[n]].pos.y;
     }
 
   const Tuple4 theta = getThetas(no);
@@ -383,8 +383,8 @@ void Snake::jiggle()
 
   for (int n = 0; n < 4; ++n)
     {
-      itsElem[i[n]].xpos = new_no[n].x;
-      itsElem[i[n]].ypos = new_no[n].y;
+      itsElem[i[n]].pos.x = new_no[n].x;
+      itsElem[i[n]].pos.y = new_no[n].y;
     }
 
   this->computeTheta();
@@ -399,11 +399,11 @@ void Snake::replaceNodes(int i1, const Vector& new1,
   /*   y'      c2        a21   a12     y - b2     */
   /*                                              */
 
-  const double old1x  = itsElem[i1].xpos;
-  const double old1y  = itsElem[i1].ypos;
+  const double old1x  = itsElem[i1].pos.x;
+  const double old1y  = itsElem[i1].pos.y;
 
-  const double old2x  = itsElem[i2].xpos;
-  const double old2y  = itsElem[i2].ypos;
+  const double old2x  = itsElem[i2].pos.x;
+  const double old2y  = itsElem[i2].pos.y;
 
   const double old_dx  = old2x - old1x;
   const double old_dy  = old2y - old1y;
@@ -421,10 +421,10 @@ void Snake::replaceNodes(int i1, const Vector& new1,
 
   for (int n = (i1+1)%itsLength; n != i2; n = (n+1)%itsLength)
     {
-      const double diffx = itsElem[n].xpos - old1x;
-      const double diffy = itsElem[n].ypos - old1y;
+      const double diffx = itsElem[n].pos.x - old1x;
+      const double diffy = itsElem[n].pos.y - old1y;
 
-      itsElem[n].xpos = new1.x + a11*diffx + a12*diffy;
-      itsElem[n].ypos = new1.y + a21*diffx + a22*diffy;
+      itsElem[n].pos.x = new1.x + a11*diffx + a12*diffy;
+      itsElem[n].pos.y = new1.y + a21*diffx + a22*diffy;
     }
 }

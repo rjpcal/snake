@@ -1,20 +1,19 @@
 #ifndef SNAKE_H_DEFINED
 #define SNAKE_H_DEFINED
 
-struct Element
-{
-  enum Type { OUTSIDE, INSIDE, CONTOUR };
-
-  Type  type;
-  double theta;  /* angle to x-axis, 0 to TWOPI */
-  double xpos;   /* x-position of node */
-  double ypos;   /* y-position of node */
-};
-
 struct Vector
 {
   double x;
   double y;
+};
+
+struct Element
+{
+  enum Type { OUTSIDE, INSIDE, CONTOUR };
+
+  Vector pos;    /* position of node */
+  double theta;  /* angle to x-axis, 0 to TWOPI */
+  Type  type;
 };
 
 class Snake
