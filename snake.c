@@ -103,9 +103,8 @@ namespace
                         Vector* new_no2, Vector* new_no3,
                         float theta0, float incr)
   {
-    int ok;
     float a[4];
-    Vector no[4], nn[4];
+    Vector no[4];
 
     no[0] = *new_no0 = *no0;
     no[1] =            *no1;
@@ -117,12 +116,7 @@ namespace
     new_no1->x = new_no0->x + a[0] * cos((double)(theta0-incr));
     new_no1->y = new_no0->y + a[0] * sin((double)(theta0-incr));
 
-    ok = New_apex(new_no1, new_no2, new_no3, a[1], a[2]);
-
-    nn[0] = *new_no0;
-    nn[1] = *new_no1;
-    nn[2] = *new_no2;
-    nn[3] = *new_no3;
+    int ok = New_apex(new_no1, new_no2, new_no3, a[1], a[2]);
 
     return ok;
   }
