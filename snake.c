@@ -79,7 +79,7 @@ namespace
                   distance(no[3], no[0]));
   }
 
-  void getAngles(const Vector no[4], Tuple4& alpha, Tuple4& theta)
+  Tuple4 getThetas(const Vector no[4])
   {
     const float dx0     = no[1].x - no[0].x;
     const float dy0     = no[1].y - no[0].y;
@@ -90,15 +90,18 @@ namespace
     const float dx3     = no[0].x - no[3].x;
     const float dy3     = no[0].y - no[3].y;
 
-    theta[0] = atan2(dy0, dx0);
-    theta[1] = atan2(dy1, dx1);
-    theta[2] = atan2(dy2, dx2);
-    theta[3] = atan2(dy3, dx3);
+    return Tuple4(atan2(dy0, dx0),
+                  atan2(dy1, dx1),
+                  atan2(dy2, dx2),
+                  atan2(dy3, dx3));
+  }
 
-    alpha[0]= Zerototwopi(M_PI - theta[0] + theta[3]);
-    alpha[1]= Zerototwopi(M_PI - theta[1] + theta[0]);
-    alpha[2]= Zerototwopi(M_PI - theta[2] + theta[1]);
-    alpha[3]= Zerototwopi(M_PI - theta[3] + theta[2]);
+  Tuple4 getAlphas(const Tuple4& theta)
+  {
+    return Tuple4(Zerototwopi(M_PI - theta[0] + theta[3]),
+                  Zerototwopi(M_PI - theta[1] + theta[0]),
+                  Zerototwopi(M_PI - theta[2] + theta[1]),
+                  Zerototwopi(M_PI - theta[3] + theta[2]));
   }
 
   int newApex(const Vector* no1, Vector* no2, const Vector* no3,
@@ -350,9 +353,8 @@ void Snake::jiggle()
       delta[n] = itsElem[i[n]].delta;
     }
 
-  Tuple4 alpha;
-  Tuple4 theta;
-  getAngles(no, alpha, theta);
+  const Tuple4 theta = getThetas(no);
+  const Tuple4 alpha = getAlphas(theta);
 
   Tuple4 lo_alpha;
   Tuple4 hi_alpha;
@@ -383,9 +385,8 @@ void Snake::jiggle()
           continue;
         }
 
-      Tuple4 new_alpha;
-      Tuple4 new_theta;
-      getAngles(new_no, new_alpha, new_theta);
+      const Tuple4 new_theta = getThetas(new_no);
+      const Tuple4 new_alpha = getAlphas(new_theta);
 
       if (monteCarlo(alpha, new_alpha, lo_alpha, hi_alpha))
         break;
