@@ -345,18 +345,15 @@ void Snake::jiggle()
   const Tuple4 theta = getThetas(no);
   const Tuple4 alpha = getAlphas(theta);
 
-  double deltas[itsLength];
-  for (int n1 = 0; n1 < itsLength; ++n1)
-    {
-      const int n0 = (n1+itsLength-1)%itsLength;
-
-      deltas[n1] = minuspitopi(itsElem[n1].theta - itsElem[n0].theta);
-    }
-
-  const Tuple4 delta(deltas[i[0]],
-                     deltas[i[1]],
-                     deltas[i[2]],
-                     deltas[i[3]]);
+  const Tuple4 delta
+    (minuspitopi(itsElem[i[0]].theta
+                 - itsElem[(i[0]+itsLength-1)%itsLength].theta),
+     minuspitopi(itsElem[i[1]].theta
+                 - itsElem[(i[1]+itsLength-1)%itsLength].theta),
+     minuspitopi(itsElem[i[2]].theta
+                 - itsElem[(i[2]+itsLength-1)%itsLength].theta),
+     minuspitopi(itsElem[i[3]].theta
+                 - itsElem[(i[3]+itsLength-1)%itsLength].theta));
 
   Vector new_no[4];
 
