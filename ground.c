@@ -2,10 +2,11 @@
 
 #include "gabor.h"
 #include "geom.h"
-#include "window.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
 
 namespace
 {
@@ -214,38 +215,6 @@ Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
           snake.getLength(), insideNumber, totalNumber);
 }
 
-void Ground::renderInto(FakeWindow& w, const GaborSet& g) const
-{
-  w.clear(0.0);
-
-  for (int i = 0; i < totalNumber; ++i)
-    {
-      const double phi   = 2 * M_PI * drand48();
-//       const double phi = 0.0;
-
-      const double theta =
-        (array[i].type == Element::CONTOUR)
-        ? zerototwopi(array[i].theta + M_PI_2)
-        : array[i].theta;
-
-      const int xcenter = int(array[i].pos.x + sizeX / 2.0 + 0.5);
-      const int ycenter = int(array[i].pos.y + sizeY / 2.0 + 0.5);
-
-      const double* p = g.getPatch(theta, phi);
-
-      // bottom left:
-      const int x0 = xcenter - g.getPatchSize() / 2;
-      const int y0 = ycenter - g.getPatchSize() / 2;
-      // top right:
-      const int x1 = x0 + g.getPatchSize();
-      const int y1 = y0 + g.getPatchSize();
-
-      for (int y = y0; y < y1; ++y)
-        for (int x = x0; x < x1; ++x)
-          w.blendVal(x, y, p[x-x0+(y-y0)*g.getPatchSize()]);
-    }
-}
-
 void Ground::writeArray(const char* filestem, int displayCount) const
 {
   char fname[256];
@@ -284,9 +253,59 @@ void Ground::writeArray(const char* filestem, int displayCount) const
 
 void Ground::writePnm(const char* filename) const
 {
-  FakeWindow window(sizeX, sizeY);
+  std::vector<double> win(sizeX*sizeY);
 
-  this->renderInto(window, gabors);
+  for (int i = 0; i < sizeX*sizeY; ++i)
+    win[i] = 0.0;
 
-  window.writePnm(filename);
+  for (int i = 0; i < totalNumber; ++i)
+    {
+      const double phi   = 2 * M_PI * drand48();
+//       const double phi = 0.0;
+
+      const double theta =
+        (array[i].type == Element::CONTOUR)
+        ? zerototwopi(array[i].theta + M_PI_2)
+        : array[i].theta;
+
+      const int xcenter = int(array[i].pos.x + sizeX / 2.0 + 0.5);
+      const int ycenter = int(array[i].pos.y + sizeY / 2.0 + 0.5);
+
+      const double* p = gabors.getPatch(theta, phi);
+
+      // bottom left:
+      const int x0 = xcenter - gabors.getPatchSize() / 2;
+      const int y0 = ycenter - gabors.getPatchSize() / 2;
+      // top right:
+      const int x1 = x0 + gabors.getPatchSize();
+      const int y1 = y0 + gabors.getPatchSize();
+
+      for (int y = y0; y < y1; ++y)
+        for (int x = x0; x < x1; ++x)
+          {
+            if (x >= 0 && x < sizeX && y >=0 && y < sizeY)
+              win[x+y*sizeX] += p[x-x0+(y-y0)*gabors.getPatchSize()];
+          }
+    }
+
+  FILE* fp = fopen(filename, "w");
+
+  if (fp == 0)
+    {
+      printf(" %s: file not opened\n", filename);
+      exit(1);
+    }
+
+  fprintf(fp, "P5\n%d %d\n%d\n", sizeX, sizeY, 255);
+
+  // Write pixel data to file
+  for (int k = 0; k < sizeX*sizeY; ++k)
+    {
+      const int val = int((win[k]+1.0)/2.0*255);
+      assert(val >= 0);
+      assert(val <= 255);
+      fputc(val, fp);
+    }
+
+  fclose(fp);
 }

@@ -2,8 +2,8 @@ CC      = g++ -Wall -Werror
 CFLAGS	= -O4 -pg
 LFLAGS  = -lm
 
-SRC    = gabor.c ground.c params.c snake.c window.c  main.c
-INC    = gabor.h ground.h params.h snake.h window.h  geom.h 
+SRC    = gabor.c ground.c params.c snake.c  main.c
+INC    = gabor.h ground.h params.h snake.h  geom.h 
 
 OBJ    = $(SRC:.c=.o)
 
@@ -30,5 +30,4 @@ gabor.o: $(INC)
 ground.o: $(INC)
 params.o: $(INC)
 snake.o: $(INC)
-window.o: $(INC)
 main.o: $(INC)

@@ -2,8 +2,6 @@
 
 class GaborSet;
 
-class FakeWindow;
-
 class Ground
 {
 public:
@@ -18,8 +16,6 @@ public:
 
 private:
   static const int MAX_GABOR_NUMBER = 1800;
-
-  void renderInto(FakeWindow& window, const GaborSet& g) const;
 
   const Snake& snake;
   const int sizeX;
