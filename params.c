@@ -17,12 +17,53 @@ namespace
   char line[STRINGSIZE], text[STRINGSIZE];
 
   const double RAD2DEG = (180./M_PI);
+
+  inline int getint(FILE* fp)
+  {
+    int result = -1;
+    fgets(line,120,fp);
+    sscanf(line,"%s %d",text,&result);
+    return result;
+  }
+
+  inline float getfloat(FILE* fp)
+  {
+    float result = -1.0;
+    fgets(line,120,fp);
+    sscanf(line,"%s %f",text,&result);
+    return result;
+  }
+
+#define GETINT(name) name = getint(fp);
+#define GETFLOAT(name) name = getfloat(fp);
+
+  inline void putint(FILE* fp, int val, const char* name)
+  {
+    fprintf(fp, "%-19s %d\n", name, val);
+  }
+
+  inline void putfloat(FILE* fp, float val, const char* name)
+  {
+    fprintf(fp, "%-19s %.2f\n", name, val);
+  }
+
+  inline void puttext(FILE* fp, const char* val, const char* name)
+  {
+    fprintf(fp, "%-19s %s\n", name, val);
+  }
+
+#define PUTINT(name,text) putint(fp, name, text);
+#define PUTFLOAT(name,text) putfloat(fp, name, text);
+#define PUTTEXT(name,text) puttext(fp, name, text);
+
+#define PRINTINT(name,text) putint(stdout, name, text);
+#define PRINTFLOAT(name,text) putfloat(stdout, name, text);
+#define PRINTTEXT(name,text) puttext(stdout, name, text);
 }
 
 void ReadParams( char extension[] )
 {
   FILE* fp;
-  char sdummy[STRINGSIZE];
   int idummy;
 
   Openfile( &fp, READ, extension );
@@ -47,7 +88,7 @@ void ReadParams( char extension[] )
   GETFLOAT( (PM.GABOR_SIGMA) );
   GETINT(   (PM.GABOR_SIZE) );
   GETINT(   (PM.DISPLAY_NUMBER) );
-  GETTEXT(  (sdummy) );
+  // GETTEXT(  (sdummy) );
 
   Closefile( fp );
 }
