@@ -95,8 +95,9 @@ namespace
                   zerototwopi(M_PI - theta[3] + theta[2]));
   }
 
-  int newApex(const Vector* no1, Vector* no2, const Vector* no3,
-              double b, double c)
+  // Must return "true" in order to proceed with new nodes in jiggle().
+  bool newApex(const Vector* no1, Vector* no2, const Vector* no3,
+               double b, double c)
   {
     /*                                                    */
     /*   x'      dx/e   dy/e     x - no1->x               */
@@ -129,7 +130,7 @@ namespace
     const double gimel = (b*b+c*c)/2.;
 
     if (gimel < bet*bet + aleph*aleph)
-      return 0;
+      return false;
 
     const double xp = aleph + bet;
     const double yp = sqrt(gimel - bet*bet - aleph*aleph);
@@ -147,14 +148,15 @@ namespace
 
     *no2 = (dis_one < dis_two) ? no2_one : no2_two;
 
-    return 1;
+    return true;
   }
 
-  int squashQuadrangle(const Vector* no0, const Vector* no1,
-                       const Vector* no2, const Vector* no3,
-                       Vector* new_no0, Vector* new_no1,
-                       Vector* new_no2, Vector* new_no3,
-                       double theta0, double incr)
+  // Must return "true" in order to proceed with new nodes in jiggle().
+  bool squashQuadrangle(const Vector* no0, const Vector* no1,
+                        const Vector* no2, const Vector* no3,
+                        Vector* new_no0, Vector* new_no1,
+                        Vector* new_no2, Vector* new_no3,
+                        double theta0, double incr)
   {
     Vector no[4];
     no[0] = *new_no0 = *no0;
@@ -170,6 +172,8 @@ namespace
     return newApex(new_no1, new_no2, new_no3, a[1], a[2]);
   }
 
+  // This function must return true in order to accept the new set of nodes
+  // in jiggle().
   bool monteCarlo(const Tuple4& old_alpha, const Tuple4& new_alpha,
                   const Tuple4& delta, double& increment)
   {
@@ -353,7 +357,7 @@ void Snake::jiggle()
 
       const int r = int(4 * drand48());
 
-      const int ok =
+      const bool ok =
         squashQuadrangle(&old_pos[(r+0)%4], &old_pos[(r+1)%4],
                          &old_pos[(r+2)%4], &old_pos[(r+3)%4],
                          &new_pos[(r+0)%4], &new_pos[(r+1)%4],
