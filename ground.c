@@ -33,24 +33,21 @@ namespace
 
 int Ground::tooClose( int upto, float x, float y, int except )
 {
-  int n;
-  float dx, dy;
-
   if( upto==0 )
-    return( 0 );
+    return 0;
 
-  for( n=0; n<upto; n++ )
+  for(int n = 0; n < upto; ++n)
     {
-      dx = fabs( array[n].xpos - x );
+      float dx = fabs( array[n].xpos - x );
       if( dx > HALF_X_FRAME )
-        dx = 2.*HALF_X_FRAME - dx;
+        dx = DISPLAY_X - dx;
 
       if( dx > BACKG_MIN_SPACING )
         continue;
 
-      dy = fabs( array[n].ypos - y );
+      float dy = fabs( array[n].ypos - y );
       if( dy > HALF_Y_FRAME )
-        dy = 2.*HALF_Y_FRAME - dy;
+        dy = DISPLAY_Y - dy;
 
       if( dy > BACKG_MIN_SPACING )
         continue;
@@ -61,10 +58,10 @@ int Ground::tooClose( int upto, float x, float y, int except )
       if( n == except )
         continue;
 
-      return( 1 );
+      return 1;
     }
 
-  return( 0 );
+  return 0;
 }
 
 void Ground::insideElements( int total_number, int foreg_number,
