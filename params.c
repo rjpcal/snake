@@ -15,7 +15,6 @@ int   DISPLAY_Y;
 int   FOREG_NUMBER;
 int   PATCH_NUMBER;
 int   BACKG_NUMBER;
-int   TOTAL_NUMBER;
 float FOREG_SPACING;
 float FOREG_ECCENTRICITY;
 float FOREG_JITTER;
@@ -69,7 +68,7 @@ void ReadParams( char extension[] )
   Closefile( fp );
 }
 
-void WriteParams( char extension[] )
+void WriteParams(char extension[])
 {
   FILE *fp;
 
@@ -80,7 +79,7 @@ void WriteParams( char extension[] )
   PUTINT(   (FOREG_NUMBER) ,      ("FOREG_NUMBER") );
   PUTINT(   (PATCH_NUMBER) ,      ("PATCH_NUMBER") );
   PUTINT(   (BACKG_NUMBER),       ("BACKG_NUMBER") );
-  PUTINT(   (TOTAL_NUMBER),       ("TOTAL_NUMBER") );
+  PUTINT(   (-1),                 ("TOTAL_NUMBER") );
   PUTFLOAT( (FOREG_SPACING) ,     ("FOREG_SPACING") );
   PUTFLOAT( (FOREG_ECCENTRICITY), ("FOREG_ECCENTRICITY") );
   PUTFLOAT( (FOREG_JITTER),       ("FOREG_JITTER") );
@@ -139,14 +138,13 @@ void Closefile( FILE *fp )
     fclose( fp);
 }
 
-void PrintParams( void )
+void PrintParams()
 {
   PRINTINT(   (DISPLAY_X),          ("DISPLAY_X") );
   PRINTINT(   (DISPLAY_Y),          ("DISPLAY_Y") );
   PRINTINT(   (FOREG_NUMBER) ,      ("FOREG_NUMBER") );
   PRINTINT(   (PATCH_NUMBER) ,      ("PATCH_NUMBER") );
   PRINTINT(   (BACKG_NUMBER),       ("BACKG_NUMBER") );
-  PRINTINT(   (TOTAL_NUMBER),       ("TOTAL_NUMBER") );
   PRINTFLOAT( (FOREG_SPACING) ,     ("FOREG_SPACING") );
   PRINTFLOAT( (FOREG_ECCENTRICITY), ("FOREG_ECCENTRICITY") );
   PRINTFLOAT( (FOREG_JITTER),       ("FOREG_JITTER") );
@@ -184,13 +182,13 @@ void WriteHeader( void )
 
 void WriteArray(const Ground* g)
 {
-  int i, x, y, o, s;
+  int x, y, o, s;
   FILE *fp;
 
   Openfile( &fp, APPEND, "snk" );
 
   PUTINT(   (DISPLAY_COUNT),      ("DISPLAY_COUNT") );
-  PUTINT(   (TOTAL_NUMBER),       ("TOTAL_NUMBER") );
+  PUTINT(   (g->totalNumber()),   ("TOTAL_NUMBER") );
   PUTINT(   (FOREG_NUMBER),       ("FOREG_NUMBER") );
   PUTINT(   (PATCH_NUMBER),       ("PATCH_NUMBER") );
   PUTFLOAT( (FOREG_SPACING) ,     ("FOREG_SPACING") );
@@ -198,7 +196,7 @@ void WriteArray(const Ground* g)
   PUTFLOAT( (BACKG_INI_SPACING),  ("BACKG_INI_SPACING") );
   PUTFLOAT( (BACKG_MIN_SPACING),  ("BACKG_MIN_SPACING") );
 
-  for( i=0; i<TOTAL_NUMBER; i++ )
+  for(int i = 0; i < g->totalNumber(); ++i)
     {
       if( g->flag(i) )
         {
@@ -214,7 +212,7 @@ void WriteArray(const Ground* g)
         }
     }
 
-  for( i=0; i<TOTAL_NUMBER; i++ )
+  for(int i = 0; i < g->totalNumber(); ++i)
     {
       if( !g->flag(i) )
         {

@@ -215,22 +215,17 @@ void Ground::fillElements()
 
 void Ground::jitterElement( void )
 {
-  int n, niter;
-  float x, y, dx, dy, jitter;
-
-  jitter = DIFFUSION_STEP;
-
-  for( niter=0; niter<BACKGROUND_ITERATION; niter++ )
+  for(int niter = 0; niter < BACKGROUND_ITERATION; ++niter)
     {
-      for( n=FOREG_NUMBER; n<TOTAL_NUMBER; n++ )
+      for(int n = FOREG_NUMBER; n < NPatch; ++n)
         {
-          dx = 2.*jitter*drand48() - jitter;
-          dy = 2.*jitter*drand48() - jitter;
+          const float dx = 2.*DIFFUSION_STEP*drand48() - DIFFUSION_STEP;
+          const float dy = 2.*DIFFUSION_STEP*drand48() - DIFFUSION_STEP;
 
-          x  = array[n].xpos + dx;
-          y  = array[n].ypos + dy;
+          float x  = array[n].xpos + dx;
+          float y  = array[n].ypos + dy;
 
-          if( !tooClose( TOTAL_NUMBER, x, y, n ) )
+          if( !tooClose(NPatch, x, y, n) )
             {
               if( x < -HALF_X_FRAME )
                 x += 2.*HALF_X_FRAME;
@@ -263,26 +258,20 @@ Ground::Ground()
 
   this->contourElements();
 
-  TOTAL_NUMBER = NPatch;
-
   this->gridElements();
-
-  TOTAL_NUMBER = NPatch;
 
   for(int i = 0; i < DIFFUSION_CYCLES; ++i)
     {
       this->jitterElement();
 
       this->fillElements();
-
-      TOTAL_NUMBER = NPatch;
     }
 
-  this->insideElements( TOTAL_NUMBER, FOREG_NUMBER, &PATCH_NUMBER );
+  this->insideElements( NPatch, FOREG_NUMBER, &PATCH_NUMBER );
 
-  printf( " FOREG_NUMBER %d    PATCH_NUMBER ??    TOTAL_NUMBER %d\n",
-          FOREG_NUMBER, TOTAL_NUMBER );
-  BACKG_NUMBER = TOTAL_NUMBER - PATCH_NUMBER;
+  printf( " FOREG_NUMBER %d    PATCH_NUMBER %d    TOTAL_NUMBER %d\n",
+          FOREG_NUMBER, PATCH_NUMBER, NPatch );
+  BACKG_NUMBER = NPatch - PATCH_NUMBER;
 }
 
 void Ground::renderInto(FakeWindow* w, const GaborSet& g) const

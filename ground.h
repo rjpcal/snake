@@ -20,6 +20,8 @@ public:
 
   float backgAveSpacing() const { return BACKG_AVE_SPACING; }
 
+  int totalNumber() const { return NPatch; }
+
 private:
   int           NPatch;
   Element       array[ MAX_GABOR_NUMBER ];
