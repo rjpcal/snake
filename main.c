@@ -51,10 +51,6 @@ int main( int argc, char** argv )
 
     SeedRand();
 
-    ReadParams( "sta" );    // FIXME???
-
-    PrintParams();    // FIXME???
-
     InitGabor();
 
     DISPLAY_COUNT = 0;
