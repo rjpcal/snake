@@ -96,9 +96,23 @@ namespace
   }
 
   // Must return "true" in order to proceed with new nodes in jiggle().
-  bool newApex(const Vector* new_no1, Vector* new_no2, const Vector* new_no3,
-               double dist_1_2, double dist_2_3)
+  bool squashQuadrangle(const Vector& no0, const Vector& no1,
+                        const Vector& no2, const Vector& no3,
+                        Vector* new_no0, Vector* new_no1,
+                        Vector* new_no2, Vector* new_no3,
+                        double theta0, double incr)
   {
+    const double dist_0_1 = distance(no0, no1);
+    const double dist_1_2 = distance(no1, no2);
+    const double dist_2_3 = distance(no2, no3);
+
+    *new_no0 = no0;
+    *new_no2 = no2;
+    *new_no3 = no3;
+
+    new_no1->x = no0.x + dist_0_1 * cos(theta0-incr);
+    new_no1->y = no0.y + dist_0_1 * sin(theta0-incr);
+
     /*                                                    */
     /*   x'      dx/e   dy/e     x - new_no1->x           */
     /* (   ) = (             ) (                )         */
@@ -149,27 +163,6 @@ namespace
     *new_no2 = (dis_one < dis_two) ? no2_one : no2_two;
 
     return true;
-  }
-
-  // Must return "true" in order to proceed with new nodes in jiggle().
-  bool squashQuadrangle(const Vector& no0, const Vector& no1,
-                        const Vector& no2, const Vector& no3,
-                        Vector* new_no0, Vector* new_no1,
-                        Vector* new_no2, Vector* new_no3,
-                        double theta0, double incr)
-  {
-    const double dist_0_1 = distance(no0, no1);
-    const double dist_1_2 = distance(no1, no2);
-    const double dist_2_3 = distance(no2, no3);
-
-    *new_no0 = no0;
-    *new_no2 = no2;
-    *new_no3 = no3;
-
-    new_no1->x = no0.x + dist_0_1 * cos(theta0-incr);
-    new_no1->y = no0.y + dist_0_1 * sin(theta0-incr);
-
-    return newApex(new_no1, new_no2, new_no3, dist_1_2, dist_2_3);
   }
 
   // This function must return true in order to accept the new set of nodes
