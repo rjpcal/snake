@@ -1,7 +1,5 @@
 #include "snake.h"
 
-#define MAX_GABOR_NUMBER    1800
-
 class FakeWindow;
 class GaborSet;
 
@@ -17,6 +15,8 @@ public:
   void writeArray(const char* filestem, int displayCount) const;
 
 private:
+  static const int MAX_GABOR_NUMBER = 1800;
+
   const Snake& snake;
   const int sizeX;
   const int sizeY;

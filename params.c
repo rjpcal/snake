@@ -8,13 +8,51 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+namespace
+{
+  const int STRINGSIZE = 256;
+
+  char line[STRINGSIZE], text[STRINGSIZE];
+
+  inline int getint(FILE* fp)
+  {
+    int result = -1;
+    fgets(line, STRINGSIZE, fp);
+    sscanf(line, "%s %d", text, &result);
+    return result;
+  }
+
+  inline double getdouble(FILE* fp)
+  {
+    double result = -1.0;
+    fgets(line, STRINGSIZE, fp);
+    sscanf(line, "%s %lf", text, &result);
+    return result;
+  }
+
+  inline void putint(FILE* fp, int val, const char* name)
+  {
+    fprintf(fp, "%-19s %d\n", name, val);
+  }
+
+  inline void putdouble(FILE* fp, double val, const char* name)
+  {
+    fprintf(fp, "%-19s %.2f\n", name, val);
+  }
+
+  inline void puttext(FILE* fp, const char* val, const char* name)
+  {
+    fprintf(fp, "%-19s %s\n", name, val);
+  }
+}
+
 Params::Params(const char* fbase, const char* extension) :
   pmFilestem(fbase)
 {
   int idummy;
 
-  char fname[STRINGSIZE];
-  sprintf( fname, "%s.%s", this->pmFilestem, extension );
+  char fname[256];
+  snprintf(fname, 256, "%s.%s", this->pmFilestem, extension);
 
   FILE* fp = fopen(fname, "r");
   if (fp == 0)
@@ -50,8 +88,8 @@ Params::Params(const char* fbase, const char* extension) :
 
 void Params::write(char extension[]) const
 {
-  char fname[STRINGSIZE];
-  sprintf( fname, "%s.%s", this->pmFilestem, extension );
+  char fname[256];
+  snprintf(fname, 256, "%s.%s", this->pmFilestem, extension);
 
   FILE* fp = fopen(fname, "w");
   if (fp == 0)
@@ -103,8 +141,8 @@ void Params::print() const
 
 void Params::writeHeader() const
 {
-  char fname[STRINGSIZE];
-  sprintf( fname, "%s.snk", this->pmFilestem);
+  char fname[256];
+  snprintf(fname, 256, "%s.snk", this->pmFilestem);
 
   FILE* fp = fopen(fname, "w");
   if (fp == 0)

@@ -2,8 +2,6 @@
 
 #include "gabor.h"
 #include "geom.h"
-#include "params.h"
-#include "timing.h"
 #include "window.h"
 
 #include <stdio.h>
@@ -288,8 +286,8 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
 
 void Ground::writeArray(const char* filestem, int displayCount) const
 {
-  char fname[STRINGSIZE];
-  sprintf(fname, "%s.snk", filestem);
+  char fname[256];
+  snprintf(fname, 256, "%s.snk", filestem);
 
   FILE* fp = fopen(fname, "a");
   if (fp == 0)
@@ -298,14 +296,14 @@ void Ground::writeArray(const char* filestem, int displayCount) const
       exit(0);
     }
 
-  putint(fp, displayCount, "DISPLAY_COUNT");
-  putint(fp, totalNumber, "TOTAL_NUMBER");
-  putint(fp, snake.getLength(), "FOREG_NUMBER");
-  putint(fp, insideNumber, "PATCH_NUMBER");
-  putdouble(fp, snake.getSpacing(), "FOREG_SPACING");
-  putdouble(fp, backgAveSpacing, "BACKG_AVE_SPACING");
-  putdouble(fp, backgIniSpacing, "BACKG_INI_SPACING");
-  putdouble(fp, backgMinSpacing, "BACKG_MIN_SPACING");
+  fprintf(fp, "%-19s %d\n", "DISPLAY_COUNT", displayCount);
+  fprintf(fp, "%-19s %d\n", "TOTAL_NUMBER", totalNumber);
+  fprintf(fp, "%-19s %d\n", "FOREG_NUMBER", snake.getLength());
+  fprintf(fp, "%-19s %d\n", "PATCH_NUMBER", insideNumber);
+  fprintf(fp, "%-19s %.2f\n", "FOREG_SPACING", snake.getSpacing());
+  fprintf(fp, "%-19s %.2f\n", "BACKG_AVE_SPACING", backgAveSpacing);
+  fprintf(fp, "%-19s %.2f\n", "BACKG_INI_SPACING", backgIniSpacing);
+  fprintf(fp, "%-19s %.2f\n", "BACKG_MIN_SPACING", backgMinSpacing);
 
   const double RAD2DEG = (180./M_PI);
 
