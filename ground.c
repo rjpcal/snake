@@ -12,6 +12,17 @@ namespace
   const double SQRT3 = 1.7320508075;
 }
 
+void Ground::pushElement(const Element& e)
+{
+  if (totalNumber >= MAX_GABOR_NUMBER)
+    {
+      printf(" More than %d elements!\n", MAX_GABOR_NUMBER);
+      exit(1);
+    }
+
+  array[totalNumber++] = e;
+}
+
 int Ground::tooClose(int upto, double x, double y, int except)
 {
   for (int n = 0; n < upto; ++n)
@@ -78,13 +89,7 @@ void Ground::contourElements()
 {
   for (int n = 0; n < snake.getLength(); ++n)
     {
-      if (totalNumber >= MAX_GABOR_NUMBER)
-        {
-          printf(" More than %d elements!\n", MAX_GABOR_NUMBER);
-          exit(1);
-        }
-
-      array[totalNumber++] = snake.getElement(n);
+      pushElement(snake.getElement(n));
     }
 }
 
@@ -93,8 +98,8 @@ void Ground::gridElements()
   const double dx = backgIniSpacing;
   const double dy = SQRT3 * backgIniSpacing / 2.0;
 
-  const int nx = (int)((2.0 * halfX - backgMinSpacing - 0.5*dx) / dx);
-  const int ny = (int)((2.0 * halfY - backgMinSpacing) / dy);
+  const int nx = int((2.0 * halfX - backgMinSpacing - 0.5*dx) / dx);
+  const int ny = int((2.0 * halfY - backgMinSpacing) / dy);
 
   const double ix =  -0.5 * (nx-1) * dx - 0.25 * dx;
   const double iy =  -0.5 * (ny-1) * dy;
@@ -109,18 +114,7 @@ void Ground::gridElements()
           if (tooClose(snake.getLength(), x, y, snake.getLength()+1))
             continue;
 
-          if (totalNumber > MAX_GABOR_NUMBER)
-            {
-              printf(" More than %d elements!\n", MAX_GABOR_NUMBER);
-              exit(1);
-            }
-
-          array[totalNumber].type = Element::OUTSIDE;
-          array[totalNumber].pos.x = x;
-          array[totalNumber].pos.y = y;
-          array[totalNumber].theta = 2 * M_PI * drand48();
-
-          ++totalNumber;
+          pushElement(Element(x, y, 2 * M_PI * drand48(), Element::OUTSIDE));
         }
     }
 }
@@ -130,7 +124,7 @@ void Ground::fillElements()
   const int    tryFillNumber = 250000;
   const double tryFillArea   = 6.0;
 
-  int ntry = (int)(sizeX * sizeY / tryFillArea);
+  int ntry = int(sizeX * sizeY / tryFillArea);
 
   if (ntry > tryFillNumber)
     {
@@ -153,29 +147,30 @@ void Ground::fillElements()
         ntry++;
       }
 
-  int npts = totalNumber;
+  const int prevnumber = totalNumber;
 
   for (int i = 0; i < ntry; ++i)
     {
-      if (tooClose(npts, vl[i].x, vl[i].y, npts+1))
+      if (tooClose(totalNumber, vl[i].x, vl[i].y, totalNumber+1))
         continue;
 
-      if (npts > MAX_GABOR_NUMBER)
-        {
-          printf(" More than %d elements: %d\n", MAX_GABOR_NUMBER, npts);
-          exit(1);
-        }
+      pushElement(Element(vl[i], 2 * M_PI * drand48(), Element::OUTSIDE));
 
-      array[npts].type  = Element::OUTSIDE;
-      array[npts].pos   = vl[i];
-      array[npts].theta = 2 * M_PI * drand48();
-      npts++;
+//       if (totalNumber > MAX_GABOR_NUMBER)
+//         {
+//           printf(" More than %d elements: %d\n", MAX_GABOR_NUMBER, totalNumber);
+//           exit(1);
+//         }
+
+//       array[totalNumber].type  = Element::OUTSIDE;
+//       array[totalNumber].pos   = vl[i];
+//       array[totalNumber].theta = 2 * M_PI * drand48();
+//       totalNumber++;
     }
 
-  backgAveSpacing = sqrt((double)2.0*sizeX*sizeY/(SQRT3*npts));
-  printf(" added %d to ave spacing %f\n", npts-totalNumber, backgAveSpacing);
-
-  totalNumber = npts;
+  backgAveSpacing = sqrt((double)2.0*sizeX*sizeY/(SQRT3*totalNumber));
+  printf(" added %d to ave spacing %f\n",
+         totalNumber-prevnumber, backgAveSpacing);
 }
 
 void Ground::jitterElement()

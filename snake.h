@@ -13,6 +13,16 @@ struct Element
 {
   enum Type { OUTSIDE, INSIDE, CONTOUR };
 
+  Element() {}
+
+  Element(double x, double y, double th, Type t) :
+    pos(x,y), theta(th), type(t)
+  {}
+
+  Element(const Vector& v, double th, Type t) :
+    pos(v), theta(th), type(t)
+  {}
+
   Vector pos;    /* position of node */
   double theta;  /* angle to x-axis, 0 to TWOPI */
   Type  type;
