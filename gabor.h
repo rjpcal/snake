@@ -12,6 +12,6 @@ public:
 
   Colorindex* getPatch(float theta, float phi ) const;
 
+private:
   Colorindex* Patch[GABOR_MAX_ORIENT][GABOR_MAX_PHASE];
 };
-
