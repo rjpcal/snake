@@ -76,26 +76,24 @@ namespace
 
   void Get_angles(Vector no[], float alpha[], float theta[])
   {
-    float dx0, dy0, dx1, dy1, dx2, dy2, dx3, dy3, b0, b1, b2, b3;
+    const float dx0     = no[1].x - no[0].x;
+    const float dy0     = no[1].y - no[0].y;
+    const float dx1     = no[2].x - no[1].x;
+    const float dy1     = no[2].y - no[1].y;
+    const float dx2     = no[3].x - no[2].x;
+    const float dy2     = no[3].y - no[2].y;
+    const float dx3     = no[0].x - no[3].x;
+    const float dy3     = no[0].y - no[3].y;
 
-    dx0     = no[1].x - no[0].x;
-    dy0     = no[1].y - no[0].y;
-    dx1     = no[2].x - no[1].x;
-    dy1     = no[2].y - no[1].y;
-    dx2     = no[3].x - no[2].x;
-    dy2     = no[3].y - no[2].y;
-    dx3     = no[0].x - no[3].x;
-    dy3     = no[0].y - no[3].y;
+    theta[0] = atan2((double) dy0, (double) dx0);
+    theta[1] = atan2((double) dy1, (double) dx1);
+    theta[2] = atan2((double) dy2, (double) dx2);
+    theta[3] = atan2((double) dy3, (double) dx3);
 
-    theta[0] = b0 = atan2((double) dy0, (double) dx0);
-    theta[1] = b1 = atan2((double) dy1, (double) dx1);
-    theta[2] = b2 = atan2((double) dy2, (double) dx2);
-    theta[3] = b3 = atan2((double) dy3, (double) dx3);
-
-    alpha[0]= Zerototwopi(M_PI - b0 + b3);
-    alpha[1]= Zerototwopi(M_PI - b1 + b0);
-    alpha[2]= Zerototwopi(M_PI - b2 + b1);
-    alpha[3]= Zerototwopi(M_PI - b3 + b2);
+    alpha[0]= Zerototwopi(M_PI - theta[0] + theta[3]);
+    alpha[1]= Zerototwopi(M_PI - theta[1] + theta[0]);
+    alpha[2]= Zerototwopi(M_PI - theta[2] + theta[1]);
+    alpha[3]= Zerototwopi(M_PI - theta[3] + theta[2]);
   }
 
   int Squash_quadrangle(Vector* no0, Vector* no1, Vector* no2, Vector* no3,
