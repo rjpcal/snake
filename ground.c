@@ -48,8 +48,11 @@ void Ground::insideElements()
 {
   insideNumber = snake.getLength();
 
-  for (int n = snake.getLength(); n < totalNumber; ++n)
+  for (int n = 0; n < totalNumber; ++n)
     {
+      if (array[n].type == Element::CONTOUR)
+        continue;
+
       bool inside = true;
 
       for (int i = 0; i < snake.getLength(); ++i)
@@ -130,8 +133,11 @@ void Ground::jitterElement()
 
   for (int niter = 0; niter < backgroundIters; ++niter)
     {
-      for (int n = snake.getLength(); n < totalNumber; ++n)
+      for (int n = 0; n < totalNumber; ++n)
         {
+          if (array[n].type == Element::CONTOUR)
+            continue;
+
           Vector v;
           v.x = array[n].pos.x + jitter*(2*drand48() - 1);
           v.y = array[n].pos.y + jitter*(2*drand48() - 1);
