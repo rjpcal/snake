@@ -100,14 +100,14 @@ namespace
                         const Vector& no2, const Vector& no3,
                         Vector* new_no0, Vector* new_no1,
                         Vector* new_no2, Vector* new_no3,
-                        double theta0, double incr)
+                        double new_theta)
   {
-    const double d_0_1 = distance(no0, no1);
-    const double d_1_2 = distance(no1, no2);
-    const double d_2_3 = distance(no2, no3);
+    {
+      const double d_0_1 = distance(no0, no1);
 
-    new_no1->x = no0.x + d_0_1 * cos(theta0-incr);
-    new_no1->y = no0.y + d_0_1 * sin(theta0-incr);
+      new_no1->x = no0.x + d_0_1 * cos(new_theta);
+      new_no1->y = no0.y + d_0_1 * sin(new_theta);
+    }
 
     /*                                                    */
     /*   x'      dx/e   dy/e     x - new_no1->x           */
@@ -134,6 +134,9 @@ namespace
     const double dy_3_1    = no3.y - new_no1->y;
 
     const double d_3_1     = sqrt(dx_3_1*dx_3_1 + dy_3_1*dy_3_1);
+
+    const double d_1_2 = distance(no1, no2);
+    const double d_2_3 = distance(no2, no3);
 
     const double aleph = (d_1_2*d_1_2 - d_2_3*d_2_3)/(2.*d_3_1);
     const double bet   = d_3_1/2.0;
@@ -348,12 +351,14 @@ void Snake::jiggle()
 
       const int r = int(4 * drand48());
 
+      const double incr_theta = old_theta[r] - incr;
+
       const bool ok =
         squashQuadrangle(old_pos[(r+0)%4], old_pos[(r+1)%4],
                          old_pos[(r+2)%4], old_pos[(r+3)%4],
                          &new_pos[(r+0)%4], &new_pos[(r+1)%4],
                          &new_pos[(r+2)%4], &new_pos[(r+3)%4],
-                         old_theta[r], incr);
+                         incr_theta);
 
       if (!ok)
         {
