@@ -34,7 +34,7 @@ private:
   Element* const itsElem;
 
   void center();
-  void newDeltaTheta();
+  void computeDeltaTheta();
   void jiggle();
   void newNodes(int ni, int nj, Vector new_no_i, Vector new_no_j);
 };
