@@ -17,7 +17,7 @@ namespace
   const float OFF_PHASE      = 0.5 * DELTA_PHASE;
 
   Colorindex* CreatePatch(float sigma, float omega, float theta,
-                          float phi, float contrast, int xysize )
+                          float phi, float contrast, int xysize)
   {
     Colorindex* const result = new Colorindex[xysize*xysize];
 
@@ -51,46 +51,22 @@ namespace
     return result;
   }
 
-  float Index2Theta( int index )
-  {
-    while( index < 0 )
-      index += GABOR_MAX_ORIENT;
-
-    index = index % GABOR_MAX_ORIENT;
-
-    return( index * DELTA_THETA );
-  }
-
   int Theta2Index( float theta )
   {
-    int index;
-
     theta = Zerotopi( theta );
 
-    index = (int)( ( theta + OFF_THETA ) / DELTA_THETA );
+    int index = (int)( ( theta + OFF_THETA ) / DELTA_THETA );
 
-    return( index % GABOR_MAX_ORIENT );
-  }
-
-  float Index2Phi( int index )
-  {
-    while( index < 0 )
-      index += GABOR_MAX_PHASE;
-
-    index = index % GABOR_MAX_PHASE;
-
-    return( index * DELTA_PHASE );
+    return index % GABOR_MAX_ORIENT;
   }
 
   int Phi2Index( float phi )
   {
-    int index;
-
     phi   = Zerototwopi( phi );
 
-    index = (int)( ( phi + OFF_PHASE ) / DELTA_PHASE );
+    int index = (int)( ( phi + OFF_PHASE ) / DELTA_PHASE );
 
-    return( index % GABOR_MAX_PHASE );
+    return index % GABOR_MAX_PHASE;
   }
 }
 
@@ -103,8 +79,8 @@ GaborSet::GaborSet()
       {
         Patch[n][m] = CreatePatch(GABOR_SIGMA,
                                   GABOR_OMEGA,
-                                  Index2Theta( n ),
-                                  Index2Phi( m ),
+                                  n * DELTA_THETA,
+                                  m * DELTA_PHASE,
                                   GABOR_CONTRAST,
                                   GABOR_SIZE);
       }
@@ -128,5 +104,5 @@ Colorindex* GaborSet::getPatch(float theta, float phi) const
   const int itheta = Theta2Index( theta );
   const int iphi   = Phi2Index( phi );
 
-  return( Patch[itheta][iphi] );
+  return Patch[itheta][iphi];
 }
