@@ -169,42 +169,39 @@ namespace
     return newApex(new_no1, new_no2, new_no3, a[1], a[2]);
   }
 
-  int Monte_Carlo(float old_alpha[], float new_alpha[], float lo_alpha[], float hi_alpha[])
+  bool monteCarlo(const float old_alpha[], const float new_alpha[],
+                  const float lo_alpha[], const float hi_alpha[])
   {
-    int n, zero_probability_flag;
-    float energy_difference, zero_point, old, anew, probability;
+    bool zero_probability = false;
 
-    zero_probability_flag = 0;
+    float energy_difference = 0.0f;
 
-    energy_difference = 0.;
-    for (n=0; n<4; n++)
+    for (int n = 0; n < 4; ++n)
       {
-        zero_point = 0.5 * (hi_alpha[n] + lo_alpha[n]);
+        const float zero_point = 0.5 * (hi_alpha[n] + lo_alpha[n]);
 
-        old = fabs(old_alpha[n] - zero_point);
-        anew = fabs(new_alpha[n] - zero_point);
+        const float oldval = fabs(old_alpha[n] - zero_point);
+        const float newval = fabs(new_alpha[n] - zero_point);
 
-        if (anew > HIDELTA)
+        if (newval > HIDELTA)
           {
-            energy_difference = 999.;
-            zero_probability_flag = 1;
+            energy_difference = 999.0f;
+            zero_probability = true;
             increment = 0.8 * increment;
             break;
           }
         else
           {
-            energy_difference += anew*anew - old*old;
+            energy_difference += newval*newval - oldval*oldval;
           }
       }
 
-    if (zero_probability_flag)
-      {
-        probability = 0.;
-      }
-    else
+    float probability = 0.0f;
+
+    if (!zero_probability)
       if (energy_difference < 0.)
         {
-          probability = 1.;
+          probability = 1.0f;
         }
       else
         {
@@ -382,7 +379,7 @@ void Snake::jiggle()
       getEdgeLengths(new_no, new_a);
       getAngles(new_no, new_alpha, new_theta);
 
-      if (Monte_Carlo(alpha, new_alpha, lo_alpha, hi_alpha))
+      if (monteCarlo(alpha, new_alpha, lo_alpha, hi_alpha))
         break;
     }
 
