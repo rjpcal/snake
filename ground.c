@@ -9,16 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/*************************** local *******************************/
-
 namespace
 {
-
-  const int            DIFFUSION_CYCLES        = 10;
-  const int            BACKGROUND_ITERATION    = 1000;
-  const int            TRY_TO_FILL_NUMBER      = 250000;
-  const double         TRY_TO_FILL_AREA        = 6.0;
-
   const double SQRT3 = 1.7320508075;
 }
 
@@ -146,21 +138,24 @@ void Ground::gridElements()
 
 void Ground::fillElements()
 {
-  float xl[ TRY_TO_FILL_NUMBER ];
-  float yl[ TRY_TO_FILL_NUMBER ];
+  const int    tryFillNumber = 250000;
+  const double tryFillArea   = 6.0;
 
-  int ntry = (int)( sizeX * sizeY / TRY_TO_FILL_AREA );
+  int ntry = (int)( sizeX * sizeY / tryFillArea );
 
-  if( ntry > TRY_TO_FILL_NUMBER )
+  if( ntry > tryFillNumber )
     {
-      printf( " TRY_TO_FILL_NUMBER too small!\n" );
-      printf( "\n Need %d, have %d\n", ntry, TRY_TO_FILL_NUMBER );
+      printf( " tryFillNumber too small!\n" );
+      printf( "\n Need %d, have %d\n", ntry, tryFillNumber );
       exit(1);
     }
 
   ntry = 0;
 
-  const float dx = (float) sqrt((double) TRY_TO_FILL_AREA );
+  float xl[ tryFillNumber ];
+  float yl[ tryFillNumber ];
+
+  const float dx = (float) sqrt((double) tryFillArea );
 
   for(float x = -halfX; x <= halfX; x += dx)
     for(float y = -halfY; y <= halfY; y += dx)
@@ -200,7 +195,9 @@ void Ground::jitterElement()
 {
   const float jitter = (backgMinSpacing/16.0);
 
-  for(int niter = 0; niter < BACKGROUND_ITERATION; ++niter)
+  const int backgroundIters = 1000;
+
+  for(int niter = 0; niter < backgroundIters; ++niter)
     {
       for(int n = snake.getLength(); n < NPatch; ++n)
         {
@@ -245,7 +242,9 @@ Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
 
   gridElements();
 
-  for(int i = 0; i < DIFFUSION_CYCLES; ++i)
+  const int diffusionCycles = 10;
+
+  for(int i = 0; i < diffusionCycles; ++i)
     {
       jitterElement();
       fillElements();
