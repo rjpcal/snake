@@ -41,9 +41,9 @@ public:
 private:
   const int itsLength;
   const double itsSpacing;
-  Element* const itsElem;
+  Vector* const itsElem;
 
-  Element& elem(int i) const
+  Vector& elem(int i) const
   {
     i = i % itsLength;
     if (i < 0) i += itsLength;

@@ -234,7 +234,7 @@ namespace
 Snake::Snake(int l, double sp) :
   itsLength(l),
   itsSpacing(sp),
-  itsElem(new Element[itsLength])
+  itsElem(new Vector[itsLength])
 {
   const double radius = (itsLength * itsSpacing) / (2*M_PI);
 
@@ -244,8 +244,8 @@ Snake::Snake(int l, double sp) :
     {
       const double alpha = 2 * M_PI * n / itsLength;
 
-      itsElem[n].pos.x =  radius * cos(alpha+alpha_off);
-      itsElem[n].pos.y = -radius * sin(alpha+alpha_off);
+      itsElem[n].x =  radius * cos(alpha+alpha_off);
+      itsElem[n].y = -radius * sin(alpha+alpha_off);
     }
 
   const int ITERS = 400;
@@ -270,9 +270,9 @@ Element Snake::getElement(int n) const
   Element result;
 
   result.type = Element::CONTOUR;
-  result.pos.x = 0.5 * (elem(n).pos.x + elem(n+1).pos.x);
-  result.pos.y = 0.5 * (elem(n).pos.y + elem(n+1).pos.y);
-  result.theta = zerototwopi(-itsElem[n].theta);
+  result.pos.x = 0.5 * (elem(n).x + elem(n+1).x);
+  result.pos.y = 0.5 * (elem(n).y + elem(n+1).y);
+  result.theta = zerototwopi(-getTheta(elem(n+1), elem(n)));
 
   return result;
 }
@@ -283,8 +283,8 @@ void Snake::center()
 
   for (int n = 0; n < itsLength; ++n)
     {
-      c.x += itsElem[n].pos.x;
-      c.y += itsElem[n].pos.y;
+      c.x += itsElem[n].x;
+      c.y += itsElem[n].y;
     }
 
   c.x /= itsLength;
@@ -292,8 +292,8 @@ void Snake::center()
 
   for (int n = 0; n < itsLength; ++n)
     {
-      itsElem[n].pos.x -= c.x;
-      itsElem[n].pos.y -= c.y;
+      itsElem[n].x -= c.x;
+      itsElem[n].y -= c.y;
     }
 }
 
@@ -332,30 +332,23 @@ void Snake::center()
 
 void Snake::jiggle()
 {
-  for (int n = 0; n < itsLength; ++n)
-    {
-      itsElem[n].theta = getTheta(elem(n+1).pos, elem(n).pos);
-    }
-
   int i[4];
   pickRandom4(itsLength, i);
 
-  const Vector old_pos[4] = {
-    itsElem[i[0]].pos,
-    itsElem[i[1]].pos,
-    itsElem[i[2]].pos,
-    itsElem[i[3]].pos
-  };
+  const Vector old_pos[4] =
+    {
+      itsElem[i[0]], itsElem[i[1]], itsElem[i[2]], itsElem[i[3]]
+    };
 
   const Tuple4 old_theta = getThetas(old_pos);
   const Tuple4 old_alpha = getAlphas(old_theta);
 
   // The .theta member is the angle to the *next* element
   const Tuple4 old_delta
-    (minuspitopi(elem(i[0]).theta - elem(i[0]-1).theta),
-     minuspitopi(elem(i[1]).theta - elem(i[1]-1).theta),
-     minuspitopi(elem(i[2]).theta - elem(i[2]-1).theta),
-     minuspitopi(elem(i[3]).theta - elem(i[3]-1).theta));
+    (minuspitopi(getTheta(elem(i[0]+1), elem(i[0])) - getTheta(elem(i[0]), elem(i[0]-1))),
+     minuspitopi(getTheta(elem(i[1]+1), elem(i[1])) - getTheta(elem(i[1]), elem(i[1]-1))),
+     minuspitopi(getTheta(elem(i[2]+1), elem(i[2])) - getTheta(elem(i[2]), elem(i[2]-1))),
+     minuspitopi(getTheta(elem(i[3]+1), elem(i[3])) - getTheta(elem(i[3]), elem(i[3]-1))));
 
   Vector new_pos[4];
 
@@ -406,20 +399,15 @@ void Snake::jiggle()
 
   for (int n = 0; n < 4; ++n)
     {
-      itsElem[i[n]].pos = new_pos[n];
-    }
-
-  for (int n = 0; n < itsLength; ++n)
-    {
-      itsElem[n].theta = getTheta(elem(n+1).pos, elem(n).pos);
+      itsElem[i[n]] = new_pos[n];
     }
 }
 
 void Snake::transformPath(int i1, const Vector& new1,
                           int i2, const Vector& new2)
 {
-  const Vector old1 = itsElem[i1].pos;
-  const Vector old2 = itsElem[i2].pos;
+  const Vector old1 = itsElem[i1];
+  const Vector old2 = itsElem[i2];
 
   // OK, our jiggling algorithm has determined new locations for node-1 and
   // node-2. Now, we want to adjust all the intermediate points
@@ -513,10 +501,10 @@ void Snake::transformPath(int i1, const Vector& new1,
       /*   y'      c2       a21   a12     y - b2      */
       /*                                              */
 
-      const double diffx = itsElem[n].pos.x - old1.x;
-      const double diffy = itsElem[n].pos.y - old1.y;
+      const double diffx = itsElem[n].x - old1.x;
+      const double diffy = itsElem[n].y - old1.y;
 
-      itsElem[n].pos.x = new1.x + a11*diffx + a12*diffy;
-      itsElem[n].pos.y = new1.y + a21*diffx + a22*diffy;
+      itsElem[n].x = new1.x + a11*diffx + a12*diffy;
+      itsElem[n].y = new1.y + a21*diffx + a22*diffy;
     }
 }
