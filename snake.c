@@ -14,7 +14,6 @@ namespace
 {
   int          FOREGROUND_ITERATION =    400;
 
-  void EllipsoidSnake( int first, int length );
   void Pick_nodes( int length, int ni[] );
   void Swap( int *a, int *b );
   void Get_sides( Vector no[], float a[] );
@@ -27,7 +26,6 @@ namespace
 
   void Pick_nodes( int length, int ni[] )
   {
-
     int i0, i1, i2, i3;
 
     i0 = (int)( length * drand48() );
@@ -246,19 +244,19 @@ namespace
 }
 
 Snake::Snake(int l, float sp) :
-  length(l),
-  spacing(sp)
+  itsLength(l),
+  itsSpacing(sp)
 {
-  const float radius = (float)(length * spacing) / (2*M_PI);
+  const float radius = (float)(itsLength * itsSpacing) / (2*M_PI);
 
   const float alpha_off = 2 * M_PI * drand48();
 
-  for(int n = 0; n < length; ++n)
+  for(int n = 0; n < itsLength; ++n)
     {
-      const float alpha = 2 * M_PI * n / length;
+      const float alpha = 2 * M_PI * n / itsLength;
 
-      foreg[n].xpos   =  radius * cos((double) alpha+alpha_off );
-      foreg[n].ypos   = -radius * sin((double) alpha+alpha_off );
+      itsElem[n].xpos   =  radius * cos((double) alpha+alpha_off );
+      itsElem[n].ypos   = -radius * sin((double) alpha+alpha_off );
     }
 
   this->newDeltaTheta();
@@ -273,11 +271,11 @@ Snake::Snake(int l, float sp) :
 
 int Snake::getElement(int n, float* x, float* y, float* theta) const
 {
-  if( n < length )
+  if( n < itsLength )
     {
-      *x = 0.5 * ( foreg[n].xpos + foreg[(n+1)%length].xpos );
-      *y = 0.5 * ( foreg[n].ypos + foreg[(n+1)%length].ypos );
-      *theta = Zerototwopi( -foreg[n].theta );
+      *x = 0.5 * ( itsElem[n].xpos + itsElem[(n+1)%itsLength].xpos );
+      *y = 0.5 * ( itsElem[n].ypos + itsElem[(n+1)%itsLength].ypos );
+      *theta = Zerototwopi( -itsElem[n].theta );
       return 1;
     }
 
@@ -289,40 +287,40 @@ void Snake::center()
   float xc = 0.0f;
   float yc = 0.0f;
 
-  for(int n = 0; n < this->length; ++n)
+  for(int n = 0; n < itsLength; ++n)
     {
-      xc += this->foreg[n].xpos;
-      yc += this->foreg[n].ypos;
+      xc += itsElem[n].xpos;
+      yc += itsElem[n].ypos;
     }
 
-  xc /= this->length;
-  yc /= this->length;
+  xc /= itsLength;
+  yc /= itsLength;
 
-  for(int n = 0; n < this->length; ++n)
+  for(int n = 0; n < itsLength; ++n)
     {
-      this->foreg[n].xpos -= xc;
-      this->foreg[n].ypos -= yc;
+      itsElem[n].xpos -= xc;
+      itsElem[n].ypos -= yc;
     }
 }
 
 void Snake::newDeltaTheta()
 {
-  for(int n0 = 0; n0 < this->length; ++n0 )
+  for(int n0 = 0; n0 < itsLength; ++n0 )
     {
-      const int n1 = (n0+1)%this->length;
+      const int n1 = (n0+1)%itsLength;
 
-      const float dx = this->foreg[n1].xpos - this->foreg[n0].xpos;
-      const float dy = this->foreg[n1].ypos - this->foreg[n0].ypos;
+      const float dx = itsElem[n1].xpos - itsElem[n0].xpos;
+      const float dy = itsElem[n1].ypos - itsElem[n0].ypos;
 
-      this->foreg[n0].theta = Zerototwopi( atan2(dy, dx) );
+      itsElem[n0].theta = Zerototwopi( atan2(dy, dx) );
 
     }
 
-  for(int n0 = 0; n0 < this->length; ++n0)
+  for(int n0 = 0; n0 < itsLength; ++n0)
     {
-      const int n1 = (n0+1)%this->length;
+      const int n1 = (n0+1)%itsLength;
 
-      this->foreg[n1].delta = Minuspitopi( this->foreg[n1].theta - this->foreg[n0].theta );
+      itsElem[n1].delta = Minuspitopi( itsElem[n1].theta - itsElem[n0].theta );
     }
 }
 
@@ -367,15 +365,15 @@ void Snake::jiggle()
     incr, new_alpha[4], new_theta[4], new_a[4];
   Vector no[4], new_no[4];
 
-  Pick_nodes( this->length, i );
+  Pick_nodes( itsLength, i );
 
   increment = INCREMENT;
 
   for( n=0; n<4; n++ )
     {
-      no[n].x  = this->foreg[i[n]].xpos;
-      no[n].y  = this->foreg[i[n]].ypos;
-      delta[n] = this->foreg[i[n]].delta;
+      no[n].x  = itsElem[i[n]].xpos;
+      no[n].y  = itsElem[i[n]].ypos;
+      delta[n] = itsElem[i[n]].delta;
     }
 
   Get_sides( no, a );
@@ -440,8 +438,8 @@ void Snake::jiggle()
 
   for( n=0; n<4; n++ )
     {
-      this->foreg[i[n]].xpos = new_no[n].x;
-      this->foreg[i[n]].ypos = new_no[n].y;
+      itsElem[i[n]].xpos = new_no[n].x;
+      itsElem[i[n]].ypos = new_no[n].y;
     }
 
   this->newDeltaTheta();
@@ -460,11 +458,11 @@ void Snake::newNodes(int ni, int nj,
   /*   y'      c2        a21   a12     y - b2     */
   /*                                              */
 
-  b1  = this->foreg[ni].xpos;
-  b2  = this->foreg[ni].ypos;
+  b1  = itsElem[ni].xpos;
+  b2  = itsElem[ni].ypos;
 
-  dx  = this->foreg[nj].xpos - b1;
-  dy  = this->foreg[nj].ypos - b2;
+  dx  = itsElem[nj].xpos - b1;
+  dy  = itsElem[nj].ypos - b2;
 
   c1  = new_no_i.x;
   c2  = new_no_i.y;
@@ -480,12 +478,12 @@ void Snake::newNodes(int ni, int nj,
   a21 = ( dyp*dx - dxp*dy )/l_2;
   a22 = ( dyp*dy + dxp*dx )/l_2;
 
-  for( n=(ni+1)%this->length; n!=nj; n=(n+1)%this->length )
+  for( n=(ni+1)%itsLength; n!=nj; n=(n+1)%itsLength )
     {
-      dx = this->foreg[n].xpos - b1;
-      dy = this->foreg[n].ypos - b2;
+      dx = itsElem[n].xpos - b1;
+      dy = itsElem[n].ypos - b2;
 
-      this->foreg[n].xpos = c1 + a11*dx + a12*dy;
-      this->foreg[n].ypos = c2 + a21*dx + a22*dy;
+      itsElem[n].xpos = c1 + a11*dx + a12*dy;
+      itsElem[n].ypos = c2 + a21*dx + a22*dy;
     }
 }

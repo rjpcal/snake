@@ -25,15 +25,15 @@ class Snake
 public:
   Snake(int l, float sp);
 
-  int getLength() const { return length; }
-  float getSpacing() const { return spacing; }
+  int getLength() const { return itsLength; }
+  float getSpacing() const { return itsSpacing; }
   int getElement(int n, float* x, float* y, float* theta) const;
 
-  const int length;
-  const float spacing;
-  Element foreg[ MAX_FOREG_NUMBER ];
-
 private:
+  const int itsLength;
+  const float itsSpacing;
+  Element itsElem[ MAX_FOREG_NUMBER ];
+
   void center();
   void newDeltaTheta();
   void jiggle();
