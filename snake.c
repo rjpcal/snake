@@ -2,6 +2,7 @@
 
 #include "geom.h"
 
+#include <algorithm>
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
@@ -25,38 +26,26 @@ namespace
     double arr[4];
   };
 
-  void swap2(int& a, int& b) { int a1 = a; a = b; b = a1;}
-
-  void sort2(int& a, int& b) { if (a > b) swap2(a,b); }
-
   void pickRandom4(int length, int i[])
   {
-    i[0] = int(length * drand48());
+    i[0] = i[1] = i[2] = i[3] = int(length * drand48());
 
-    do
-      {
-        i[1] = int(length * drand48());
-      }
-    while(i[1] == i[0]);
+    while (i[1] == i[0])
+    {
+      i[1] = int(length * drand48());
+    }
 
-    do
-      {
-        i[2] = int(length * drand48());
-      }
-    while(i[2] == i[0] || i[2] == i[1]);
+    while (i[2] == i[0] || i[2] == i[1])
+    {
+      i[2] = int(length * drand48());
+    }
 
-    do
-      {
-        i[3] = int(length * drand48());
-      }
-    while(i[3] == i[0] || i[3] == i[1] || i[3] == i[2]);
+    while (i[3] == i[0] || i[3] == i[1] || i[3] == i[2])
+    {
+      i[3] = int(length * drand48());
+    }
 
-    sort2(i[0], i[1]);
-    sort2(i[0], i[2]);
-    sort2(i[0], i[3]);
-    sort2(i[1], i[2]);
-    sort2(i[1], i[3]);
-    sort2(i[2], i[3]);
+    std::sort(i, i+4);
   }
 
   double distance(const Vector& n1, const Vector& n2)
