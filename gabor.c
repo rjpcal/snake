@@ -103,10 +103,7 @@ void InitPatch( Colorindex *ptr, float sigma, float omega, float theta, float ph
             sinus = cos((double) omega * dx + phi );
 
             gauss = exp((double) -dsqr );
-            if(BLANK_SNAKE == 0)
-              *ptr++ = F2I( contrast * sinus * gauss );
-            else
-              *ptr++ = F2I( gauss );
+            *ptr++ = F2I( contrast * sinus * gauss );
         }
     }
 }
@@ -162,4 +159,3 @@ int Phi2Index( float phi )
 
     return( index % GABOR_MAX_PHASE );
 }
-

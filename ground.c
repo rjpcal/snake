@@ -74,8 +74,6 @@ void MakeGround( void )
 
     printf( " FOREG_NUMBER %d    PATCH_NUMBER ??    TOTAL_NUMBER %d\n",
               FOREG_NUMBER, TOTAL_NUMBER );
-    if(BLANK_SNAKE == 1)
-      printf( " RUNNING BLANK SNAKE MODE!\n");
     BACKG_NUMBER = TOTAL_NUMBER - PATCH_NUMBER;
 }
 
@@ -120,30 +118,27 @@ void GridElements( int *pnpts )
     iy =  -0.5 * (ny-1) * dy;
 
     npts = *pnpts;
-    if(BLANK_SNAKE == 0)
-    {
-      for( j=0, y=iy; j<ny; j++, y+=dy )
+    for( j=0, y=iy; j<ny; j++, y+=dy )
       {
         for( i=0, x=ix+0.5*(j%2)*dx; i<nx; i++, x+=dx )
-        {
-          if( TooClose( FOREG_NUMBER, x, y, FOREG_NUMBER+1 ) )
-            continue;
+          {
+            if( TooClose( FOREG_NUMBER, x, y, FOREG_NUMBER+1 ) )
+              continue;
 
-          array[npts].flag = 0;
-          array[npts].xpos = x;
-          array[npts].ypos = y;
-          array[npts].theta = TWOPI * drand48();
+            array[npts].flag = 0;
+            array[npts].xpos = x;
+            array[npts].ypos = y;
+            array[npts].theta = TWOPI * drand48();
 
-          npts++;
-        }
+            npts++;
+          }
       }
-    }
 
     if( npts > MAX_GABOR_NUMBER )
-    {
+      {
         printf( " More than %d elements!\n", MAX_GABOR_NUMBER );
         Exit();
-    }
+      }
 
     *pnpts = npts;
 }
@@ -175,9 +170,7 @@ void FillElements( int *pnpts )
     }
 
     npts = *pnpts;
-    if(BLANK_SNAKE == 0)
-    {
-      for( i=0; i<ntry; i++ )
+    for( i=0; i<ntry; i++ )
       {
         if( TooClose( npts, xl[i], yl[i], npts+1 ) )
           continue;
@@ -188,13 +181,12 @@ void FillElements( int *pnpts )
         array[npts].theta = TWOPI * drand48();
         npts++;
       }
-    }
 
     if( npts > MAX_GABOR_NUMBER )
-    {
+      {
         printf( " More than %d elements: %d\n", MAX_GABOR_NUMBER, npts );
         Exit();
-    }
+      }
 
     BACKG_AVE_SPACING = sqrt((double)2.0*DISPLAY_X*DISPLAY_Y/(SQRT3*npts));
     printf( " added %d to ave spacing %f\n",

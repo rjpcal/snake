@@ -16,17 +16,9 @@ void ShowArray( void )
     int tempColor;
     Colorindex **src;
 
-    /// let's clear our fake window:
-    if(BLANK_SNAKE == 0)
-    {
-      tempColor = Grey;
-      for (i=0;i<DISPLAY_X*DISPLAY_Y;i++) win[i]=Grey;
-    }
-    else
-    {
-      for (i=0;i<DISPLAY_X*DISPLAY_Y;i++) win[i]=0;
-      tempColor = 0;
-    }
+    // let's clear our fake window:
+    tempColor = Grey;
+    for (i=0;i<DISPLAY_X*DISPLAY_Y;i++) win[i]=Grey;
 
     px     = XPatch;
     py     = YPatch;
@@ -44,19 +36,8 @@ void ShowArray( void )
           for (xx=xbotleft;xx<=xtopright;xx++)
             if (xx>=0 && xx<DISPLAY_X && yy>=0 && yy<DISPLAY_Y)
               {
-                if(BLANK_SNAKE == 0)
-                  {
-                    if (fabs(win[xx+yy*DISPLAY_X] - tempColor) < fabs((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)] - tempColor))
-                      win[xx+yy*DISPLAY_X]=((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)]);
-                  }
-                else
-                  {
-                    if (fabs(win[xx+yy*DISPLAY_X]) < fabs((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)] - 595))
-                      {
-                        if (fabs((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)] - 595) > 50)
-                          win[xx+yy*DISPLAY_X]=((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)] - 595) ;
-                      }
-                  }
+                if (fabs(win[xx+yy*DISPLAY_X] - tempColor) < fabs((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)] - tempColor))
+                  win[xx+yy*DISPLAY_X]=((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)]);
               }
     }
 }
@@ -77,16 +58,11 @@ void Window2Raster( void )
 #endif
 
     ///swapbuffers();
-    if(BLANK_SNAKE == 0)
-      sprintf( fname, "%s_%d.ras", FILENAME, count++ );
-    else
-      sprintf( fname, "%s_%d_BLANK.ras", FILENAME, count++ );
+    sprintf( fname, "%s_%d.ras", FILENAME, count++ );
     if( ( fp = fopen( fname, "w" ) ) == NULL )
-    {
+      {
         printf( " %s: file not opened\n", fname );
-
-    }
-
+      }
 
     header[0] = 0x59a66a95;
     header[1] = DISPLAY_X;
