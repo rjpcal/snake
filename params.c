@@ -34,9 +34,6 @@ namespace
     return result;
   }
 
-#define GETINT(name) name = getint(fp);
-#define GETFLOAT(name) name = getfloat(fp);
-
   inline void putint(FILE* fp, int val, const char* name)
   {
     fprintf(fp, "%-19s %d\n", name, val);
@@ -51,14 +48,6 @@ namespace
   {
     fprintf(fp, "%-19s %s\n", name, val);
   }
-
-#define PUTINT(name,text) putint(fp, name, text);
-#define PUTFLOAT(name,text) putfloat(fp, name, text);
-#define PUTTEXT(name,text) puttext(fp, name, text);
-
-#define PRINTINT(name,text) putint(stdout, name, text);
-#define PRINTFLOAT(name,text) putfloat(stdout, name, text);
-#define PRINTTEXT(name,text) puttext(stdout, name, text);
 }
 
 void ReadParams( char extension[] )
@@ -71,23 +60,23 @@ void ReadParams( char extension[] )
   if( fp == NULL )
     return;
 
-  GETINT(   (PM.DISPLAY_X) );
-  GETINT(   (PM.DISPLAY_Y) );
-  GETINT(   (PM.FOREG_NUMBER) );
-  GETINT(   (idummy) );
-  GETINT(   (idummy) );
-  GETINT(   (idummy) );
-  GETFLOAT( (PM.FOREG_SPACING) );
-  GETFLOAT( (PM.FOREG_ECCENTRICITY) );
-  GETFLOAT( (PM.FOREG_JITTER) );
-  GETINT(   (PM.FOREG_POSITIONS) );
-  GETFLOAT( (PM.FOREG_DIFFERENCE) );
-  GETFLOAT( (PM.BACKG_INI_SPACING) );
-  GETFLOAT( (PM.BACKG_MIN_SPACING) );
-  GETFLOAT( (PM.GABOR_PERIOD) );
-  GETFLOAT( (PM.GABOR_SIGMA) );
-  GETINT(   (PM.GABOR_SIZE) );
-  GETINT(   (PM.DISPLAY_NUMBER) );
+  PM.DISPLAY_X = getint(fp);
+  PM.DISPLAY_Y = getint(fp);
+  PM.FOREG_NUMBER = getint(fp);
+  idummy = getint(fp);
+  idummy = getint(fp);
+  idummy = getint(fp);
+  PM.FOREG_SPACING = getfloat(fp);
+  PM.FOREG_ECCENTRICITY = getfloat(fp);
+  PM.FOREG_JITTER = getfloat(fp);
+  PM.FOREG_POSITIONS = getint(fp);
+  PM.FOREG_DIFFERENCE = getfloat(fp);
+  PM.BACKG_INI_SPACING = getfloat(fp);
+  PM.BACKG_MIN_SPACING = getfloat(fp);
+  PM.GABOR_PERIOD = getfloat(fp);
+  PM.GABOR_SIGMA = getfloat(fp);
+  PM.GABOR_SIZE = getint(fp);
+  PM.DISPLAY_NUMBER = getint(fp);
   // GETTEXT(  (sdummy) );
 
   Closefile( fp );
@@ -99,24 +88,24 @@ void WriteParams(char extension[])
 
   Openfile( &fp, WRITE, extension );
 
-  PUTINT(   (PM.DISPLAY_X),          ("DISPLAY_X") );
-  PUTINT(   (PM.DISPLAY_Y),          ("DISPLAY_Y") );
-  PUTINT(   (PM.FOREG_NUMBER) ,      ("FOREG_NUMBER") );
-  PUTINT(   (-1),                    ("PATCH_NUMBER") );
-  PUTINT(   (-1),                    ("BACKG_NUMBER") );
-  PUTINT(   (-1),                    ("TOTAL_NUMBER") );
-  PUTFLOAT( (PM.FOREG_SPACING) ,     ("FOREG_SPACING") );
-  PUTFLOAT( (PM.FOREG_ECCENTRICITY), ("FOREG_ECCENTRICITY") );
-  PUTFLOAT( (PM.FOREG_JITTER),       ("FOREG_JITTER") );
-  PUTINT(   (PM.FOREG_POSITIONS),    ("FOREG_POSITIONS") );
-  PUTFLOAT( (PM.FOREG_DIFFERENCE),   ("FOREG_DIFFERENCE") );
-  PUTFLOAT( (PM.BACKG_INI_SPACING),  ("BACKG_INI_SPACING") );
-  PUTFLOAT( (PM.BACKG_MIN_SPACING),  ("BACKG_MIN_SPACING") );
-  PUTFLOAT( (PM.GABOR_PERIOD),       ("GABOR_PERIOD") );
-  PUTFLOAT( (PM.GABOR_SIGMA),        ("GABOR_SIGMA") );
-  PUTINT(   (PM.GABOR_SIZE),         ("GABOR_SIZE") );
-  PUTINT(   (PM.DISPLAY_NUMBER),     ("DISPLAY_NUMBER") );
-  PUTTEXT(  (PM.FILENAME),           ("FILENAME") );
+  putint(fp, PM.DISPLAY_X, "DISPLAY_X");
+  putint(fp, PM.DISPLAY_Y, "DISPLAY_Y");
+  putint(fp, PM.FOREG_NUMBER, "FOREG_NUMBER");
+  putint(fp, -1, "PATCH_NUMBER");
+  putint(fp, -1, "BACKG_NUMBER");
+  putint(fp, -1, "TOTAL_NUMBER");
+  putfloat(fp, PM.FOREG_SPACING, "FOREG_SPACING");
+  putfloat(fp, PM.FOREG_ECCENTRICITY, "FOREG_ECCENTRICITY");
+  putfloat(fp, PM.FOREG_JITTER, "FOREG_JITTER");
+  putint(fp, PM.FOREG_POSITIONS, "FOREG_POSITIONS");
+  putfloat(fp, PM.FOREG_DIFFERENCE, "FOREG_DIFFERENCE");
+  putfloat(fp, PM.BACKG_INI_SPACING, "BACKG_INI_SPACING");
+  putfloat(fp, PM.BACKG_MIN_SPACING, "BACKG_MIN_SPACING");
+  putfloat(fp, PM.GABOR_PERIOD, "GABOR_PERIOD");
+  putfloat(fp, PM.GABOR_SIGMA, "GABOR_SIGMA");
+  putint(fp, PM.GABOR_SIZE, "GABOR_SIZE");
+  putint(fp, PM.DISPLAY_NUMBER, "DISPLAY_NUMBER");
+  puttext(fp, PM.FILENAME, "FILENAME");
 
   Closefile( fp );
 }
@@ -165,21 +154,21 @@ void Closefile( FILE *fp )
 
 void PrintParams()
 {
-  PRINTINT(   (PM.DISPLAY_X),          ("DISPLAY_X") );
-  PRINTINT(   (PM.DISPLAY_Y),          ("DISPLAY_Y") );
-  PRINTINT(   (PM.FOREG_NUMBER) ,      ("FOREG_NUMBER") );
-  PRINTFLOAT( (PM.FOREG_SPACING) ,     ("FOREG_SPACING") );
-  PRINTFLOAT( (PM.FOREG_ECCENTRICITY), ("FOREG_ECCENTRICITY") );
-  PRINTFLOAT( (PM.FOREG_JITTER),       ("FOREG_JITTER") );
-  PRINTINT(   (PM.FOREG_POSITIONS),    ("FOREG_POSITIONS") );
-  PRINTFLOAT( (PM.FOREG_DIFFERENCE),   ("FOREG_DIFFERENCE") );
-  PRINTFLOAT( (PM.BACKG_INI_SPACING),  ("BACKG_INI_SPACING") );
-  PRINTFLOAT( (PM.BACKG_MIN_SPACING),  ("BACKG_MIN_SPACING") );
-  PRINTFLOAT( (PM.GABOR_PERIOD),       ("GABOR_PERIOD") );
-  PRINTFLOAT( (PM.GABOR_SIGMA),        ("GABOR_SIGMA") );
-  PRINTINT(   (PM.GABOR_SIZE),         ("GABOR_SIZE") );
-  PRINTINT(   (PM.DISPLAY_NUMBER),     ("DISPLAY_NUMBER") );
-  PRINTTEXT(  (PM.FILENAME),           ("FILENAME") );
+  putint(stdout, PM.DISPLAY_X, "DISPLAY_X");
+  putint(stdout, PM.DISPLAY_Y, "DISPLAY_Y");
+  putint(stdout, PM.FOREG_NUMBER, "FOREG_NUMBER");
+  putfloat(stdout, PM.FOREG_SPACING, "FOREG_SPACING");
+  putfloat(stdout, PM.FOREG_ECCENTRICITY, "FOREG_ECCENTRICITY");
+  putfloat(stdout, PM.FOREG_JITTER, "FOREG_JITTER");
+  putint(stdout, PM.FOREG_POSITIONS, "FOREG_POSITIONS");
+  putfloat(stdout, PM.FOREG_DIFFERENCE, "FOREG_DIFFERENCE");
+  putfloat(stdout, PM.BACKG_INI_SPACING, "BACKG_INI_SPACING");
+  putfloat(stdout, PM.BACKG_MIN_SPACING, "BACKG_MIN_SPACING");
+  putfloat(stdout, PM.GABOR_PERIOD, "GABOR_PERIOD");
+  putfloat(stdout, PM.GABOR_SIGMA, "GABOR_SIGMA");
+  putint(stdout, PM.GABOR_SIZE, "GABOR_SIZE");
+  putint(stdout, PM.DISPLAY_NUMBER, "DISPLAY_NUMBER");
+  puttext(stdout, PM.FILENAME, "FILENAME");
 }
 
 void WriteHeader( void )
@@ -188,17 +177,17 @@ void WriteHeader( void )
 
   Openfile( &fp, WRITE, "snk" );
 
-  PUTINT(   (DISPLAY_SET_NUMBER), ("DISPLAY_SET_NUMBER") );
-  PUTINT(   (PM.DISPLAY_NUMBER),     ("DISPLAY_NUMBER") );
-  PUTINT(   (PM.DISPLAY_X),          ("DISPLAY_X") );
-  PUTINT(   (PM.DISPLAY_Y),          ("DISPLAY_Y") );
-  PUTFLOAT( (PM.GABOR_PERIOD),       ("GABOR_PERIOD") );
-  PUTFLOAT( (PM.GABOR_SIGMA),        ("GABOR_SIGMA") );
-  PUTINT(   (PM.GABOR_SIZE),         ("GABOR_SIZE") );
-  PUTFLOAT( (PM.FOREG_ECCENTRICITY), ("FOREG_ECCENTRICITY") );
-  PUTFLOAT( (PM.FOREG_JITTER),       ("FOREG_JITTER") );
-  PUTINT(   (PM.FOREG_POSITIONS),    ("FOREG_POSITIONS") );
-  PUTFLOAT( (PM.FOREG_DIFFERENCE),   ("FOREG_DIFFERENCE") );
+  putint(fp, DISPLAY_SET_NUMBER, "DISPLAY_SET_NUMBER");
+  putint(fp, PM.DISPLAY_NUMBER, "DISPLAY_NUMBER");
+  putint(fp, PM.DISPLAY_X, "DISPLAY_X");
+  putint(fp, PM.DISPLAY_Y, "DISPLAY_Y");
+  putfloat(fp, PM.GABOR_PERIOD, "GABOR_PERIOD");
+  putfloat(fp, PM.GABOR_SIGMA, "GABOR_SIGMA");
+  putint(fp, PM.GABOR_SIZE, "GABOR_SIZE");
+  putfloat(fp, PM.FOREG_ECCENTRICITY, "FOREG_ECCENTRICITY");
+  putfloat(fp, PM.FOREG_JITTER, "FOREG_JITTER");
+  putint(fp, PM.FOREG_POSITIONS, "FOREG_POSITIONS");
+  putfloat(fp, PM.FOREG_DIFFERENCE, "FOREG_DIFFERENCE");
 
   Closefile( fp );
 }
@@ -210,14 +199,14 @@ void WriteArray(const Ground* g)
 
   Openfile( &fp, APPEND, "snk" );
 
-  PUTINT(   (DISPLAY_COUNT),         ("DISPLAY_COUNT") );
-  PUTINT(   (g->totalNumber()),      ("TOTAL_NUMBER") );
-  PUTINT(   (PM.FOREG_NUMBER),       ("FOREG_NUMBER") );
-  PUTINT(   (g->getPatchNumber()),   ("PATCH_NUMBER") );
-  PUTFLOAT( (PM.FOREG_SPACING) ,     ("FOREG_SPACING") );
-  PUTFLOAT( (g->backgAveSpacing()),  ("BACKG_AVE_SPACING") );
-  PUTFLOAT( (PM.BACKG_INI_SPACING),  ("BACKG_INI_SPACING") );
-  PUTFLOAT( (PM.BACKG_MIN_SPACING),  ("BACKG_MIN_SPACING") );
+  putint(fp, DISPLAY_COUNT, "DISPLAY_COUNT");
+  putint(fp, g->totalNumber(), "TOTAL_NUMBER");
+  putint(fp, PM.FOREG_NUMBER, "FOREG_NUMBER");
+  putint(fp, g->getPatchNumber(), "PATCH_NUMBER");
+  putfloat(fp, PM.FOREG_SPACING, "FOREG_SPACING");
+  putfloat(fp, g->backgAveSpacing(), "BACKG_AVE_SPACING");
+  putfloat(fp, PM.BACKG_INI_SPACING, "BACKG_INI_SPACING");
+  putfloat(fp, PM.BACKG_MIN_SPACING, "BACKG_MIN_SPACING");
 
   for(int i = 0; i < g->totalNumber(); ++i)
     {
