@@ -78,21 +78,13 @@ void Ground::contourElements()
 {
   for (int n = 0; n < snake.getLength(); ++n)
     {
-      double x, y, theta;
-
-      snake.getElement(n, &x, &y, &theta);
-
       if (totalNumber >= MAX_GABOR_NUMBER)
         {
           printf(" More than %d elements!\n", MAX_GABOR_NUMBER);
           exit(1);
         }
 
-      array[totalNumber].type  = Element::CONTOUR;
-      array[totalNumber].xpos  = x;
-      array[totalNumber].ypos  = y;
-      array[totalNumber].theta = theta;
-      ++totalNumber;
+      array[totalNumber++] = snake.getElement(n);
     }
 }
 

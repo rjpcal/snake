@@ -249,13 +249,18 @@ Snake::~Snake()
   delete [] itsElem;
 }
 
-void Snake::getElement(int n, double* x, double* y, double* theta) const
+Element Snake::getElement(int n) const
 {
   assert(n < itsLength);
 
-  *x = 0.5 * (itsElem[n].xpos + itsElem[(n+1)%itsLength].xpos);
-  *y = 0.5 * (itsElem[n].ypos + itsElem[(n+1)%itsLength].ypos);
-  *theta = zerototwopi(-itsElem[n].theta);
+  Element result;
+
+  result.type = Element::CONTOUR;
+  result.xpos = 0.5 * (itsElem[n].xpos + itsElem[(n+1)%itsLength].xpos);
+  result.ypos = 0.5 * (itsElem[n].ypos + itsElem[(n+1)%itsLength].ypos);
+  result.theta = zerototwopi(-itsElem[n].theta);
+
+  return result;
 }
 
 void Snake::center()

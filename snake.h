@@ -25,7 +25,7 @@ public:
 
   int getLength() const { return itsLength; }
   double getSpacing() const { return itsSpacing; }
-  void getElement(int n, double* x, double* y, double* theta) const;
+  Element getElement(int n) const;
 
 private:
   const int itsLength;
