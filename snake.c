@@ -102,16 +102,12 @@ namespace
                         Vector* new_no2, Vector* new_no3,
                         double theta0, double incr)
   {
-    const double dist_0_1 = distance(no0, no1);
-    const double dist_1_2 = distance(no1, no2);
-    const double dist_2_3 = distance(no2, no3);
+    const double d_0_1 = distance(no0, no1);
+    const double d_1_2 = distance(no1, no2);
+    const double d_2_3 = distance(no2, no3);
 
-    *new_no0 = no0;
-    *new_no2 = no2;
-    *new_no3 = no3;
-
-    new_no1->x = no0.x + dist_0_1 * cos(theta0-incr);
-    new_no1->y = no0.y + dist_0_1 * sin(theta0-incr);
+    new_no1->x = no0.x + d_0_1 * cos(theta0-incr);
+    new_no1->y = no0.y + d_0_1 * sin(theta0-incr);
 
     /*                                                    */
     /*   x'      dx/e   dy/e     x - new_no1->x           */
@@ -123,9 +119,9 @@ namespace
     /*   x' =          aleph + bet                        */
     /*   y' = +- sqrt( gimel - bet**2 - aleph**2 )        */
     /*                                                    */
-    /*   aleph = (dist_1_2**2-dist_2_3**2)/(2*e)          */
+    /*   aleph = (d_1_2**2-d_2_3**2)/(2*e)                */
     /*   bet   = e/2                                      */
-    /*   gimel = (dist_1_2**2+dist_2_3**2)/2              */
+    /*   gimel = (d_1_2**2+d_2_3**2)/2                    */
     /*                                                    */
 
     /*                                                    */
@@ -134,14 +130,14 @@ namespace
     /*   y       new_no1->y       dy/e   dx/e     y'      */
     /*                                                    */
 
-    const double dx    = new_no3->x - new_no1->x;
-    const double dy    = new_no3->y - new_no1->y;
+    const double dx_3_1    = no3.x - new_no1->x;
+    const double dy_3_1    = no3.y - new_no1->y;
 
-    const double e     = sqrt(dx*dx + dy*dy);
+    const double d_3_1     = sqrt(dx_3_1*dx_3_1 + dy_3_1*dy_3_1);
 
-    const double aleph = (dist_1_2*dist_1_2-dist_2_3*dist_2_3)/(2.*e);
-    const double bet   = e/2.;
-    const double gimel = (dist_1_2*dist_1_2+dist_2_3*dist_2_3)/2.;
+    const double aleph = (d_1_2*d_1_2 - d_2_3*d_2_3)/(2.*d_3_1);
+    const double bet   = d_3_1/2.0;
+    const double gimel = (d_1_2*d_1_2 + d_2_3*d_2_3)/2.;
 
     if (gimel < bet*bet + aleph*aleph)
       return false;
@@ -150,17 +146,19 @@ namespace
     const double yp = sqrt(gimel - bet*bet - aleph*aleph);
 
     const Vector no2_one
-      (new_no1->x + xp*dx/e - yp*dy/e,
-       new_no1->y + xp*dy/e + yp*dx/e);
+      (new_no1->x + xp*dx_3_1/d_3_1 - yp*dy_3_1/d_3_1,
+       new_no1->y + xp*dy_3_1/d_3_1 + yp*dx_3_1/d_3_1);
 
     const Vector no2_two
-      (new_no1->x + xp*dx/e + yp*dy/e,
-       new_no1->y + xp*dy/e - yp*dx/e);
+      (new_no1->x + xp*dx_3_1/d_3_1 + yp*dy_3_1/d_3_1,
+       new_no1->y + xp*dy_3_1/d_3_1 - yp*dx_3_1/d_3_1);
 
-    const double dis_one = distance(no2_one, *new_no2);
-    const double dis_two = distance(no2_two, *new_no2);
+    const double dis_one = distance(no2_one, no2);
+    const double dis_two = distance(no2_two, no2);
 
+    *new_no0 = no0;
     *new_no2 = (dis_one < dis_two) ? no2_one : no2_two;
+    *new_no3 = no3;
 
     return true;
   }
