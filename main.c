@@ -54,7 +54,7 @@ int main( int argc, char** argv )
                              pm.BACKG_INI_SPACING,
                              pm.BACKG_MIN_SPACING);
 
-      WriteArray(pm.FILENAME, g);
+      g->writeArray(pm.FILENAME);
 
       g->renderInto(&fakewin, gabors);
 

@@ -5,6 +5,4 @@
 
 #define TWOPI               (2*M_PI)
 
-#define STRINGSIZE           120
-
 #endif // !DEFS_H_DEFINED

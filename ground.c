@@ -4,6 +4,7 @@
 #include "gabor.h"
 #include "geom.h"
 #include "main.h"
+#include "params.h"
 #include "timing.h"
 #include "window.h"
 
@@ -193,8 +194,8 @@ void Ground::fillElements()
       Exit();
     }
 
-  BACKG_AVE_SPACING = sqrt((double)2.0*sizeX*sizeY/(SQRT3*npts));
-  printf(" added %d to ave spacing %f\n", npts-NPatch, BACKG_AVE_SPACING );
+  backgAveSpacing = sqrt((double)2.0*sizeX*sizeY/(SQRT3*npts));
+  printf(" added %d to ave spacing %f\n", npts-NPatch, backgAveSpacing );
 
   NPatch = npts;
 }
@@ -291,4 +292,64 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
         for (int x = x0; x < x1; ++x)
           w->blendVal(x, y, p[x-x0+(y-y0)*g.getPatchSize()]);
     }
+}
+
+void Ground::writeArray(const char* filestem) const
+{
+  int x, y, o, s;
+
+  char fname[STRINGSIZE];
+  sprintf( fname, "%s.snk", filestem);
+
+  FILE* fp = fopen(fname, "a");
+  if (fp == 0)
+    {
+      printf("cannot append to %s\n", fname);
+      exit(0);
+    }
+
+  putint(fp, DISPLAY_COUNT, "DISPLAY_COUNT");
+  putint(fp, NPatch, "TOTAL_NUMBER");
+  putint(fp, snake.getLength(), "FOREG_NUMBER");
+  putint(fp, this->patchNumber, "PATCH_NUMBER");
+  putfloat(fp, snake.getSpacing(), "FOREG_SPACING");
+  putfloat(fp, backgAveSpacing, "BACKG_AVE_SPACING");
+  putfloat(fp, this->backgIniSpacing, "BACKG_INI_SPACING");
+  putfloat(fp, this->backgMinSpacing, "BACKG_MIN_SPACING");
+
+  const double RAD2DEG = (180./M_PI);
+
+  for(int i = 0; i < NPatch; ++i)
+    {
+      if( this->flag(i) )
+        {
+          o = (int)( RAD2DEG * this->theta(i) + 0.5 );
+
+          x = (int)( this->xpos(i) + 0.5 );
+
+          y = (int)( this->ypos(i) + 0.5 );
+
+          s = this->flag(i);
+
+          fprintf( fp, "%-5d %-5d %-5d %-5d\n", x, y, o, s );
+        }
+    }
+
+  for(int i = 0; i < NPatch; ++i)
+    {
+      if( !this->flag(i) )
+        {
+          o = (int)( RAD2DEG * this->theta(i) + 0.5 );
+
+          x = (int)( this->xpos(i) + 0.5 );
+
+          y = (int)( this->ypos(i) + 0.5 );
+
+          s = this->flag(i);
+
+          fprintf( fp, "%-5d %-5d %-5d %-5d\n", x, y, o, s );
+        }
+    }
+
+  fclose(fp);
 }

@@ -11,44 +11,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-namespace
-{
-  char line[STRINGSIZE], text[STRINGSIZE];
-
-  const double RAD2DEG = (180./M_PI);
-
-  inline int getint(FILE* fp)
-  {
-    int result = -1;
-    fgets(line,120,fp);
-    sscanf(line,"%s %d",text,&result);
-    return result;
-  }
-
-  inline float getfloat(FILE* fp)
-  {
-    float result = -1.0;
-    fgets(line,120,fp);
-    sscanf(line,"%s %f",text,&result);
-    return result;
-  }
-
-  inline void putint(FILE* fp, int val, const char* name)
-  {
-    fprintf(fp, "%-19s %d\n", name, val);
-  }
-
-  inline void putfloat(FILE* fp, float val, const char* name)
-  {
-    fprintf(fp, "%-19s %.2f\n", name, val);
-  }
-
-  inline void puttext(FILE* fp, const char* val, const char* name)
-  {
-    fprintf(fp, "%-19s %s\n", name, val);
-  }
-}
-
 void Params::read(char extension[])
 {
   int idummy;
@@ -164,64 +126,6 @@ void Params::writeHeader() const
   putfloat(fp, this->FOREG_JITTER, "FOREG_JITTER");
   putint(fp, this->FOREG_POSITIONS, "FOREG_POSITIONS");
   putfloat(fp, this->FOREG_DIFFERENCE, "FOREG_DIFFERENCE");
-
-  fclose(fp);
-}
-
-void WriteArray(const char* filestem, const Ground* g)
-{
-  int x, y, o, s;
-
-  char fname[STRINGSIZE];
-  sprintf( fname, "%s.snk", filestem);
-
-  FILE* fp = fopen(fname, "a");
-  if (fp == 0)
-    {
-      printf("cannot append to %s\n", fname);
-      exit(0);
-    }
-
-  putint(fp, DISPLAY_COUNT, "DISPLAY_COUNT");
-  putint(fp, g->totalNumber(), "TOTAL_NUMBER");
-  putint(fp, g->getForegNumber(), "FOREG_NUMBER");
-  putint(fp, g->getPatchNumber(), "PATCH_NUMBER");
-  putfloat(fp, g->getForegSpacing(), "FOREG_SPACING");
-  putfloat(fp, g->backgAveSpacing(), "BACKG_AVE_SPACING");
-  putfloat(fp, g->getBackgIniSpacing(), "BACKG_INI_SPACING");
-  putfloat(fp, g->getBackgMinSpacing(), "BACKG_MIN_SPACING");
-
-  for(int i = 0; i < g->totalNumber(); ++i)
-    {
-      if( g->flag(i) )
-        {
-          o = (int)( RAD2DEG * g->theta(i) + 0.5 );
-
-          x = (int)( g->xpos(i) + 0.5 );
-
-          y = (int)( g->ypos(i) + 0.5 );
-
-          s = g->flag(i);
-
-          fprintf( fp, "%-5d %-5d %-5d %-5d\n", x, y, o, s );
-        }
-    }
-
-  for(int i = 0; i < g->totalNumber(); ++i)
-    {
-      if( !g->flag(i) )
-        {
-          o = (int)( RAD2DEG * g->theta(i) + 0.5 );
-
-          x = (int)( g->xpos(i) + 0.5 );
-
-          y = (int)( g->ypos(i) + 0.5 );
-
-          s = g->flag(i);
-
-          fprintf( fp, "%-5d %-5d %-5d %-5d\n", x, y, o, s );
-        }
-    }
 
   fclose(fp);
 }

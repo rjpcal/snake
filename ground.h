@@ -15,20 +15,12 @@ public:
 
   void renderInto(FakeWindow* wind, const GaborSet& g) const;
 
+  void writeArray(const char* filestem) const;
+
   int flag(int i) const { return array[i].flag; }
   float xpos(int i) const { return array[i].xpos; }
   float ypos(int i) const { return array[i].ypos; }
   float theta(int i) const { return array[i].theta; }
-
-  float backgAveSpacing() const { return BACKG_AVE_SPACING; }
-
-  int totalNumber() const { return NPatch; }
-  int getForegNumber() const { return snake.getLength(); }
-  float getForegSpacing() const { return snake.getSpacing(); }
-  int getPatchNumber() const { return patchNumber; }
-  int getBackgNumber() const { return backgNumber; }
-  float getBackgIniSpacing() const { return backgIniSpacing; }
-  float getBackgMinSpacing() const { return backgIniSpacing; }
 
 private:
   const Snake& snake;
@@ -41,9 +33,9 @@ private:
   const float backgMinSpacingSqr;
   int patchNumber;
   int backgNumber;
-  int           NPatch;
-  Element       array[ MAX_GABOR_NUMBER ];
-  float         BACKG_AVE_SPACING;
+  int NPatch;
+  Element array[ MAX_GABOR_NUMBER ];
+  float backgAveSpacing;
 
   int tooClose(int upto, float x, float y, int except);
   void insideElements();
