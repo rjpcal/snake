@@ -21,10 +21,10 @@ tags:
 test:
 	rm -f regtest*.pnm
 	time ./makesnake regtest
-	for f in regtest*.pnm; do echo $$f; cmp $$f ref/$$f; done
 	for i in 0 1 2 3; do \
 	  pnmarith -difference regtest_$$i.pnm ref/regtest_$$i.pnm \
 	  > diff_$$i.pnm; done
+	for f in regtest*.pnm; do echo $$f; cmp $$f ref/$$f; done
 
 gabor.o: $(INC)
 ground.o: $(INC)
