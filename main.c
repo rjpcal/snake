@@ -1,7 +1,6 @@
 #include "gabor.h"
 #include "ground.h"
 #include "params.h"
-#include "snake.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,9 +32,8 @@ int main( int argc, char** argv )
       srand48(n);
 #endif
 
-      Snake s(pm.pmForegNumber, pm.pmForegSpacing);
-
-      Ground g(s, pm.pmSizeX, pm.pmSizeY,
+      Ground g(pm.pmForegNumber, pm.pmForegSpacing,
+               pm.pmSizeX, pm.pmSizeY,
                pm.pmBackgIniSpacing,
                pm.pmBackgMinSpacing,
                gabors);

@@ -5,7 +5,8 @@ class GaborSet;
 class Ground
 {
 public:
-  Ground(const Snake& s, int sizeX_, int sizeY_,
+  Ground(int foregNumber, double foregSpacing,
+         int sizeX_, int sizeY_,
          double backgIniSpacing_,
          double backgMinSpacing_,
          const GaborSet& g);
@@ -17,7 +18,7 @@ public:
 private:
   static const int MAX_GABOR_NUMBER = 1800;
 
-  const Snake& snake;
+  const Snake snake;
   const int sizeX;
   const int sizeY;
   const double halfX;

@@ -173,11 +173,12 @@ void Ground::dumpFrame() const
     }
 }
 
-Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
+Ground::Ground(int foregNumber, double foregSpacing,
+               int sizeX_, int sizeY_,
                double backgIniSpacing_,
                double backgMinSpacing_,
                const GaborSet& g) :
-  snake(s),
+  snake(foregNumber, foregSpacing),
   sizeX(sizeX_),
   sizeY(sizeY_),
   halfX(0.5*sizeX),
