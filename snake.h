@@ -1,7 +1,6 @@
 #ifndef SNAKE_H_DEFINED
 #define SNAKE_H_DEFINED
 
-
 #define      MAX_FOREG_NUMBER           128
 
 typedef struct Element

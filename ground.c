@@ -17,16 +17,18 @@
 
 /*************************** global ******************************/
 
-int                NPatch;
+// int                NPatch;
 
-int                XPatch[ MAX_GABOR_NUMBER ],
-                   YPatch[ MAX_GABOR_NUMBER ];
+// int                XPatch[ MAX_GABOR_NUMBER ],
+//                    YPatch[ MAX_GABOR_NUMBER ];
 
-Colorindex         *PPatch[ MAX_GABOR_NUMBER ];
+// Colorindex         *PPatch[ MAX_GABOR_NUMBER ];
 
-ELEMENT            array[ MAX_GABOR_NUMBER ];
+// ELEMENT            array[ MAX_GABOR_NUMBER ];
 
-float              BACKG_AVE_SPACING;
+// float              BACKG_AVE_SPACING;
+
+Ground* theGround = 0;
 
 /*************************** local *******************************/
 
@@ -48,14 +50,14 @@ namespace
 
     for( n=0; n<upto; n++ )
       {
-        dx = fabs( array[n].xpos - x );
+        dx = fabs( theGround->array[n].xpos - x );
         if( dx > HALF_X_FRAME )
           dx = 2.*HALF_X_FRAME - dx;
 
         if( dx > BACKG_MIN_SPACING )
           continue;
 
-        dy = fabs( array[n].ypos - y );
+        dy = fabs( theGround->array[n].ypos - y );
         if( dy > HALF_Y_FRAME )
           dy = 2.*HALF_Y_FRAME - dy;
 
@@ -91,11 +93,11 @@ namespace
           {
             j = (i+1) % foreg_number;
 
-            Yij      = array[i].xpos - array[j].xpos;
-            Xij      = array[j].ypos - array[i].ypos;
+            Yij      = theGround->array[i].xpos - theGround->array[j].xpos;
+            Xij      = theGround->array[j].ypos - theGround->array[i].ypos;
 
-            Xin      = array[n].xpos - array[i].xpos;
-            Yin      = array[n].ypos - array[i].ypos;
+            Xin      = theGround->array[n].xpos - theGround->array[i].xpos;
+            Yin      = theGround->array[n].ypos - theGround->array[i].ypos;
 
             if( ( vp[i] = Xij*Xin + Yij*Yin ) < 0.0 )
               {
@@ -103,22 +105,9 @@ namespace
               }
           }
 
-        /*****************************************************
-        radius = sqrt((double) array[n].xpos*array[n].xpos
-                             + array[n].ypos*array[n].ypos );
-
-        if( radius < 300.0 )
-        {
-            printf( " %d %5.2f VP ", n, radius, side );
-            for( i=0; i<foreg_number; i++ )
-                printf( " %5.0f", vp[i] );
-            printf( " side %d\n", side );
-        }
-        *****************************************************/
-
         if( side )
           {
-            array[n].flag = 1;
+            theGround->array[n].flag = 1;
             pn++;
           }
       }
@@ -137,10 +126,10 @@ namespace
       {
         if( GetElement( n, &x, &y, &theta ) )
           {
-            array[npts].flag  = 2;
-            array[npts].xpos  = x;
-            array[npts].ypos  = y;
-            array[npts].theta = theta;
+            theGround->array[npts].flag  = 2;
+            theGround->array[npts].xpos  = x;
+            theGround->array[npts].ypos  = y;
+            theGround->array[npts].theta = theta;
             npts++;
           }
       }
@@ -175,10 +164,10 @@ namespace
             if( TooClose( FOREG_NUMBER, x, y, FOREG_NUMBER+1 ) )
               continue;
 
-            array[npts].flag = 0;
-            array[npts].xpos = x;
-            array[npts].ypos = y;
-            array[npts].theta = TWOPI * drand48();
+            theGround->array[npts].flag = 0;
+            theGround->array[npts].xpos = x;
+            theGround->array[npts].ypos = y;
+            theGround->array[npts].theta = TWOPI * drand48();
 
             npts++;
           }
@@ -226,10 +215,10 @@ namespace
         if( TooClose( npts, xl[i], yl[i], npts+1 ) )
           continue;
 
-        array[npts].flag  = 0;
-        array[npts].xpos  = xl[i];
-        array[npts].ypos  = yl[i];
-        array[npts].theta = TWOPI * drand48();
+        theGround->array[npts].flag  = 0;
+        theGround->array[npts].xpos  = xl[i];
+        theGround->array[npts].ypos  = yl[i];
+        theGround->array[npts].theta = TWOPI * drand48();
         npts++;
       }
 
@@ -239,9 +228,9 @@ namespace
         Exit();
       }
 
-    BACKG_AVE_SPACING = sqrt((double)2.0*DISPLAY_X*DISPLAY_Y/(SQRT3*npts));
+    theGround->BACKG_AVE_SPACING = sqrt((double)2.0*DISPLAY_X*DISPLAY_Y/(SQRT3*npts));
     printf( " added %d to ave spacing %f\n",
-            (npts-(*pnpts)), BACKG_AVE_SPACING );
+            (npts-(*pnpts)), theGround->BACKG_AVE_SPACING );
 
     *pnpts = npts;
   }
@@ -261,8 +250,8 @@ namespace
             dx = 2.*jitter*drand48() - jitter;
             dy = 2.*jitter*drand48() - jitter;
 
-            x  = array[n].xpos + dx;
-            y  = array[n].ypos + dy;
+            x  = theGround->array[n].xpos + dx;
+            y  = theGround->array[n].ypos + dy;
 
             if( !TooClose( TOTAL_NUMBER, x, y, n ) )
               {
@@ -278,8 +267,8 @@ namespace
                 if( y >  HALF_Y_FRAME )
                   y -= 2.*HALF_Y_FRAME;
 
-                array[n].xpos = x;
-                array[n].ypos = y;
+                theGround->array[n].xpos = x;
+                theGround->array[n].ypos = y;
               }
           }
       }
@@ -290,39 +279,41 @@ namespace
 
 void MakeGround( void )
 {
-    int i, npts;
+  theGround = new Ground;
 
-    HALF_X_FRAME = 0.5 * DISPLAY_X;
-    HALF_Y_FRAME = 0.5 * DISPLAY_Y;
+  int i, npts;
 
-    npts = 0;
+  HALF_X_FRAME = 0.5 * DISPLAY_X;
+  HALF_Y_FRAME = 0.5 * DISPLAY_Y;
 
-    ContourElements( &npts );
+  npts = 0;
 
-    Map2Array( npts );
-    ShowArray();
+  ContourElements( &npts );
 
-    TOTAL_NUMBER = npts;
+  Map2Array( npts );
+  ShowArray();
 
-    GridElements( &npts );
+  TOTAL_NUMBER = npts;
 
-    TOTAL_NUMBER = npts;
+  GridElements( &npts );
 
-    for( i=0; i<DIFFUSION_CYCLES; i++ )
+  TOTAL_NUMBER = npts;
+
+  for( i=0; i<DIFFUSION_CYCLES; i++ )
     {
-        JitterElement();
+      JitterElement();
 
-        FillElements( &npts );
+      FillElements( &npts );
 
-        Map2Array( npts );
-        ShowArray();
+      Map2Array( npts );
+      ShowArray();
 
-        TOTAL_NUMBER = npts;
+      TOTAL_NUMBER = npts;
     }
 
-    InsideElements( TOTAL_NUMBER, FOREG_NUMBER, &PATCH_NUMBER );
+  InsideElements( TOTAL_NUMBER, FOREG_NUMBER, &PATCH_NUMBER );
 
-    printf( " FOREG_NUMBER %d    PATCH_NUMBER ??    TOTAL_NUMBER %d\n",
-              FOREG_NUMBER, TOTAL_NUMBER );
-    BACKG_NUMBER = TOTAL_NUMBER - PATCH_NUMBER;
+  printf( " FOREG_NUMBER %d    PATCH_NUMBER ??    TOTAL_NUMBER %d\n",
+          FOREG_NUMBER, TOTAL_NUMBER );
+  BACKG_NUMBER = TOTAL_NUMBER - PATCH_NUMBER;
 }

@@ -47,21 +47,21 @@ void WriteArray( void )
     PUTINT(   (FOREG_NUMBER),       ("FOREG_NUMBER") );
     PUTINT(   (PATCH_NUMBER),       ("PATCH_NUMBER") );
     PUTFLOAT( (FOREG_SPACING) ,     ("FOREG_SPACING") );
-    PUTFLOAT( (BACKG_AVE_SPACING),  ("BACKG_AVE_SPACING") );
+    PUTFLOAT( (theGround->BACKG_AVE_SPACING),  ("BACKG_AVE_SPACING") );
     PUTFLOAT( (BACKG_INI_SPACING),  ("BACKG_INI_SPACING") );
     PUTFLOAT( (BACKG_MIN_SPACING),  ("BACKG_MIN_SPACING") );
 
     for( i=0; i<TOTAL_NUMBER; i++ )
     {
-        if( array[i].flag )
+        if( theGround->array[i].flag )
         {
-            o = (int)( RAD2DEG * array[i].theta + 0.5 );
+            o = (int)( RAD2DEG * theGround->array[i].theta + 0.5 );
 
-            x = (int)( array[i].xpos + 0.5 );
+            x = (int)( theGround->array[i].xpos + 0.5 );
 
-            y = (int)( array[i].ypos + 0.5 );
+            y = (int)( theGround->array[i].ypos + 0.5 );
 
-            s = array[i].flag;
+            s = theGround->array[i].flag;
 
             fprintf( fp, "%-5d %-5d %-5d %-5d\n", x, y, o, s );
         }
@@ -69,15 +69,15 @@ void WriteArray( void )
 
     for( i=0; i<TOTAL_NUMBER; i++ )
     {
-        if( !array[i].flag )
+        if( !theGround->array[i].flag )
         {
-            o = (int)( RAD2DEG * array[i].theta + 0.5 );
+            o = (int)( RAD2DEG * theGround->array[i].theta + 0.5 );
 
-            x = (int)( array[i].xpos + 0.5 );
+            x = (int)( theGround->array[i].xpos + 0.5 );
 
-            y = (int)( array[i].ypos + 0.5 );
+            y = (int)( theGround->array[i].ypos + 0.5 );
 
-            s = array[i].flag;
+            s = theGround->array[i].flag;
 
             fprintf( fp, "%-5d %-5d %-5d %-5d\n", x, y, o, s );
         }
@@ -106,16 +106,16 @@ void Map2Array( int npts )
         if( i < FOREG_NUMBER )
         {
             phi   = Phi[ i ];
-            theta = Zerototwopi( array[i].theta + M_PI_2 );
+            theta = Zerototwopi( theGround->array[i].theta + M_PI_2 );
         }
 
-        XPatch[ i ] = (int)( array[ i ].xpos + DISPLAY_X / 2.0 + 0.5 );
-        YPatch[ i ] = (int)( array[ i ].ypos + DISPLAY_Y / 2.0 + 0.5 );
+        theGround->XPatch[ i ] = (int)( theGround->array[ i ].xpos + DISPLAY_X / 2.0 + 0.5 );
+        theGround->YPatch[ i ] = (int)( theGround->array[ i ].ypos + DISPLAY_Y / 2.0 + 0.5 );
 
-        PPatch[ i ] = GetPatch( theta, phi );
+        theGround->PPatch[ i ] = GetPatch( theta, phi );
     }
 
-    NPatch = npts;
+    theGround->NPatch = npts;
 
     SeedRand();
 }

@@ -1,15 +1,17 @@
 #include "defs.h"
 #include "snake.h"
 
-extern int         NPatch;
+class Ground
+{
+public:
+  int         NPatch;
+  int         XPatch[ MAX_GABOR_NUMBER ];    /** int pos of patches **/
+  int         YPatch[ MAX_GABOR_NUMBER ];
+  Colorindex  *PPatch[ MAX_GABOR_NUMBER ];
+  ELEMENT     array[ MAX_GABOR_NUMBER ];
+  float       BACKG_AVE_SPACING;
+};
 
-extern int         XPatch[ ];    /** int pos of patches **/
-extern int         YPatch[ ];
-
-extern Colorindex  *PPatch[ MAX_GABOR_NUMBER ];
-
-extern ELEMENT     array[ MAX_GABOR_NUMBER ];
-
-extern float       BACKG_AVE_SPACING;
+extern Ground* theGround;
 
 void MakeGround( void );

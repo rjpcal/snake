@@ -20,11 +20,11 @@ void ShowArray( void )
     tempColor = Grey;
     for (i=0;i<DISPLAY_X*DISPLAY_Y;i++) win[i]=Grey;
 
-    px     = XPatch;
-    py     = YPatch;
-    src    = PPatch;
+    px     = theGround->XPatch;
+    py     = theGround->YPatch;
+    src    = theGround->PPatch;
 
-    for( i=0; i<NPatch; i++, px++, py++, src++ )
+    for( i=0; i<theGround->NPatch; i++, px++, py++, src++ )
     {
         xbotleft  = *px - GABOR_SIZE / 2;
         ybotleft  = *py - GABOR_SIZE / 2;
