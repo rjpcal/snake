@@ -82,17 +82,17 @@ void Ground::contourElements()
 
       snake.getElement(n, &x, &y, &theta);
 
+      if (totalNumber >= MAX_GABOR_NUMBER)
+        {
+          printf(" More than %d elements!\n", MAX_GABOR_NUMBER);
+          exit(1);
+        }
+
       array[totalNumber].type  = Element::CONTOUR;
       array[totalNumber].xpos  = x;
       array[totalNumber].ypos  = y;
       array[totalNumber].theta = theta;
       ++totalNumber;
-    }
-
-  if (totalNumber > MAX_GABOR_NUMBER)
-    {
-      printf(" More than %d elements!\n", MAX_GABOR_NUMBER);
-      exit(1);
     }
 }
 
@@ -117,6 +117,12 @@ void Ground::gridElements()
           if (tooClose(snake.getLength(), x, y, snake.getLength()+1))
             continue;
 
+          if (totalNumber > MAX_GABOR_NUMBER)
+            {
+              printf(" More than %d elements!\n", MAX_GABOR_NUMBER);
+              exit(1);
+            }
+
           array[totalNumber].type = Element::OUTSIDE;
           array[totalNumber].xpos = x;
           array[totalNumber].ypos = y;
@@ -124,12 +130,6 @@ void Ground::gridElements()
 
           ++totalNumber;
         }
-    }
-
-  if (totalNumber > MAX_GABOR_NUMBER)
-    {
-      printf(" More than %d elements!\n", MAX_GABOR_NUMBER);
-      exit(1);
     }
 }
 
@@ -169,17 +169,17 @@ void Ground::fillElements()
       if (tooClose(npts, xl[i], yl[i], npts+1))
         continue;
 
+      if (npts > MAX_GABOR_NUMBER)
+        {
+          printf(" More than %d elements: %d\n", MAX_GABOR_NUMBER, npts);
+          exit(1);
+        }
+
       array[npts].type  = Element::OUTSIDE;
       array[npts].xpos  = xl[i];
       array[npts].ypos  = yl[i];
       array[npts].theta = 2 * M_PI * drand48();
       npts++;
-    }
-
-  if (npts > MAX_GABOR_NUMBER)
-    {
-      printf(" More than %d elements: %d\n", MAX_GABOR_NUMBER, npts);
-      exit(1);
     }
 
   backgAveSpacing = sqrt((double)2.0*sizeX*sizeY/(SQRT3*npts));
