@@ -17,6 +17,19 @@ namespace
 
   float increment;
 
+  struct Tuple4
+  {
+    Tuple4() {}
+
+    Tuple4(float a0, float a1, float a2, float a3)
+    { arr[0] = a0; arr[1] = a1; arr[2] = a2; arr[3] = a3; }
+
+    float  operator[](int i) const { return arr[i]; }
+    float& operator[](int i)       { return arr[i]; }
+
+    float arr[4];
+  };
+
   void swap2(int& a, int& b) { int a1 = a; a = b; b = a1;}
 
   void sort2(int& a, int& b) { if (a > b) swap2(a,b); }
@@ -58,15 +71,15 @@ namespace
     return sqrt(dx*dx + dy*dy);
   }
 
-  void getEdgeLengths(const Vector no[4], float a[4])
+  Tuple4 getEdgeLengths(const Vector no[4])
   {
-    a[0] = distance(no[0], no[1]);
-    a[1] = distance(no[1], no[2]);
-    a[2] = distance(no[2], no[3]);
-    a[3] = distance(no[3], no[0]);
+    return Tuple4(distance(no[0], no[1]),
+                  distance(no[1], no[2]),
+                  distance(no[2], no[3]),
+                  distance(no[3], no[0]));
   }
 
-  void getAngles(const Vector no[4], float alpha[4], float theta[4])
+  void getAngles(const Vector no[4], Tuple4& alpha, Tuple4& theta)
   {
     const float dx0     = no[1].x - no[0].x;
     const float dy0     = no[1].y - no[0].y;
@@ -155,8 +168,7 @@ namespace
     no[2] = *new_no2 = *no2;
     no[3] = *new_no3 = *no3;
 
-    float a[4];
-    getEdgeLengths(no, a);
+    const Tuple4 a = getEdgeLengths(no);
 
     new_no1->x = new_no0->x + a[0] * cos(theta0-incr);
     new_no1->y = new_no0->y + a[0] * sin(theta0-incr);
@@ -164,8 +176,8 @@ namespace
     return newApex(new_no1, new_no2, new_no3, a[1], a[2]);
   }
 
-  bool monteCarlo(const float old_alpha[4], const float new_alpha[4],
-                  const float lo_alpha[4], const float hi_alpha[4])
+  bool monteCarlo(const Tuple4& old_alpha, const Tuple4& new_alpha,
+                  const Tuple4& lo_alpha, const Tuple4& hi_alpha)
   {
     bool zero_probability = false;
 
@@ -338,12 +350,12 @@ void Snake::jiggle()
       delta[n] = itsElem[i[n]].delta;
     }
 
-  float alpha[4];
-  float theta[4];
+  Tuple4 alpha;
+  Tuple4 theta;
   getAngles(no, alpha, theta);
 
-  float lo_alpha[4];
-  float hi_alpha[4];
+  Tuple4 lo_alpha;
+  Tuple4 hi_alpha;
   for (int n = 0; n < 4; ++n)
     {
       lo_alpha[n] = alpha[n] - (HIDELTA - delta[n]);
@@ -371,8 +383,8 @@ void Snake::jiggle()
           continue;
         }
 
-      float new_alpha[4];
-      float new_theta[4];
+      Tuple4 new_alpha;
+      Tuple4 new_theta;
       getAngles(new_no, new_alpha, new_theta);
 
       if (monteCarlo(alpha, new_alpha, lo_alpha, hi_alpha))
