@@ -7,42 +7,48 @@
 
 #include <stdlib.h>
 
-float DELTA_THETA, DELTA_PHASE, OFF_THETA, OFF_PHASE;
-
 namespace
 {
   const float GABOR_CONTRAST = 1.0f;
 
-  void InitPatch( Colorindex *ptr, float sigma, float omega, float theta, float phi, float contrast, int xysize )
+  const float DELTA_THETA    = M_PI / GABOR_MAX_ORIENT;
+  const float DELTA_PHASE    = TWOPI / GABOR_MAX_PHASE;
+  const float OFF_THETA      = 0.5 * DELTA_THETA;
+  const float OFF_PHASE      = 0.5 * DELTA_PHASE;
+
+  Colorindex* CreatePatch(float sigma, float omega, float theta,
+                          float phi, float contrast, int xysize )
   {
-    int ix, iy;
-    float sin_theta, cos_theta, dx, dy, fx, fy,
-      ssqr, dsqr, sinus, gauss;
+    Colorindex* const result = new Colorindex[xysize*xysize];
 
-    ssqr  = 2.*sigma*sigma;
+    const float ssqr  = 2.*sigma*sigma;
 
-    cos_theta = cos((double) theta );
-    sin_theta = sin((double) theta );
+    const float cos_theta = cos((double) theta );
+    const float sin_theta = sin((double) theta );
 
-    for( iy=0; iy<xysize; iy++ )
+    Colorindex* ptr = result;
+
+    for(int iy=0; iy<xysize; ++iy)
       {
-        fy = (float)( iy - xysize / 2.0 + 0.5 );
+        const float fy = (float)( iy - xysize / 2.0 + 0.5 );
 
-        for( ix=0; ix<xysize; ix++ )
+        for(int ix=0; ix<xysize; ++ix)
           {
-            fx = (float)( ix - xysize / 2.0 + 0.5 );
+            const float fx = (float)( ix - xysize / 2.0 + 0.5 );
 
-            dx = cos_theta * fx - sin_theta * fy;
-            dy = sin_theta * fx + cos_theta * fy;
+            const float dx = cos_theta * fx - sin_theta * fy;
+            const float dy = sin_theta * fx + cos_theta * fy;
 
-            dsqr  = ( dx*dx + dy*dy ) / ssqr;
+            const float dsqr  = ( dx*dx + dy*dy ) / ssqr;
 
-            sinus = cos((double) omega * dx + phi );
+            const float sinus = cos((double) omega * dx + phi );
 
-            gauss = exp((double) -dsqr );
+            const float gauss = exp((double) -dsqr );
             *ptr++ = F2I( contrast * sinus * gauss );
           }
       }
+
+    return result;
   }
 
   float Index2Theta( int index )
@@ -90,44 +96,28 @@ namespace
 
 GaborSet::GaborSet()
 {
-  int n, m;
+  const float GABOR_OMEGA    = TWOPI / GABOR_PERIOD;
 
-  int i, j;
-
-  for( i=0; i<GABOR_MAX_ORIENT; i++ )
-    for( j=0; j<GABOR_MAX_PHASE; j++ )
+  for(int n=0; n<GABOR_MAX_ORIENT; ++n)
+    for(int m=0; m<GABOR_MAX_PHASE; ++m)
       {
-        Patch[i][j] = (Colorindex*) calloc( GABOR_SIZE*GABOR_SIZE, sizeof( Colorindex ) );
+        Patch[n][m] = CreatePatch(GABOR_SIGMA,
+                                  GABOR_OMEGA,
+                                  Index2Theta( n ),
+                                  Index2Phi( m ),
+                                  GABOR_CONTRAST,
+                                  GABOR_SIZE);
       }
 
   printf( " Gabors allocated\n" );
   fflush( stdout );
-
-  float GABOR_OMEGA    = TWOPI / GABOR_PERIOD;
-
-  DELTA_THETA    = M_PI / GABOR_MAX_ORIENT;
-  OFF_THETA      = 0.5 * DELTA_THETA;
-  DELTA_PHASE    = TWOPI / GABOR_MAX_PHASE;
-  OFF_PHASE      = 0.5 * DELTA_PHASE;
-
-  for( n=0; n<GABOR_MAX_ORIENT; n++ )
-    for( m=0; m<GABOR_MAX_PHASE; m++ )
-      {
-        InitPatch(  Patch[n][m],
-                    GABOR_SIGMA,
-                    GABOR_OMEGA,
-                    Index2Theta( n ),
-                    Index2Phi( m ),
-                    GABOR_CONTRAST,
-                    GABOR_SIZE );
-      }
 }
 
 GaborSet::~GaborSet()
 {
   for(int i=0; i<GABOR_MAX_ORIENT; ++i)
     for(int j=0; j<GABOR_MAX_PHASE; ++j)
-      free( (char*) Patch[i][j] );
+      delete [] Patch[i][j];
 
   printf( " Gabors de-allocated\n" );
   fflush( stdout );
