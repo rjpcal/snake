@@ -71,17 +71,17 @@ namespace
 
 GaborSet::GaborSet()
 {
-  const float GABOR_OMEGA    = TWOPI / GABOR_PERIOD;
+  const float GABOR_OMEGA    = TWOPI / PM.GABOR_PERIOD;
 
   for(int n=0; n<GABOR_MAX_ORIENT; ++n)
     for(int m=0; m<GABOR_MAX_PHASE; ++m)
       {
-        Patch[n][m] = CreatePatch(GABOR_SIGMA,
+        Patch[n][m] = CreatePatch(PM.GABOR_SIGMA,
                                   GABOR_OMEGA,
                                   n * DELTA_THETA,
                                   m * DELTA_PHASE,
                                   GABOR_CONTRAST,
-                                  GABOR_SIZE);
+                                  PM.GABOR_SIZE);
       }
 
   printf( " Gabors allocated\n" );

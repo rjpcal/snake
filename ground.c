@@ -15,7 +15,6 @@
 #define            BACKGROUND_ITERATION   1000
 #define            TRY_TO_FILL_NUMBER   250000
 #define            TRY_TO_FILL_AREA         6.0
-#define            DIFFUSION_STEP       (BACKG_MIN_SPACING/16.0)
 
 /*************************** local *******************************/
 
@@ -38,16 +37,16 @@ int Ground::tooClose( int upto, float x, float y, int except )
     {
       float dx = fabs( array[n].xpos - x );
       if( dx > HALF_X_FRAME )
-        dx = DISPLAY_X - dx;
+        dx = PM.DISPLAY_X - dx;
 
-      if( dx > BACKG_MIN_SPACING )
+      if( dx > PM.BACKG_MIN_SPACING )
         continue;
 
       float dy = fabs( array[n].ypos - y );
       if( dy > HALF_Y_FRAME )
-        dy = DISPLAY_Y - dy;
+        dy = PM.DISPLAY_Y - dy;
 
-      if( dy > BACKG_MIN_SPACING )
+      if( dy > PM.BACKG_MIN_SPACING )
         continue;
 
       if( dx*dx+dy*dy > BACKG_MIN_SPACING_SQR )
@@ -64,15 +63,15 @@ int Ground::tooClose( int upto, float x, float y, int except )
 
 void Ground::insideElements()
 {
-  int pn = FOREG_NUMBER;
+  int pn = PM.FOREG_NUMBER;
 
-  for(int n = FOREG_NUMBER; n < NPatch; ++n)
+  for(int n = PM.FOREG_NUMBER; n < NPatch; ++n)
     {
       int side = 1;
 
-      for(int i = 0; i < FOREG_NUMBER; ++i)
+      for(int i = 0; i < PM.FOREG_NUMBER; ++i)
         {
-          const int j = (i+1) % FOREG_NUMBER;
+          const int j = (i+1) % PM.FOREG_NUMBER;
 
           const float Yij = array[i].xpos - array[j].xpos;
           const float Xij = array[j].ypos - array[i].ypos;
@@ -93,12 +92,12 @@ void Ground::insideElements()
         }
     }
 
-  PATCH_NUMBER = pn;
+  PM.PATCH_NUMBER = pn;
 }
 
 void Ground::contourElements(const Snake& s)
 {
-  for(int n = 0; n < FOREG_NUMBER; ++n)
+  for(int n = 0; n < PM.FOREG_NUMBER; ++n)
     {
       float x, y, theta;
 
@@ -121,11 +120,11 @@ void Ground::contourElements(const Snake& s)
 
 void Ground::gridElements()
 {
-  const float dx = BACKG_INI_SPACING;
-  const float dy = SQRT3 * BACKG_INI_SPACING / 2.0;
+  const float dx = PM.BACKG_INI_SPACING;
+  const float dy = SQRT3 * PM.BACKG_INI_SPACING / 2.0;
 
-  const int nx = (int)( ( 2.0 * HALF_X_FRAME - BACKG_MIN_SPACING - 0.5*dx ) / dx );
-  const int ny = (int)( ( 2.0 * HALF_Y_FRAME - BACKG_MIN_SPACING ) / dy );
+  const int nx = (int)( ( 2.0 * HALF_X_FRAME - PM.BACKG_MIN_SPACING - 0.5*dx ) / dx );
+  const int ny = (int)( ( 2.0 * HALF_Y_FRAME - PM.BACKG_MIN_SPACING ) / dy );
 
   const float ix =  -0.5 * (nx-1) * dx - 0.25 * dx;
   const float iy =  -0.5 * (ny-1) * dy;
@@ -137,7 +136,7 @@ void Ground::gridElements()
     {
       for(i = 0, x = ix+0.5*(j%2)*dx; i < nx; ++i, x += dx)
         {
-          if( tooClose( FOREG_NUMBER, x, y, FOREG_NUMBER+1 ) )
+          if( tooClose( PM.FOREG_NUMBER, x, y, PM.FOREG_NUMBER+1 ) )
             continue;
 
           array[NPatch].flag = 0;
@@ -161,7 +160,7 @@ void Ground::fillElements()
   float xl[ TRY_TO_FILL_NUMBER ];
   float yl[ TRY_TO_FILL_NUMBER ];
 
-  int ntry = (int)( DISPLAY_X * DISPLAY_Y / TRY_TO_FILL_AREA );
+  int ntry = (int)( PM.DISPLAY_X * PM.DISPLAY_Y / TRY_TO_FILL_AREA );
 
   if( ntry > TRY_TO_FILL_NUMBER )
     {
@@ -202,7 +201,7 @@ void Ground::fillElements()
       Exit();
     }
 
-  BACKG_AVE_SPACING = sqrt((double)2.0*DISPLAY_X*DISPLAY_Y/(SQRT3*npts));
+  BACKG_AVE_SPACING = sqrt((double)2.0*PM.DISPLAY_X*PM.DISPLAY_Y/(SQRT3*npts));
   printf(" added %d to ave spacing %f\n", npts-NPatch, BACKG_AVE_SPACING );
 
   NPatch = npts;
@@ -210,12 +209,14 @@ void Ground::fillElements()
 
 void Ground::jitterElement()
 {
+  const float jitter = (PM.BACKG_MIN_SPACING/16.0);
+
   for(int niter = 0; niter < BACKGROUND_ITERATION; ++niter)
     {
-      for(int n = FOREG_NUMBER; n < NPatch; ++n)
+      for(int n = PM.FOREG_NUMBER; n < NPatch; ++n)
         {
-          const float dx = 2.*DIFFUSION_STEP*drand48() - DIFFUSION_STEP;
-          const float dy = 2.*DIFFUSION_STEP*drand48() - DIFFUSION_STEP;
+          const float dx = 2.*jitter*drand48() - jitter;
+          const float dy = 2.*jitter*drand48() - jitter;
 
           float x  = array[n].xpos + dx;
           float y  = array[n].ypos + dy;
@@ -245,9 +246,9 @@ void Ground::jitterElement()
 
 Ground::Ground(const Snake& s)
 {
-  HALF_X_FRAME = 0.5 * DISPLAY_X;
-  HALF_Y_FRAME = 0.5 * DISPLAY_Y;
-  BACKG_MIN_SPACING_SQR = BACKG_MIN_SPACING*BACKG_MIN_SPACING;
+  HALF_X_FRAME = 0.5 * PM.DISPLAY_X;
+  HALF_Y_FRAME = 0.5 * PM.DISPLAY_Y;
+  BACKG_MIN_SPACING_SQR = PM.BACKG_MIN_SPACING*PM.BACKG_MIN_SPACING;
 
   NPatch = 0;
 
@@ -264,8 +265,8 @@ Ground::Ground(const Snake& s)
   insideElements();
 
   printf( " FOREG_NUMBER %d    PATCH_NUMBER %d    TOTAL_NUMBER %d\n",
-          FOREG_NUMBER, PATCH_NUMBER, NPatch );
-  BACKG_NUMBER = NPatch - PATCH_NUMBER;
+          PM.FOREG_NUMBER, PM.PATCH_NUMBER, NPatch );
+  PM.BACKG_NUMBER = NPatch - PM.PATCH_NUMBER;
 }
 
 void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
@@ -278,24 +279,24 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
       const float randtheta = TWOPI * drand48();
 
       const float theta =
-        (i < FOREG_NUMBER)
+        (i < PM.FOREG_NUMBER)
         ? Zerototwopi( array[i].theta + M_PI_2 )
         : randtheta;
 
-      const int xcenter = (int)( array[i].xpos + DISPLAY_X / 2.0 + 0.5 );
-      const int ycenter = (int)( array[i].ypos + DISPLAY_Y / 2.0 + 0.5 );
+      const int xcenter = (int)( array[i].xpos + PM.DISPLAY_X / 2.0 + 0.5 );
+      const int ycenter = (int)( array[i].ypos + PM.DISPLAY_Y / 2.0 + 0.5 );
 
       const double* p = g.getPatch( theta, phi );
 
       // bottom left:
-      const int x0  = xcenter - GABOR_SIZE / 2;
-      const int y0  = ycenter - GABOR_SIZE / 2;
+      const int x0  = xcenter - PM.GABOR_SIZE / 2;
+      const int y0  = ycenter - PM.GABOR_SIZE / 2;
       // top right:
-      const int x1 = x0 + GABOR_SIZE;
-      const int y1 = y0 + GABOR_SIZE;
+      const int x1 = x0 + PM.GABOR_SIZE;
+      const int y1 = y0 + PM.GABOR_SIZE;
 
       for (int y = y0; y < y1; ++y)
         for (int x = x0; x < x1; ++x)
-          w->blendVal(x, y, p[x-x0+(y-y0)*GABOR_SIZE]);
+          w->blendVal(x, y, p[x-x0+(y-y0)*PM.GABOR_SIZE]);
     }
 }

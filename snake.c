@@ -469,7 +469,7 @@ namespace
 Snake::Snake(int l) :
   length(l)
 {
-  const float radius = (float)( length * FOREG_SPACING ) / TWOPI;
+  const float radius = (float)( length * PM.FOREG_SPACING ) / TWOPI;
 
   const float alpha_off = TWOPI * drand48();
 
@@ -493,10 +493,10 @@ Snake::Snake(int l) :
 
 int Snake::getElement(int n, float* x, float* y, float* theta) const
 {
-  if( n < FOREG_NUMBER )
+  if( n < length )
     {
-      *x = 0.5 * ( foreg[n].xpos + foreg[(n+1)%FOREG_NUMBER].xpos );
-      *y = 0.5 * ( foreg[n].ypos + foreg[(n+1)%FOREG_NUMBER].ypos );
+      *x = 0.5 * ( foreg[n].xpos + foreg[(n+1)%length].xpos );
+      *y = 0.5 * ( foreg[n].ypos + foreg[(n+1)%length].ypos );
       *theta = Zerototwopi( -foreg[n].theta );
       return 1;
     }

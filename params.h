@@ -1,23 +1,28 @@
 
 #include <stdio.h>
 
-extern int   DISPLAY_X;
-extern int   DISPLAY_Y;
-extern int   FOREG_NUMBER;
-extern int   PATCH_NUMBER;
-extern int   BACKG_NUMBER;
-extern float FOREG_SPACING;
-extern float FOREG_ECCENTRICITY;
-extern float FOREG_JITTER;
-extern int   FOREG_POSITIONS;
-extern float FOREG_DIFFERENCE;
-extern float BACKG_INI_SPACING;
-extern float BACKG_MIN_SPACING;
-extern float GABOR_PERIOD;
-extern float GABOR_SIGMA;
-extern int   GABOR_SIZE;
-extern int   DISPLAY_NUMBER;
-extern const char* FILENAME;
+struct Params
+{
+  int   DISPLAY_X;
+  int   DISPLAY_Y;
+  int   FOREG_NUMBER;
+  int   PATCH_NUMBER;
+  int   BACKG_NUMBER;
+  float FOREG_SPACING;
+  float FOREG_ECCENTRICITY;
+  float FOREG_JITTER;
+  int   FOREG_POSITIONS;
+  float FOREG_DIFFERENCE;
+  float BACKG_INI_SPACING;
+  float BACKG_MIN_SPACING;
+  float GABOR_PERIOD;
+  float GABOR_SIGMA;
+  int   GABOR_SIZE;
+  int   DISPLAY_NUMBER;
+  const char* FILENAME;
+};
+
+extern Params PM;
 
 #define      READ                  'r'
 #define      WRITE                 'w'
