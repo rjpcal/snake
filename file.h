@@ -1,6 +1,8 @@
 
+class Ground;
+
 extern void WriteHeader( void );
-extern void WriteArray( void );
-extern void Map2Array( int npts );
+extern void WriteArray(const Ground* g);
+extern void Map2Array(Ground* g, int npts);
 
 

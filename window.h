@@ -1,5 +1,7 @@
 
 #include "defs.h"
 
-extern void ShowArray( void );
+class Ground;
+
+extern void ShowArray(const Ground* g);
 extern void Window2Raster( void );

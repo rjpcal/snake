@@ -62,15 +62,17 @@ int main( int argc, char** argv )
 
       MakeForeg();
 
-      MakeGround();
+      Ground* g = Ground::make();
 
-      WriteArray();
+      WriteArray(g);
 
-      ShowArray();
+      ShowArray(g);
 
       Window2Raster();
 
       DISPLAY_COUNT++;
+
+      delete g;
     }
 
   Exit();

@@ -9,36 +9,35 @@
 #include <netinet/in.h> // for conversion to big endian:
 
 
-void ShowArray( void )
+void ShowArray(const Ground* g)
 {
-    int i, *px, *py;
-    int xbotleft, ybotleft, xtopright, ytopright;
-    int tempColor;
-    Colorindex **src;
+  int i;
+  int xbotleft, ybotleft, xtopright, ytopright;
+  int tempColor;
 
-    // let's clear our fake window:
-    tempColor = Grey;
-    for (i=0;i<DISPLAY_X*DISPLAY_Y;i++) win[i]=Grey;
+  // let's clear our fake window:
+  tempColor = Grey;
+  for (i=0;i<DISPLAY_X*DISPLAY_Y;i++) win[i]=Grey;
 
-    px     = theGround->XPatch;
-    py     = theGround->YPatch;
-    src    = theGround->PPatch;
+  const int* px             = g->XPatch;
+  const int* py             = g->YPatch;
+  Colorindex* const* src    = g->PPatch;
 
-    for( i=0; i<theGround->NPatch; i++, px++, py++, src++ )
+  for( i=0; i < g->NPatch; i++, px++, py++, src++ )
     {
-        xbotleft  = *px - GABOR_SIZE / 2;
-        ybotleft  = *py - GABOR_SIZE / 2;
-        xtopright = xbotleft + GABOR_SIZE - 1;
-        ytopright = ybotleft + GABOR_SIZE - 1;
+      xbotleft  = *px - GABOR_SIZE / 2;
+      ybotleft  = *py - GABOR_SIZE / 2;
+      xtopright = xbotleft + GABOR_SIZE - 1;
+      ytopright = ybotleft + GABOR_SIZE - 1;
 
-        int xx,yy;
-        for (yy=ybotleft;yy<=ytopright;yy++)
-          for (xx=xbotleft;xx<=xtopright;xx++)
-            if (xx>=0 && xx<DISPLAY_X && yy>=0 && yy<DISPLAY_Y)
-              {
-                if (fabs(win[xx+yy*DISPLAY_X] - tempColor) < fabs((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)] - tempColor))
-                  win[xx+yy*DISPLAY_X]=((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)]);
-              }
+      int xx,yy;
+      for (yy=ybotleft;yy<=ytopright;yy++)
+        for (xx=xbotleft;xx<=xtopright;xx++)
+          if (xx>=0 && xx<DISPLAY_X && yy>=0 && yy<DISPLAY_Y)
+            {
+              if (fabs(win[xx+yy*DISPLAY_X] - tempColor) < fabs((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)] - tempColor))
+                win[xx+yy*DISPLAY_X]=((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)]);
+            }
     }
 }
 

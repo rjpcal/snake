@@ -35,7 +35,7 @@ void WriteHeader( void )
     Closefile( fp );
 }
 
-void WriteArray( void )
+void WriteArray(const Ground* g)
 {
     int i, x, y, o, s;
     FILE *fp;
@@ -47,21 +47,21 @@ void WriteArray( void )
     PUTINT(   (FOREG_NUMBER),       ("FOREG_NUMBER") );
     PUTINT(   (PATCH_NUMBER),       ("PATCH_NUMBER") );
     PUTFLOAT( (FOREG_SPACING) ,     ("FOREG_SPACING") );
-    PUTFLOAT( (theGround->BACKG_AVE_SPACING),  ("BACKG_AVE_SPACING") );
+    PUTFLOAT( (g->BACKG_AVE_SPACING),  ("BACKG_AVE_SPACING") );
     PUTFLOAT( (BACKG_INI_SPACING),  ("BACKG_INI_SPACING") );
     PUTFLOAT( (BACKG_MIN_SPACING),  ("BACKG_MIN_SPACING") );
 
     for( i=0; i<TOTAL_NUMBER; i++ )
     {
-        if( theGround->array[i].flag )
+        if( g->array[i].flag )
         {
-            o = (int)( RAD2DEG * theGround->array[i].theta + 0.5 );
+            o = (int)( RAD2DEG * g->array[i].theta + 0.5 );
 
-            x = (int)( theGround->array[i].xpos + 0.5 );
+            x = (int)( g->array[i].xpos + 0.5 );
 
-            y = (int)( theGround->array[i].ypos + 0.5 );
+            y = (int)( g->array[i].ypos + 0.5 );
 
-            s = theGround->array[i].flag;
+            s = g->array[i].flag;
 
             fprintf( fp, "%-5d %-5d %-5d %-5d\n", x, y, o, s );
         }
@@ -69,15 +69,15 @@ void WriteArray( void )
 
     for( i=0; i<TOTAL_NUMBER; i++ )
     {
-        if( !theGround->array[i].flag )
+        if( !g->array[i].flag )
         {
-            o = (int)( RAD2DEG * theGround->array[i].theta + 0.5 );
+            o = (int)( RAD2DEG * g->array[i].theta + 0.5 );
 
-            x = (int)( theGround->array[i].xpos + 0.5 );
+            x = (int)( g->array[i].xpos + 0.5 );
 
-            y = (int)( theGround->array[i].ypos + 0.5 );
+            y = (int)( g->array[i].ypos + 0.5 );
 
-            s = theGround->array[i].flag;
+            s = g->array[i].flag;
 
             fprintf( fp, "%-5d %-5d %-5d %-5d\n", x, y, o, s );
         }
@@ -87,7 +87,7 @@ void WriteArray( void )
 }
 
 
-void Map2Array( int npts )
+void Map2Array(Ground* g, int npts)
 {
     int i;
     float theta, phi, Theta[ MAX_FOREG_NUMBER ], Phi[ MAX_FOREG_NUMBER ];
@@ -106,16 +106,16 @@ void Map2Array( int npts )
         if( i < FOREG_NUMBER )
         {
             phi   = Phi[ i ];
-            theta = Zerototwopi( theGround->array[i].theta + M_PI_2 );
+            theta = Zerototwopi( g->array[i].theta + M_PI_2 );
         }
 
-        theGround->XPatch[ i ] = (int)( theGround->array[ i ].xpos + DISPLAY_X / 2.0 + 0.5 );
-        theGround->YPatch[ i ] = (int)( theGround->array[ i ].ypos + DISPLAY_Y / 2.0 + 0.5 );
+        g->XPatch[ i ] = (int)( g->array[ i ].xpos + DISPLAY_X / 2.0 + 0.5 );
+        g->YPatch[ i ] = (int)( g->array[ i ].ypos + DISPLAY_Y / 2.0 + 0.5 );
 
-        theGround->PPatch[ i ] = GetPatch( theta, phi );
+        g->PPatch[ i ] = GetPatch( theta, phi );
     }
 
-    theGround->NPatch = npts;
+    g->NPatch = npts;
 
     SeedRand();
 }
