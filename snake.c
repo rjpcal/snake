@@ -351,23 +351,18 @@ void Snake::jiggle()
       no[n].y  = itsElem[i[n]].ypos;
     }
 
-  const Tuple4 delta(itsElem[i[0]].delta,
-                     itsElem[i[1]].delta,
-                     itsElem[i[2]].delta,
-                     itsElem[i[3]].delta);
-
   const Tuple4 theta = getThetas(no);
   const Tuple4 alpha = getAlphas(theta);
 
-  const Tuple4 lo_alpha(alpha[0] - (HIDELTA - delta[0]),
-                        alpha[1] - (HIDELTA - delta[1]),
-                        alpha[2] - (HIDELTA - delta[2]),
-                        alpha[3] - (HIDELTA - delta[3]));
+  const Tuple4 lo_alpha(alpha[0] - (HIDELTA - itsElem[i[0]].delta),
+                        alpha[1] - (HIDELTA - itsElem[i[1]].delta),
+                        alpha[2] - (HIDELTA - itsElem[i[2]].delta),
+                        alpha[3] - (HIDELTA - itsElem[i[3]].delta));
 
-  const Tuple4 hi_alpha(alpha[0] + (delta[0] - LODELTA),
-                        alpha[1] + (delta[1] - LODELTA),
-                        alpha[2] + (delta[2] - LODELTA),
-                        alpha[3] + (delta[3] - LODELTA));
+  const Tuple4 hi_alpha(alpha[0] + (itsElem[i[0]].delta - LODELTA),
+                        alpha[1] + (itsElem[i[1]].delta - LODELTA),
+                        alpha[2] + (itsElem[i[2]].delta - LODELTA),
+                        alpha[3] + (itsElem[i[3]].delta - LODELTA));
 
   Vector new_no[4];
 
