@@ -201,5 +201,5 @@ Colorindex F2I(double fraction)
 
 unsigned char I2Char( Colorindex index )
 {
-  return( (unsigned char)((int)(255.0*lumi[index]) % 256) );
+  return (unsigned char)(int(255.0*lumi[index]) % 256);
 }
