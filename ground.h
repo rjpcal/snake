@@ -13,6 +13,14 @@ public:
 
   void renderInto(FakeWindow* wind) const;
 
+  int flag(int i) const { return array[i].flag; }
+  float xpos(int i) const { return array[i].xpos; }
+  float ypos(int i) const { return array[i].ypos; }
+  float theta(int i) const { return array[i].theta; }
+
+  float backgAveSpacing() const { return BACKG_AVE_SPACING; }
+
+private:
   int           NPatch;
   int           XPatch[ MAX_GABOR_NUMBER ];    /** int pos of patches **/
   int           YPatch[ MAX_GABOR_NUMBER ];
@@ -20,7 +28,6 @@ public:
   Element       array[ MAX_GABOR_NUMBER ];
   float         BACKG_AVE_SPACING;
 
-private:
   int tooClose(int upto, float x, float y, int except);
   void insideElements( int total_number, int foreg_number, int *ppatch_number );
   void contourElements();
