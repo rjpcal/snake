@@ -53,8 +53,8 @@ private:
   void center();
   void computeTheta();
   void jiggle();
-  void replaceNodes(int i1, const Vector& new1,
-                    int n2, const Vector& new2);
+  void transformPath(int i1, const Vector& new1,
+                     int n2, const Vector& new2);
 };
 
 #endif // !SNAKE_H_DEFINED

@@ -426,8 +426,8 @@ void Snake::jiggle()
     }
 
   for (int n = 0; n < 4; ++n)
-    this->replaceNodes(i[n], new_pos[n],
-                       i[(n+1)%4], new_pos[(n+1)%4]);
+    this->transformPath(i[n], new_pos[n],
+                        i[(n+1)%4], new_pos[(n+1)%4]);
 
   for (int n = 0; n < 4; ++n)
     {
@@ -437,8 +437,8 @@ void Snake::jiggle()
   this->computeTheta();
 }
 
-void Snake::replaceNodes(int i1, const Vector& new1,
-                         int i2, const Vector& new2)
+void Snake::transformPath(int i1, const Vector& new1,
+                          int i2, const Vector& new2)
 {
   const Vector old1 = itsElem[i1].pos;
   const Vector old2 = itsElem[i2].pos;
