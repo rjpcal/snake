@@ -36,7 +36,8 @@ private:
   void center();
   void computeDeltaTheta();
   void jiggle();
-  void newNodes(int ni, int nj, Vector new_no_i, Vector new_no_j);
+  void replaceNodes(int i1, const Vector& new1,
+                    int n2, const Vector& new2);
 };
 
 #endif // !SNAKE_H_DEFINED

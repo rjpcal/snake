@@ -380,7 +380,8 @@ void Snake::jiggle()
     }
 
   for (int n = 0; n < 4; ++n)
-    this->newNodes(i[n], i[(n+1)%4], new_no[n], new_no[(n+1)%4]);
+    this->replaceNodes(i[n], new_no[n],
+                       i[(n+1)%4], new_no[(n+1)%4]);
 
   for (int n = 0; n < 4; ++n)
     {
@@ -391,8 +392,8 @@ void Snake::jiggle()
   this->computeDeltaTheta();
 }
 
-void Snake::newNodes(int ni, int nj,
-                     Vector new_no_i, Vector new_no_j)
+void Snake::replaceNodes(int i1, const Vector& new1,
+                         int i2, const Vector& new2)
 {
   /*                                              */
   /*   x'      c1        a11   a12     x - b1     */
@@ -400,17 +401,17 @@ void Snake::newNodes(int ni, int nj,
   /*   y'      c2        a21   a12     y - b2     */
   /*                                              */
 
-  const float b1  = itsElem[ni].xpos;
-  const float b2  = itsElem[ni].ypos;
+  const float old1x  = itsElem[i1].xpos;
+  const float old1y  = itsElem[i1].ypos;
 
-  const float dx  = itsElem[nj].xpos - b1;
-  const float dy  = itsElem[nj].ypos - b2;
+  const float dx  = itsElem[i2].xpos - old1x;
+  const float dy  = itsElem[i2].ypos - old1y;
 
-  const float c1  = new_no_i.x;
-  const float c2  = new_no_i.y;
+  const float c1  = new1.x;
+  const float c2  = new1.y;
 
-  const float dxp = new_no_j.x - c1;
-  const float dyp = new_no_j.y - c2;
+  const float dxp = new2.x - c1;
+  const float dyp = new2.y - c2;
 
   const float l_2 = dx*dx + dy*dy;
 
@@ -420,10 +421,10 @@ void Snake::newNodes(int ni, int nj,
   const float a21 = (dyp*dx - dxp*dy)/l_2;
   const float a22 = (dyp*dy + dxp*dx)/l_2;
 
-  for (int n = (ni+1)%itsLength; n != nj; n = (n+1)%itsLength)
+  for (int n = (i1+1)%itsLength; n != i2; n = (n+1)%itsLength)
     {
-      const float diffx = itsElem[n].xpos - b1;
-      const float diffy = itsElem[n].ypos - b2;
+      const float diffx = itsElem[n].xpos - old1x;
+      const float diffy = itsElem[n].ypos - old1y;
 
       itsElem[n].xpos = c1 + a11*diffx + a12*diffy;
       itsElem[n].ypos = c2 + a21*diffx + a22*diffy;
