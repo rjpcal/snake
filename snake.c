@@ -96,23 +96,23 @@ namespace
   }
 
   // Must return "true" in order to proceed with new nodes in jiggle().
-  bool squashQuadrangle(const Vector& no0, const Vector& no1,
-                        const Vector& no2, const Vector& no3,
-                        Vector* new_no0, Vector* new_no1,
-                        Vector* new_no2, Vector* new_no3,
+  bool squashQuadrangle(const Vector& old_0, const Vector& old_1,
+                        const Vector& old_2, const Vector& old_3,
+                        Vector* new_0, Vector* new_1,
+                        Vector* new_2, Vector* new_3,
                         double new_theta)
   {
     {
-      const double d_0_1 = distance(no0, no1);
+      const double d_0_1 = distance(old_0, old_1);
 
-      new_no1->x = no0.x + d_0_1 * cos(new_theta);
-      new_no1->y = no0.y + d_0_1 * sin(new_theta);
+      new_1->x = old_0.x + d_0_1 * cos(new_theta);
+      new_1->y = old_0.y + d_0_1 * sin(new_theta);
     }
 
     /*                                                    */
-    /*   x'      dx/e   dy/e     x - new_no1->x           */
-    /* (   ) = (             ) (                )         */
-    /*   y'     -dy/e   dx/e     y - new_no1->y           */
+    /*   x'      dx/e   dy/e     x - new_1->x             */
+    /* (   ) = (             ) (              )           */
+    /*   y'     -dy/e   dx/e     y - new_1->y             */
     /*                                                    */
 
     /*                                                    */
@@ -125,22 +125,22 @@ namespace
     /*                                                    */
 
     /*                                                    */
-    /*   x       new_no1->x       dx/e  -dy/e     x'      */
-    /* (   ) = (            ) + (             ) (   )     */
-    /*   y       new_no1->y       dy/e   dx/e     y'      */
+    /*   x       new_1->x       dx/e  -dy/e     x'        */
+    /* (   ) = (            ) + (           ) (   )       */
+    /*   y       new_1->y       dy/e   dx/e     y'        */
     /*                                                    */
 
-    const double dx_3_1    = no3.x - new_no1->x;
-    const double dy_3_1    = no3.y - new_no1->y;
+    const double dx_3_1    = old_3.x - new_1->x;
+    const double dy_3_1    = old_3.y - new_1->y;
 
     const double d_3_1     = sqrt(dx_3_1*dx_3_1 + dy_3_1*dy_3_1);
 
-    const double d_1_2 = distance(no1, no2);
-    const double d_2_3 = distance(no2, no3);
+    const double d_1_2 = distance(old_1, old_2);
+    const double d_2_3 = distance(old_2, old_3);
 
-    const double aleph = (d_1_2*d_1_2 - d_2_3*d_2_3)/(2.*d_3_1);
+    const double aleph = (d_1_2*d_1_2 - d_2_3*d_2_3)/(2.0*d_3_1);
     const double bet   = d_3_1/2.0;
-    const double gimel = (d_1_2*d_1_2 + d_2_3*d_2_3)/2.;
+    const double gimel = (d_1_2*d_1_2 + d_2_3*d_2_3)/2.0;
 
     if (gimel < bet*bet + aleph*aleph)
       return false;
@@ -149,19 +149,19 @@ namespace
     const double yp = sqrt(gimel - bet*bet - aleph*aleph);
 
     const Vector no2_one
-      (new_no1->x + xp*dx_3_1/d_3_1 - yp*dy_3_1/d_3_1,
-       new_no1->y + xp*dy_3_1/d_3_1 + yp*dx_3_1/d_3_1);
+      (new_1->x + xp*dx_3_1/d_3_1 - yp*dy_3_1/d_3_1,
+       new_1->y + xp*dy_3_1/d_3_1 + yp*dx_3_1/d_3_1);
 
     const Vector no2_two
-      (new_no1->x + xp*dx_3_1/d_3_1 + yp*dy_3_1/d_3_1,
-       new_no1->y + xp*dy_3_1/d_3_1 - yp*dx_3_1/d_3_1);
+      (new_1->x + xp*dx_3_1/d_3_1 + yp*dy_3_1/d_3_1,
+       new_1->y + xp*dy_3_1/d_3_1 - yp*dx_3_1/d_3_1);
 
-    const double dis_one = distance(no2_one, no2);
-    const double dis_two = distance(no2_two, no2);
+    const double dis_one = distance(no2_one, old_2);
+    const double dis_two = distance(no2_two, old_2);
 
-    *new_no0 = no0;
-    *new_no2 = (dis_one < dis_two) ? no2_one : no2_two;
-    *new_no3 = no3;
+    *new_0 = old_0;
+    *new_2 = (dis_one < dis_two) ? no2_one : no2_two;
+    *new_3 = old_3;
 
     return true;
   }
