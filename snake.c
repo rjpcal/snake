@@ -374,7 +374,7 @@ void Snake::jiggle()
     {
       incr = (drand48()<0.5) ? -increment : increment;
 
-      switch(n = (int)(4 * drand48()))
+      switch(int(4 * drand48()))
         {
         case 0:
           ok = Squash_quadrangle(&no[0], &no[1], &no[2], &no[3],
