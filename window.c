@@ -38,16 +38,13 @@ void ShowArray(const Ground* g, FakeWindow* wind)
 
 void FakeWindow::writeRaster(const char* fname) const
 {
-  FILE *fp;
-  unsigned char map[256];
-  int i, k, x, y, dx, dy, size, header[8];
-  Colorindex *ptr, *pt;
-  unsigned char *ctr, *ct;
-
-  if( ( fp = fopen( fname, "w" ) ) == NULL )
+  FILE* fp = fopen( fname, "w" );
+  if( fp == NULL )
     {
       printf( " %s: file not opened\n", fname );
     }
+
+  int header[8];
 
   header[0] = 0x59a66a95;
   header[1] = sizeX;
@@ -58,47 +55,49 @@ void FakeWindow::writeRaster(const char* fname) const
   header[6] = 1;
   header[7] = 768;
 
-  //convert to big endian:
-  for (i=0;i<8;i++) header[i]=htonl(header[i]);
+  // convert to big endian:
+  for (int i = 0; i < 8; ++i) header[i]=htonl(header[i]);
 
   fwrite( header, sizeof(int), 8, fp );
 
-  for( i=0; i<256; i++ )
-    map[i] = (unsigned char) i;
+  unsigned char cmap[256];
 
-  fwrite( map, sizeof(unsigned char), 256, fp );
-  fwrite( map, sizeof(unsigned char), 256, fp );
-  fwrite( map, sizeof(unsigned char), 256, fp );
+  for(int i = 0; i < 256; ++i)
+    cmap[i] = (unsigned char) i;
 
-  dx = sizeX;
-  dy = sizeY / 4;
+  fwrite( cmap, sizeof(unsigned char), 256, fp );
+  fwrite( cmap, sizeof(unsigned char), 256, fp );
+  fwrite( cmap, sizeof(unsigned char), 256, fp );
 
-  size = dx*dy;
+  const int dx = sizeX;
+  const int dy = sizeY / 4;
 
-  ptr = (Colorindex*) malloc( dx*dy*sizeof(Colorindex) );
-  ctr = (unsigned char*) malloc( dx*dy*sizeof(unsigned char) );
+  const int size = dx*dy;
 
-  for( i=0; i<4; i++ )
+  Colorindex* ptr = new Colorindex[dx*dy];
+  unsigned char* ctr = new unsigned char[dx*dy];
+
+  for(int i = 0; i < 4; ++i)
     {
-      x  = 0;
-      y  = i*dy;
+      const int x = 0;
+      const int y = i*dy;
 
-      int xx,yy;
-      for (yy = y; yy <= y+dy-1; ++yy)
-        for (xx = x; xx <= x+dx-1; ++xx)
+      for (int yy = y; yy <= y+dy-1; ++yy)
+        for (int xx = x; xx <= x+dx-1; ++xx)
           if (xx>=0 && xx<sizeX && yy>=0 && yy<sizeY)
             ptr[xx - x + dx*(yy-y)] = data[xx + yy*sizeX];
 
-      pt = ptr;
-      ct = ctr;
+      Colorindex* pt = ptr;
+      unsigned char* ct = ctr;
 
-      for( k=0; k<size; k++ )
+      for(int k = 0; k < size; ++k)
         *ct++ = I2Char( *pt++ );
 
       fwrite( ctr, sizeof(unsigned char), size, fp );
     }
 
-  free( ptr );
+  delete [] ctr;
+  delete [] ptr;
 
   fclose( fp );
 }
