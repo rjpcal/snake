@@ -2,7 +2,6 @@
 
 #include "gabor.h"
 #include "geom.h"
-#include "main.h"
 #include "params.h"
 #include "timing.h"
 #include "window.h"
@@ -106,7 +105,7 @@ void Ground::contourElements()
   if( NPatch > MAX_GABOR_NUMBER )
     {
       printf( " More than %d elements!\n", MAX_GABOR_NUMBER );
-      Exit();
+      exit(1);
     }
 }
 
@@ -143,7 +142,7 @@ void Ground::gridElements()
   if( NPatch > MAX_GABOR_NUMBER )
     {
       printf( " More than %d elements!\n", MAX_GABOR_NUMBER );
-      Exit();
+      exit(1);
     }
 }
 
@@ -158,7 +157,7 @@ void Ground::fillElements()
     {
       printf( " TRY_TO_FILL_NUMBER too small!\n" );
       printf( "\n Need %d, have %d\n", ntry, TRY_TO_FILL_NUMBER );
-      Exit();
+      exit(1);
     }
 
   ntry = 0;
@@ -190,7 +189,7 @@ void Ground::fillElements()
   if( npts > MAX_GABOR_NUMBER )
     {
       printf( " More than %d elements: %d\n", MAX_GABOR_NUMBER, npts );
-      Exit();
+      exit(1);
     }
 
   backgAveSpacing = sqrt((double)2.0*sizeX*sizeY/(SQRT3*npts));
@@ -293,7 +292,7 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
     }
 }
 
-void Ground::writeArray(const char* filestem) const
+void Ground::writeArray(const char* filestem, int displayCount) const
 {
   int x, y, o, s;
 
@@ -307,7 +306,7 @@ void Ground::writeArray(const char* filestem) const
       exit(0);
     }
 
-  putint(fp, DISPLAY_COUNT, "DISPLAY_COUNT");
+  putint(fp, displayCount, "DISPLAY_COUNT");
   putint(fp, NPatch, "TOTAL_NUMBER");
   putint(fp, snake.getLength(), "FOREG_NUMBER");
   putint(fp, this->patchNumber, "PATCH_NUMBER");

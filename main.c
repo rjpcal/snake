@@ -1,5 +1,3 @@
-#include "main.h"
-
 #include "gabor.h"
 #include "ground.h"
 #include "params.h"
@@ -10,58 +8,46 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int DISPLAY_SET_NUMBER;
-int DISPLAY_COUNT;
-
 int main( int argc, char** argv )
 {
   if( argc<2 )
     {
       printf(" You forgot to supply a filename!\n");
-      Exit();
+      return 1;
     }
 
   SeedRand();
 
-  Params pm;
+  const Params pm(argv[1], "sta");
 
-  pm.FILENAME = argv[1];
-
-  pm.read("sta");
   pm.print();
 
   // alloc mem for our fake window:
-  FakeWindow fakewin(pm.DISPLAY_X, pm.DISPLAY_Y);
+  FakeWindow fakewin(pm.pmSizeX, pm.pmSizeY);
 
   SeedRand();
 
-  GaborSet gabors(pm.GABOR_PERIOD, pm.GABOR_SIGMA, pm.GABOR_SIZE);
-
-  DISPLAY_COUNT = 0;
-
-  DISPLAY_SET_NUMBER = 1;
+  GaborSet gabors(pm.pmGaborPeriod, pm.pmGaborSigma, pm.pmGaborSize);
 
   pm.writeHeader();
 
-  for(int n = 0; n < pm.DISPLAY_NUMBER; ++n)
+  for(int n = 0; n < pm.pmDisplayNumber; ++n)
     {
       srand48(n);
 
-      Snake s(pm.FOREG_NUMBER, pm.FOREG_SPACING);
+      Snake s(pm.pmForegNumber, pm.pmForegSpacing);
 
-      Ground* g = new Ground(s, pm.DISPLAY_X, pm.DISPLAY_Y,
-                             pm.BACKG_INI_SPACING,
-                             pm.BACKG_MIN_SPACING);
+      Ground* g = new Ground(s, pm.pmSizeX, pm.pmSizeY,
+                             pm.pmBackgIniSpacing,
+                             pm.pmBackgMinSpacing);
 
-      g->writeArray(pm.FILENAME);
+      g->writeArray(pm.pmFilestem, n);
 
       g->renderInto(&fakewin, gabors);
 
       char fname[256];
-      snprintf(fname, 256, "%s_%d.pnm", pm.FILENAME, DISPLAY_COUNT);
+      snprintf(fname, 256, "%s_%d.pnm", pm.pmFilestem, n);
       fakewin.writePnm(fname);
-
-      DISPLAY_COUNT++;
 
       delete g;
     }
@@ -69,9 +55,4 @@ int main( int argc, char** argv )
   pm.write("sta");
 
   return 0;
-}
-
-void Exit( void )
-{
-  exit(0);
 }

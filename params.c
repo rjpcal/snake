@@ -2,19 +2,19 @@
 
 #include "gabor.h"
 #include "ground.h"
-#include "main.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
-void Params::read(char extension[])
+Params::Params(const char* fbase, const char* extension) :
+  pmFilestem(fbase)
 {
   int idummy;
 
   char fname[STRINGSIZE];
-  sprintf( fname, "%s.%s", this->FILENAME, extension );
+  sprintf( fname, "%s.%s", this->pmFilestem, extension );
 
   FILE* fp = fopen(fname, "r");
   if (fp == 0)
@@ -26,23 +26,23 @@ void Params::read(char extension[])
   if( fp == NULL )
     return;
 
-  this->DISPLAY_X = getint(fp);
-  this->DISPLAY_Y = getint(fp);
-  this->FOREG_NUMBER = getint(fp);
+  this->pmSizeX = getint(fp);
+  this->pmSizeY = getint(fp);
+  this->pmForegNumber = getint(fp);
   idummy = getint(fp);
   idummy = getint(fp);
   idummy = getint(fp);
-  this->FOREG_SPACING = getfloat(fp);
-  this->FOREG_ECCENTRICITY = getfloat(fp);
-  this->FOREG_JITTER = getfloat(fp);
-  this->FOREG_POSITIONS = getint(fp);
-  this->FOREG_DIFFERENCE = getfloat(fp);
-  this->BACKG_INI_SPACING = getfloat(fp);
-  this->BACKG_MIN_SPACING = getfloat(fp);
-  this->GABOR_PERIOD = getfloat(fp);
-  this->GABOR_SIGMA = getfloat(fp);
-  this->GABOR_SIZE = getint(fp);
-  this->DISPLAY_NUMBER = getint(fp);
+  this->pmForegSpacing = getfloat(fp);
+  this->pmForegEccentricity = getfloat(fp);
+  this->pmForegJitter = getfloat(fp);
+  this->pmForegPositions = getint(fp);
+  this->pmForegDifference = getfloat(fp);
+  this->pmBackgIniSpacing = getfloat(fp);
+  this->pmBackgMinSpacing = getfloat(fp);
+  this->pmGaborPeriod = getfloat(fp);
+  this->pmGaborSigma = getfloat(fp);
+  this->pmGaborSize = getint(fp);
+  this->pmDisplayNumber = getint(fp);
   // GETTEXT(  (sdummy) );
 
   fclose(fp);
@@ -51,7 +51,7 @@ void Params::read(char extension[])
 void Params::write(char extension[]) const
 {
   char fname[STRINGSIZE];
-  sprintf( fname, "%s.%s", this->FILENAME, extension );
+  sprintf( fname, "%s.%s", this->pmFilestem, extension );
 
   FILE* fp = fopen(fname, "w");
   if (fp == 0)
@@ -60,51 +60,51 @@ void Params::write(char extension[]) const
       exit(0);
     }
 
-  putint(fp, this->DISPLAY_X, "DISPLAY_X");
-  putint(fp, this->DISPLAY_Y, "DISPLAY_Y");
-  putint(fp, this->FOREG_NUMBER, "FOREG_NUMBER");
+  putint(fp, this->pmSizeX, "DISPLAY_X");
+  putint(fp, this->pmSizeY, "DISPLAY_Y");
+  putint(fp, this->pmForegNumber, "FOREG_NUMBER");
   putint(fp, -1, "PATCH_NUMBER");
   putint(fp, -1, "BACKG_NUMBER");
   putint(fp, -1, "TOTAL_NUMBER");
-  putfloat(fp, this->FOREG_SPACING, "FOREG_SPACING");
-  putfloat(fp, this->FOREG_ECCENTRICITY, "FOREG_ECCENTRICITY");
-  putfloat(fp, this->FOREG_JITTER, "FOREG_JITTER");
-  putint(fp, this->FOREG_POSITIONS, "FOREG_POSITIONS");
-  putfloat(fp, this->FOREG_DIFFERENCE, "FOREG_DIFFERENCE");
-  putfloat(fp, this->BACKG_INI_SPACING, "BACKG_INI_SPACING");
-  putfloat(fp, this->BACKG_MIN_SPACING, "BACKG_MIN_SPACING");
-  putfloat(fp, this->GABOR_PERIOD, "GABOR_PERIOD");
-  putfloat(fp, this->GABOR_SIGMA, "GABOR_SIGMA");
-  putint(fp, this->GABOR_SIZE, "GABOR_SIZE");
-  putint(fp, this->DISPLAY_NUMBER, "DISPLAY_NUMBER");
-  puttext(fp, this->FILENAME, "FILENAME");
+  putfloat(fp, this->pmForegSpacing, "FOREG_SPACING");
+  putfloat(fp, this->pmForegEccentricity, "FOREG_ECCENTRICITY");
+  putfloat(fp, this->pmForegJitter, "FOREG_JITTER");
+  putint(fp, this->pmForegPositions, "FOREG_POSITIONS");
+  putfloat(fp, this->pmForegDifference, "FOREG_DIFFERENCE");
+  putfloat(fp, this->pmBackgIniSpacing, "BACKG_INI_SPACING");
+  putfloat(fp, this->pmBackgMinSpacing, "BACKG_MIN_SPACING");
+  putfloat(fp, this->pmGaborPeriod, "GABOR_PERIOD");
+  putfloat(fp, this->pmGaborSigma, "GABOR_SIGMA");
+  putint(fp, this->pmGaborSize, "GABOR_SIZE");
+  putint(fp, this->pmDisplayNumber, "DISPLAY_NUMBER");
+  puttext(fp, this->pmFilestem, "FILENAME");
 
   fclose(fp);
 }
 
 void Params::print() const
 {
-  putint(stdout, this->DISPLAY_X, "DISPLAY_X");
-  putint(stdout, this->DISPLAY_Y, "DISPLAY_Y");
-  putint(stdout, this->FOREG_NUMBER, "FOREG_NUMBER");
-  putfloat(stdout, this->FOREG_SPACING, "FOREG_SPACING");
-  putfloat(stdout, this->FOREG_ECCENTRICITY, "FOREG_ECCENTRICITY");
-  putfloat(stdout, this->FOREG_JITTER, "FOREG_JITTER");
-  putint(stdout, this->FOREG_POSITIONS, "FOREG_POSITIONS");
-  putfloat(stdout, this->FOREG_DIFFERENCE, "FOREG_DIFFERENCE");
-  putfloat(stdout, this->BACKG_INI_SPACING, "BACKG_INI_SPACING");
-  putfloat(stdout, this->BACKG_MIN_SPACING, "BACKG_MIN_SPACING");
-  putfloat(stdout, this->GABOR_PERIOD, "GABOR_PERIOD");
-  putfloat(stdout, this->GABOR_SIGMA, "GABOR_SIGMA");
-  putint(stdout, this->GABOR_SIZE, "GABOR_SIZE");
-  putint(stdout, this->DISPLAY_NUMBER, "DISPLAY_NUMBER");
-  puttext(stdout, this->FILENAME, "FILENAME");
+  putint(stdout, this->pmSizeX, "DISPLAY_X");
+  putint(stdout, this->pmSizeY, "DISPLAY_Y");
+  putint(stdout, this->pmForegNumber, "FOREG_NUMBER");
+  putfloat(stdout, this->pmForegSpacing, "FOREG_SPACING");
+  putfloat(stdout, this->pmForegEccentricity, "FOREG_ECCENTRICITY");
+  putfloat(stdout, this->pmForegJitter, "FOREG_JITTER");
+  putint(stdout, this->pmForegPositions, "FOREG_POSITIONS");
+  putfloat(stdout, this->pmForegDifference, "FOREG_DIFFERENCE");
+  putfloat(stdout, this->pmBackgIniSpacing, "BACKG_INI_SPACING");
+  putfloat(stdout, this->pmBackgMinSpacing, "BACKG_MIN_SPACING");
+  putfloat(stdout, this->pmGaborPeriod, "GABOR_PERIOD");
+  putfloat(stdout, this->pmGaborSigma, "GABOR_SIGMA");
+  putint(stdout, this->pmGaborSize, "GABOR_SIZE");
+  putint(stdout, this->pmDisplayNumber, "DISPLAY_NUMBER");
+  puttext(stdout, this->pmFilestem, "FILENAME");
 }
 
 void Params::writeHeader() const
 {
   char fname[STRINGSIZE];
-  sprintf( fname, "%s.snk", this->FILENAME);
+  sprintf( fname, "%s.snk", this->pmFilestem);
 
   FILE* fp = fopen(fname, "w");
   if (fp == 0)
@@ -113,17 +113,16 @@ void Params::writeHeader() const
       exit(0);
     }
 
-  putint(fp, DISPLAY_SET_NUMBER, "DISPLAY_SET_NUMBER");
-  putint(fp, this->DISPLAY_NUMBER, "DISPLAY_NUMBER");
-  putint(fp, this->DISPLAY_X, "DISPLAY_X");
-  putint(fp, this->DISPLAY_Y, "DISPLAY_Y");
-  putfloat(fp, this->GABOR_PERIOD, "GABOR_PERIOD");
-  putfloat(fp, this->GABOR_SIGMA, "GABOR_SIGMA");
-  putint(fp, this->GABOR_SIZE, "GABOR_SIZE");
-  putfloat(fp, this->FOREG_ECCENTRICITY, "FOREG_ECCENTRICITY");
-  putfloat(fp, this->FOREG_JITTER, "FOREG_JITTER");
-  putint(fp, this->FOREG_POSITIONS, "FOREG_POSITIONS");
-  putfloat(fp, this->FOREG_DIFFERENCE, "FOREG_DIFFERENCE");
+  putint(fp, this->pmDisplayNumber, "DISPLAY_NUMBER");
+  putint(fp, this->pmSizeX, "DISPLAY_X");
+  putint(fp, this->pmSizeY, "DISPLAY_Y");
+  putfloat(fp, this->pmGaborPeriod, "GABOR_PERIOD");
+  putfloat(fp, this->pmGaborSigma, "GABOR_SIGMA");
+  putint(fp, this->pmGaborSize, "GABOR_SIZE");
+  putfloat(fp, this->pmForegEccentricity, "FOREG_ECCENTRICITY");
+  putfloat(fp, this->pmForegJitter, "FOREG_JITTER");
+  putint(fp, this->pmForegPositions, "FOREG_POSITIONS");
+  putfloat(fp, this->pmForegDifference, "FOREG_DIFFERENCE");
 
   fclose(fp);
 }

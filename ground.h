@@ -14,7 +14,7 @@ public:
 
   void renderInto(FakeWindow* wind, const GaborSet& g) const;
 
-  void writeArray(const char* filestem) const;
+  void writeArray(const char* filestem, int displayCount) const;
 
   int flag(int i) const { return array[i].flag; }
   float xpos(int i) const { return array[i].xpos; }

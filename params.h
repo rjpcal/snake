@@ -1,25 +1,25 @@
-
 #include <stdio.h>
 
 struct Params
 {
-  int   DISPLAY_X;
-  int   DISPLAY_Y;
-  int   FOREG_NUMBER;
-  float FOREG_SPACING;
-  float FOREG_ECCENTRICITY;
-  float FOREG_JITTER;
-  int   FOREG_POSITIONS;
-  float FOREG_DIFFERENCE;
-  float BACKG_INI_SPACING;
-  float BACKG_MIN_SPACING;
-  float GABOR_PERIOD;
-  float GABOR_SIGMA;
-  int   GABOR_SIZE;
-  int   DISPLAY_NUMBER;
-  const char* FILENAME;
+  Params(const char* fbase, const char* extension);
 
-  void read(char extension[]);
+  const char* const pmFilestem;
+  int   pmSizeX;
+  int   pmSizeY;
+  int   pmForegNumber;
+  float pmForegSpacing;
+  float pmForegEccentricity;    // FIXME unused
+  float pmForegJitter;          // FIXME unused
+  int   pmForegPositions;
+  float pmForegDifference;
+  float pmBackgIniSpacing;
+  float pmBackgMinSpacing;
+  float pmGaborPeriod;
+  float pmGaborSigma;
+  int   pmGaborSize;
+  int   pmDisplayNumber;
+
   void write(char extension[]) const;
   void print() const;
   void writeHeader() const;
