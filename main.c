@@ -35,7 +35,7 @@ int main( int argc, char** argv )
 
   SeedRand();
 
-  GaborSet gabors;
+  GaborSet gabors(PM.GABOR_PERIOD, PM.GABOR_SIGMA, PM.GABOR_SIZE);
 
   DISPLAY_COUNT = 0;
 
@@ -49,7 +49,7 @@ int main( int argc, char** argv )
 
       Snake s(PM.FOREG_NUMBER);
 
-      Ground* g = new Ground(s);
+      Ground* g = new Ground(s, PM.DISPLAY_X, PM.DISPLAY_Y);
 
       WriteArray(g);
 

@@ -10,7 +10,7 @@ class Snake;
 class Ground
 {
 public:
-  Ground(const Snake& s);
+  Ground(const Snake& s, int sizeX_, int sizeY_);
 
   void renderInto(FakeWindow* wind, const GaborSet& g) const;
 
@@ -24,6 +24,10 @@ public:
   int totalNumber() const { return NPatch; }
 
 private:
+  const int sizeX;
+  const int sizeY;
+  const float halfX;
+  const float halfY;
   int           NPatch;
   Element       array[ MAX_GABOR_NUMBER ];
   float         BACKG_AVE_SPACING;

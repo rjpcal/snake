@@ -7,7 +7,7 @@
 class GaborSet
 {
 public:
-  GaborSet();
+  GaborSet(double period, double sigma, int size);
   ~GaborSet();
 
   const double* getPatch(float theta, float phi) const;

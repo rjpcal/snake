@@ -2,14 +2,12 @@
 #include "gabor.h"
 
 #include "geom.h"
-#include "params.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 namespace
 {
-  const float GABOR_CONTRAST = 1.0f;
-
   const float DELTA_THETA    = M_PI / GABOR_MAX_ORIENT;
   const float DELTA_PHASE    = TWOPI / GABOR_MAX_PHASE;
   const float OFF_THETA      = 0.5 * DELTA_THETA;
@@ -69,19 +67,19 @@ namespace
   }
 }
 
-GaborSet::GaborSet()
+GaborSet::GaborSet(double period, double sigma, int size)
 {
-  const float GABOR_OMEGA    = TWOPI / PM.GABOR_PERIOD;
+  const float omega = TWOPI / period;
 
   for(int n=0; n<GABOR_MAX_ORIENT; ++n)
     for(int m=0; m<GABOR_MAX_PHASE; ++m)
       {
-        Patch[n][m] = CreatePatch(PM.GABOR_SIGMA,
-                                  GABOR_OMEGA,
+        Patch[n][m] = CreatePatch(sigma,
+                                  omega,
                                   n * DELTA_THETA,
                                   m * DELTA_PHASE,
-                                  GABOR_CONTRAST,
-                                  PM.GABOR_SIZE);
+                                  /* contrast */ 1.0,
+                                  size);
       }
 
   printf( " Gabors allocated\n" );

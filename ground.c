@@ -23,9 +23,6 @@ namespace
   float              BACKG_ORIENTATION;
   float              FOREG_ORIENTATION;
 
-  float              HALF_X_FRAME;
-  float              HALF_Y_FRAME;
-
   const double SQRT3 = 1.7320508075;
 
   float              BACKG_MIN_SPACING_SQR;
@@ -36,15 +33,15 @@ int Ground::tooClose( int upto, float x, float y, int except )
   for(int n = 0; n < upto; ++n)
     {
       float dx = fabs( array[n].xpos - x );
-      if( dx > HALF_X_FRAME )
-        dx = PM.DISPLAY_X - dx;
+      if( dx > halfX )
+        dx = sizeX - dx;
 
       if( dx > PM.BACKG_MIN_SPACING )
         continue;
 
       float dy = fabs( array[n].ypos - y );
-      if( dy > HALF_Y_FRAME )
-        dy = PM.DISPLAY_Y - dy;
+      if( dy > halfY )
+        dy = sizeY - dy;
 
       if( dy > PM.BACKG_MIN_SPACING )
         continue;
@@ -123,8 +120,8 @@ void Ground::gridElements()
   const float dx = PM.BACKG_INI_SPACING;
   const float dy = SQRT3 * PM.BACKG_INI_SPACING / 2.0;
 
-  const int nx = (int)( ( 2.0 * HALF_X_FRAME - PM.BACKG_MIN_SPACING - 0.5*dx ) / dx );
-  const int ny = (int)( ( 2.0 * HALF_Y_FRAME - PM.BACKG_MIN_SPACING ) / dy );
+  const int nx = (int)( ( 2.0 * halfX - PM.BACKG_MIN_SPACING - 0.5*dx ) / dx );
+  const int ny = (int)( ( 2.0 * halfY - PM.BACKG_MIN_SPACING ) / dy );
 
   const float ix =  -0.5 * (nx-1) * dx - 0.25 * dx;
   const float iy =  -0.5 * (ny-1) * dy;
@@ -160,7 +157,7 @@ void Ground::fillElements()
   float xl[ TRY_TO_FILL_NUMBER ];
   float yl[ TRY_TO_FILL_NUMBER ];
 
-  int ntry = (int)( PM.DISPLAY_X * PM.DISPLAY_Y / TRY_TO_FILL_AREA );
+  int ntry = (int)( sizeX * sizeY / TRY_TO_FILL_AREA );
 
   if( ntry > TRY_TO_FILL_NUMBER )
     {
@@ -173,8 +170,8 @@ void Ground::fillElements()
 
   const float dx = (float) sqrt((double) TRY_TO_FILL_AREA );
 
-  for(float x = -HALF_X_FRAME; x <= HALF_X_FRAME; x += dx)
-    for(float y = -HALF_Y_FRAME; y <= HALF_Y_FRAME; y += dx)
+  for(float x = -halfX; x <= halfX; x += dx)
+    for(float y = -halfY; y <= halfY; y += dx)
       {
         xl[ ntry ] = x;
         yl[ ntry ] = y;
@@ -201,7 +198,7 @@ void Ground::fillElements()
       Exit();
     }
 
-  BACKG_AVE_SPACING = sqrt((double)2.0*PM.DISPLAY_X*PM.DISPLAY_Y/(SQRT3*npts));
+  BACKG_AVE_SPACING = sqrt((double)2.0*sizeX*sizeY/(SQRT3*npts));
   printf(" added %d to ave spacing %f\n", npts-NPatch, BACKG_AVE_SPACING );
 
   NPatch = npts;
@@ -223,17 +220,10 @@ void Ground::jitterElement()
 
           if( !tooClose(NPatch, x, y, n) )
             {
-              if( x < -HALF_X_FRAME )
-                x += 2.*HALF_X_FRAME;
-
-              if( x >  HALF_X_FRAME )
-                x -= 2.*HALF_X_FRAME;
-
-              if( y < -HALF_Y_FRAME )
-                y += 2.*HALF_Y_FRAME;
-
-              if( y >  HALF_Y_FRAME )
-                y -= 2.*HALF_Y_FRAME;
+              if( x < -halfX ) x += 2.*halfX;
+              if( x >  halfX ) x -= 2.*halfX;
+              if( y < -halfY ) y += 2.*halfY;
+              if( y >  halfY ) y -= 2.*halfY;
 
               array[n].xpos = x;
               array[n].ypos = y;
@@ -244,10 +234,12 @@ void Ground::jitterElement()
 
 /*****************************************************************/
 
-Ground::Ground(const Snake& s)
+Ground::Ground(const Snake& s, int sizeX_, int sizeY_) :
+  sizeX(sizeX_),
+  sizeY(sizeY_),
+  halfX(0.5*sizeX),
+  halfY(0.5*sizeY)
 {
-  HALF_X_FRAME = 0.5 * PM.DISPLAY_X;
-  HALF_Y_FRAME = 0.5 * PM.DISPLAY_Y;
   BACKG_MIN_SPACING_SQR = PM.BACKG_MIN_SPACING*PM.BACKG_MIN_SPACING;
 
   NPatch = 0;
@@ -283,8 +275,8 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
         ? Zerototwopi( array[i].theta + M_PI_2 )
         : randtheta;
 
-      const int xcenter = (int)( array[i].xpos + PM.DISPLAY_X / 2.0 + 0.5 );
-      const int ycenter = (int)( array[i].ypos + PM.DISPLAY_Y / 2.0 + 0.5 );
+      const int xcenter = (int)( array[i].xpos + sizeX / 2.0 + 0.5 );
+      const int ycenter = (int)( array[i].ypos + sizeY / 2.0 + 0.5 );
 
       const double* p = g.getPatch( theta, phi );
 
