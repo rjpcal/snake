@@ -287,38 +287,38 @@ void Snake::computeTheta()
     }
 }
 
-/*        (pos.x[n],ypos[n])     position n                                   */
-/*        (xpos[n+1],ypos[n+1]) position n+1                                 */
-/*        (0.5*(xpos[n]+xpos[n+1]), 0.5*(ypos[n]+ypos[n+1]))                 */
-/*                              location of patch n                          */
-/*        theta                 angle between pos n and pos n+1              */
-/*                              and orientation of patch n                   */
-/*        delta                 angle difference between patch n and n+1     */
-/*                                                                           */
-/*                      theta[0]                                             */
-/*                             no[0]__________                               */
-/*                           .     .                                         */
-/*                        .  alpha[0] .                                      */
-/*                     .                 .                                   */
-/*             a[0] .                       .  a[3]                          */
-/*               .                             .                             */
-/*            .                                   .                          */
-/*         .                                         .                       */
-/*      .                                               .     theta[3]       */
-/*no[1] alpha[1]                                           .                 */
-/*    .                                                     no[3]_________   */
-/*     .                                              alpha[3].              */
-/*      .                                                  .                 */
-/*       .                                             .                     */
-/*        .                                        .                         */
-/*         .                                   .                             */
-/*      a[1].                              .                                 */
-/*           .                         .                                     */
-/*            .                    .     a[2]                                */
-/*             .               .                                             */
-/*              . alpha[2] .                                                 */
-/*               .     .  theta[2]                                           */
-/*              no[2]__________                                              */
+/*        (pos.x[n],ypos[n])     position n                               */
+/*        (xpos[n+1],ypos[n+1]) position n+1                              */
+/*        (0.5*(xpos[n]+xpos[n+1]), 0.5*(ypos[n]+ypos[n+1]))              */
+/*                              location of patch n                       */
+/*        theta                 angle between pos n and pos n+1           */
+/*                              and orientation of patch n                */
+/*        delta                 angle difference between patch n and n+1  */
+/*                                                                        */
+/*                      theta[0]                                          */
+/*                             no[0]__________                            */
+/*                           .     .                                      */
+/*                        .  alpha[0] .                                   */
+/*                     .                 .                                */
+/*             a[0] .                       .  a[3]                       */
+/*               .                             .                          */
+/*            .                                   .                       */
+/*         .                                         .                    */
+/*      .                                               .     theta[3]    */
+/*no[1] alpha[1]                                           .              */
+/*    .                                                     no[3]________ */
+/*     .                                              alpha[3].           */
+/*      .                                                  .              */
+/*       .                                             .                  */
+/*        .                                        .                      */
+/*         .                                   .                          */
+/*      a[1].                              .                              */
+/*           .                         .                                  */
+/*            .                    .     a[2]                             */
+/*             .               .                                          */
+/*              . alpha[2] .                                              */
+/*               .     .  theta[2]                                        */
+/*              no[2]__________                                           */
 
 void Snake::jiggle()
 {
@@ -327,24 +327,25 @@ void Snake::jiggle()
   int i[4];
   pickRandom4(itsLength, i);
 
-  double increment = INITIAL_INCREMENT;
+  const Vector old_pos[4] = {
+    itsElem[i[0]].pos,
+    itsElem[i[1]].pos,
+    itsElem[i[2]].pos,
+    itsElem[i[3]].pos
+  };
 
-  Vector no[4]; // FIXME
-  for (int n = 0; n < 4; ++n)
-    {
-      no[n] = itsElem[i[n]].pos;
-    }
+  const Tuple4 old_theta = getThetas(old_pos);
+  const Tuple4 old_alpha = getAlphas(old_theta);
 
-  const Tuple4 theta = getThetas(no);
-  const Tuple4 alpha = getAlphas(theta);
-
-  const Tuple4 delta
+  const Tuple4 old_delta
     (minuspitopi(elem(i[0]).theta - elem(i[0]-1).theta),
      minuspitopi(elem(i[1]).theta - elem(i[1]-1).theta),
      minuspitopi(elem(i[2]).theta - elem(i[2]-1).theta),
      minuspitopi(elem(i[3]).theta - elem(i[3]-1).theta));
 
-  Vector new_no[4];
+  Vector new_pos[4];
+
+  double increment = INITIAL_INCREMENT;
 
   for (;;)
     {
@@ -353,11 +354,11 @@ void Snake::jiggle()
       const int r = int(4 * drand48());
 
       const int ok =
-        squashQuadrangle(&no[(r+0)%4], &no[(r+1)%4],
-                         &no[(r+2)%4], &no[(r+3)%4],
-                         &new_no[(r+0)%4], &new_no[(r+1)%4],
-                         &new_no[(r+2)%4], &new_no[(r+3)%4],
-                         theta[r], incr);
+        squashQuadrangle(&old_pos[(r+0)%4], &old_pos[(r+1)%4],
+                         &old_pos[(r+2)%4], &old_pos[(r+3)%4],
+                         &new_pos[(r+0)%4], &new_pos[(r+1)%4],
+                         &new_pos[(r+2)%4], &new_pos[(r+3)%4],
+                         old_theta[r], incr);
 
       if (!ok)
         {
@@ -365,20 +366,20 @@ void Snake::jiggle()
           continue;
         }
 
-      const Tuple4 new_theta = getThetas(new_no);
+      const Tuple4 new_theta = getThetas(new_pos);
       const Tuple4 new_alpha = getAlphas(new_theta);
 
-      if (monteCarlo(alpha, new_alpha, delta, increment))
+      if (monteCarlo(old_alpha, new_alpha, old_delta, increment))
         break;
     }
 
   for (int n = 0; n < 4; ++n)
-    this->replaceNodes(i[n], new_no[n],
-                       i[(n+1)%4], new_no[(n+1)%4]);
+    this->replaceNodes(i[n], new_pos[n],
+                       i[(n+1)%4], new_pos[(n+1)%4]);
 
   for (int n = 0; n < 4; ++n)
     {
-      itsElem[i[n]].pos = new_no[n];
+      itsElem[i[n]].pos = new_pos[n];
     }
 
   this->computeTheta();
