@@ -1,3 +1,4 @@
+#include "main.h"
 
 #include "defs.h"
 #include "gabor.h"
@@ -9,8 +10,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-void Exit();
 
 int DISPLAY_SET_NUMBER;
 int DISPLAY_COUNT;
@@ -56,7 +55,7 @@ int main( int argc, char** argv )
 
       WriteArray(g);
 
-      ShowArray(g, &fakewin);
+      g->renderInto(&fakewin);
 
       char fname[256];
       snprintf(fname, 256, "%s_%d.ras", FILENAME, DISPLAY_COUNT);

@@ -3,12 +3,15 @@
 
 #define MAX_GABOR_NUMBER    1800
 
+class FakeWindow;
 class GaborSet;
 
 class Ground
 {
 public:
   Ground(const GaborSet& g);
+
+  void renderInto(FakeWindow* wind) const;
 
   int         NPatch;
   int         XPatch[ MAX_GABOR_NUMBER ];    /** int pos of patches **/

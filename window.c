@@ -1,44 +1,11 @@
-
 #include "window.h"
 
-#include "defs.h"
 #include "gamma.h"
-#include "ground.h"
-#include "params.h"
 
-#include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <netinet/in.h> // for conversion to big endian:
 
-
-void ShowArray(const Ground* g, FakeWindow* wind)
-{
-  wind->clear(Grey);
-
-  const int* px         = g->XPatch;
-  const int* py         = g->YPatch;
-  Colorindex* const* pp = g->PPatch;
-
-  for(int i = 0; i < g->NPatch; ++i, ++px, ++py, ++pp)
-    {
-      // bottom left:
-      int x0  = *px - GABOR_SIZE / 2;
-      int y0  = *py - GABOR_SIZE / 2;
-      // top right:
-      int x1 = x0 + GABOR_SIZE;
-      int y1 = y0 + GABOR_SIZE;
-
-      for (int yy = y0; yy < y1; ++yy)
-        for (int xx = x0; xx < x1; ++xx)
-          if (xx>=0 && xx<DISPLAY_X && yy>=0 && yy<DISPLAY_Y)
-            {
-              if (fabs(wind->data[xx+yy*DISPLAY_X] - Grey)
-                  < fabs((*pp)[xx-x0+(yy-y0)*GABOR_SIZE] - Grey))
-                wind->data[xx+yy*DISPLAY_X] =
-                  (*pp)[xx-x0+(yy-y0)*GABOR_SIZE];
-            }
-    }
-}
 
 void FakeWindow::writeRaster(const char* fname) const
 {

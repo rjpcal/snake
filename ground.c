@@ -3,6 +3,7 @@
 
 #include "defs.h"
 #include "gabor.h"
+#include "gamma.h"
 #include "geom.h"
 #include "main.h"
 #include "params.h"
@@ -331,4 +332,33 @@ Ground::Ground(const GaborSet& g)
   printf( " FOREG_NUMBER %d    PATCH_NUMBER ??    TOTAL_NUMBER %d\n",
           FOREG_NUMBER, TOTAL_NUMBER );
   BACKG_NUMBER = TOTAL_NUMBER - PATCH_NUMBER;
+}
+
+void Ground::renderInto(FakeWindow* wind) const
+{
+  wind->clear(Grey);
+
+  const int* px         = XPatch;
+  const int* py         = YPatch;
+  Colorindex* const* pp = PPatch;
+
+  for(int i = 0; i < NPatch; ++i, ++px, ++py, ++pp)
+    {
+      // bottom left:
+      int x0  = *px - GABOR_SIZE / 2;
+      int y0  = *py - GABOR_SIZE / 2;
+      // top right:
+      int x1 = x0 + GABOR_SIZE;
+      int y1 = y0 + GABOR_SIZE;
+
+      for (int yy = y0; yy < y1; ++yy)
+        for (int xx = x0; xx < x1; ++xx)
+          if (xx>=0 && xx<DISPLAY_X && yy>=0 && yy<DISPLAY_Y)
+            {
+              if (fabs(wind->data[xx+yy*DISPLAY_X] - Grey)
+                  < fabs((*pp)[xx-x0+(yy-y0)*GABOR_SIZE] - Grey))
+                wind->data[xx+yy*DISPLAY_X] =
+                  (*pp)[xx-x0+(yy-y0)*GABOR_SIZE];
+            }
+    }
 }
