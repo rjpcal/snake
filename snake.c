@@ -228,8 +228,8 @@ Snake::Snake(int l, double sp) :
     {
       const double alpha = 2 * M_PI * n / itsLength;
 
-      itsElem[n].pos.x   =  radius * cos(alpha+alpha_off);
-      itsElem[n].pos.y   = -radius * sin(alpha+alpha_off);
+      itsElem[n].pos.x =  radius * cos(alpha+alpha_off);
+      itsElem[n].pos.y = -radius * sin(alpha+alpha_off);
     }
 
   for (int count = 0; count < FOREGROUND_ITERS; ++count)
@@ -261,22 +261,21 @@ Element Snake::getElement(int n) const
 
 void Snake::center()
 {
-  double xc = 0.0f;
-  double yc = 0.0f;
+  Vector c;
 
   for (int n = 0; n < itsLength; ++n)
     {
-      xc += itsElem[n].pos.x;
-      yc += itsElem[n].pos.y;
+      c.x += itsElem[n].pos.x;
+      c.y += itsElem[n].pos.y;
     }
 
-  xc /= itsLength;
-  yc /= itsLength;
+  c.x /= itsLength;
+  c.y /= itsLength;
 
   for (int n = 0; n < itsLength; ++n)
     {
-      itsElem[n].pos.x -= xc;
-      itsElem[n].pos.y -= yc;
+      itsElem[n].pos.x -= c.x;
+      itsElem[n].pos.y -= c.y;
     }
 }
 
@@ -333,11 +332,10 @@ void Snake::jiggle()
 
   increment = INCREMENT;
 
-  Vector no[4];
+  Vector no[4]; // FIXME
   for (int n = 0; n < 4; ++n)
     {
-      no[n].x  = itsElem[i[n]].pos.x;
-      no[n].y  = itsElem[i[n]].pos.y;
+      no[n] = itsElem[i[n]].pos;
     }
 
   const Tuple4 theta = getThetas(no);
@@ -383,8 +381,7 @@ void Snake::jiggle()
 
   for (int n = 0; n < 4; ++n)
     {
-      itsElem[i[n]].pos.x = new_no[n].x;
-      itsElem[i[n]].pos.y = new_no[n].y;
+      itsElem[i[n]].pos = new_no[n];
     }
 
   this->computeTheta();
@@ -399,14 +396,11 @@ void Snake::replaceNodes(int i1, const Vector& new1,
   /*   y'      c2        a21   a12     y - b2     */
   /*                                              */
 
-  const double old1x  = itsElem[i1].pos.x;
-  const double old1y  = itsElem[i1].pos.y;
+  const Vector old1 = itsElem[i1].pos;
+  const Vector old2 = itsElem[i2].pos;
 
-  const double old2x  = itsElem[i2].pos.x;
-  const double old2y  = itsElem[i2].pos.y;
-
-  const double old_dx  = old2x - old1x;
-  const double old_dy  = old2y - old1y;
+  const double old_dx  = old2.x - old1.x;
+  const double old_dy  = old2.y - old1.y;
 
   const double new_dx = new2.x - new1.x;
   const double new_dy = new2.y - new1.y;
@@ -421,8 +415,8 @@ void Snake::replaceNodes(int i1, const Vector& new1,
 
   for (int n = (i1+1)%itsLength; n != i2; n = (n+1)%itsLength)
     {
-      const double diffx = itsElem[n].pos.x - old1x;
-      const double diffy = itsElem[n].pos.y - old1y;
+      const double diffx = itsElem[n].pos.x - old1.x;
+      const double diffy = itsElem[n].pos.y - old1.y;
 
       itsElem[n].pos.x = new1.x + a11*diffx + a12*diffy;
       itsElem[n].pos.y = new1.y + a21*diffx + a22*diffy;

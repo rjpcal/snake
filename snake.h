@@ -3,6 +3,8 @@
 
 struct Vector
 {
+  Vector(double x_ = 0.0, double y_ = 0.0) : x(x_), y(y_) {}
+
   double x;
   double y;
 };

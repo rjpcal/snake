@@ -141,16 +141,15 @@ void Ground::fillElements()
 
   ntry = 0;
 
-  double xl[ tryFillNumber ];
-  double yl[ tryFillNumber ];
+  Vector vl[ tryFillNumber ];
 
   const double dx = (double) sqrt((double) tryFillArea);
 
   for (double x = -halfX; x <= halfX; x += dx)
     for (double y = -halfY; y <= halfY; y += dx)
       {
-        xl[ ntry ] = x;
-        yl[ ntry ] = y;
+        vl[ ntry ].x = x;
+        vl[ ntry ].y = y;
         ntry++;
       }
 
@@ -158,7 +157,7 @@ void Ground::fillElements()
 
   for (int i = 0; i < ntry; ++i)
     {
-      if (tooClose(npts, xl[i], yl[i], npts+1))
+      if (tooClose(npts, vl[i].x, vl[i].y, npts+1))
         continue;
 
       if (npts > MAX_GABOR_NUMBER)
@@ -168,8 +167,7 @@ void Ground::fillElements()
         }
 
       array[npts].type  = Element::OUTSIDE;
-      array[npts].pos.x  = xl[i];
-      array[npts].pos.y  = yl[i];
+      array[npts].pos   = vl[i];
       array[npts].theta = 2 * M_PI * drand48();
       npts++;
     }
@@ -190,21 +188,18 @@ void Ground::jitterElement()
     {
       for (int n = snake.getLength(); n < totalNumber; ++n)
         {
-          const double dx = 2*jitter*drand48() - jitter;
-          const double dy = 2*jitter*drand48() - jitter;
+          Vector v;
+          v.x = array[n].pos.x + 2*jitter*drand48() - jitter;
+          v.y = array[n].pos.y + 2*jitter*drand48() - jitter;
 
-          double x  = array[n].pos.x + dx;
-          double y  = array[n].pos.y + dy;
-
-          if (!tooClose(totalNumber, x, y, n))
+          if (!tooClose(totalNumber, v.x, v.y, n))
             {
-              if (x < -halfX) x += 2.*halfX;
-              if (x >  halfX) x -= 2.*halfX;
-              if (y < -halfY) y += 2.*halfY;
-              if (y >  halfY) y -= 2.*halfY;
+              if (v.x < -halfX) v.x += 2.*halfX;
+              if (v.x >  halfX) v.x -= 2.*halfX;
+              if (v.y < -halfY) v.y += 2.*halfY;
+              if (v.y >  halfY) v.y -= 2.*halfY;
 
-              array[n].pos.x = x;
-              array[n].pos.y = y;
+              array[n].pos = v;
             }
         }
     }
@@ -258,14 +253,14 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
         ? zerototwopi(array[i].theta + M_PI_2)
         : randtheta;
 
-      const int xcenter = (int)(array[i].pos.x + sizeX / 2.0 + 0.5);
-      const int ycenter = (int)(array[i].pos.y + sizeY / 2.0 + 0.5);
+      const int xcenter = int(array[i].pos.x + sizeX / 2.0 + 0.5);
+      const int ycenter = int(array[i].pos.y + sizeY / 2.0 + 0.5);
 
       const double* p = g.getPatch(theta, phi);
 
       // bottom left:
-      const int x0  = xcenter - g.getPatchSize() / 2;
-      const int y0  = ycenter - g.getPatchSize() / 2;
+      const int x0 = xcenter - g.getPatchSize() / 2;
+      const int y0 = ycenter - g.getPatchSize() / 2;
       // top right:
       const int x1 = x0 + g.getPatchSize();
       const int y1 = y0 + g.getPatchSize();
