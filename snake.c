@@ -19,9 +19,11 @@ namespace
 
   void sort2(int& a, int& b) { if (a > b) swap2(a,b); }
 
-  void Get_sides(Vector no[], float a[]);
   void Get_angles(Vector no[], float alpha[], float theta[]);
-  int Squash_quadrangle(Vector *no0, Vector *no1, Vector *no2, Vector *no3, Vector *new_no0, Vector *new_no1, Vector *new_no2, Vector *new_no3, float theta0, float incr);
+  int Squash_quadrangle(Vector* no0, Vector* no1, Vector* no2, Vector* no3,
+                        Vector* new_no0, Vector* new_no1,
+                        Vector* new_no2, Vector* new_no3,
+                        float theta0, float incr);
   int New_apex(Vector *no1, Vector *no2, Vector *no3, float b, float c);
   int Monte_Carlo(float old_alpha[], float new_alpha[], float lo_alpha[], float hi_alpha[]);
 
@@ -57,23 +59,19 @@ namespace
     sort2(i[2], i[3]);
   }
 
-  void Get_sides(Vector no[], float a[])
+  float distance(const Vector& n1, const Vector& n2)
   {
-    float dx0, dy0, dx1, dy1, dx2, dy2, dx3, dy3;
+    const float dx = n1.x - n2.x;
+    const float dy = n1.y - n2.y;
+    return sqrt(dx*dx + dy*dy);
+  }
 
-    dx0     = no[1].x - no[0].x;
-    dy0     = no[1].y - no[0].y;
-    dx1     = no[2].x - no[1].x;
-    dy1     = no[2].y - no[1].y;
-    dx2     = no[3].x - no[2].x;
-    dy2     = no[3].y - no[2].y;
-    dx3     = no[0].x - no[3].x;
-    dy3     = no[0].y - no[3].y;
-
-    a[0]    = sqrt((double)(dx0*dx0+dy0*dy0));
-    a[1]    = sqrt((double)(dx1*dx1+dy1*dy1));
-    a[2]    = sqrt((double)(dx2*dx2+dy2*dy2));
-    a[3]    = sqrt((double)(dx3*dx3+dy3*dy3));
+  void getEdgeLengths(Vector no[4], float a[4])
+  {
+    a[0] = distance(no[0], no[1]);
+    a[1] = distance(no[1], no[2]);
+    a[2] = distance(no[2], no[3]);
+    a[3] = distance(no[3], no[0]);
   }
 
   void Get_angles(Vector no[], float alpha[], float theta[])
@@ -100,7 +98,10 @@ namespace
     alpha[3]= Zerototwopi(M_PI - b3 + b2);
   }
 
-  int Squash_quadrangle(Vector *no0, Vector *no1, Vector *no2, Vector *no3, Vector *new_no0, Vector *new_no1, Vector *new_no2, Vector *new_no3, float theta0, float incr)
+  int Squash_quadrangle(Vector* no0, Vector* no1, Vector* no2, Vector* no3,
+                        Vector* new_no0, Vector* new_no1,
+                        Vector* new_no2, Vector* new_no3,
+                        float theta0, float incr)
   {
     int ok;
     float a[4];
@@ -111,7 +112,7 @@ namespace
     no[2] = *new_no2 = *no2;
     no[3] = *new_no3 = *no3;
 
-    Get_sides(no, a);
+    getEdgeLengths(no, a);
 
     new_no1->x = new_no0->x + a[0] * cos((double)(theta0-incr));
     new_no1->y = new_no0->y + a[0] * sin((double)(theta0-incr));
@@ -123,7 +124,7 @@ namespace
     nn[2] = *new_no2;
     nn[3] = *new_no3;
 
-    return(ok);
+    return ok;
   }
 
   int New_apex(Vector *no1, Vector *no2, Vector *no3, float b, float c)
@@ -180,9 +181,9 @@ namespace
 
         *no2 = (dis_one < dis_two) ? no2_one : no2_two;
 
-        return(1);
+        return 1;
       }
-    return(0);
+    return 0;
   }
 
   int Monte_Carlo(float old_alpha[], float new_alpha[], float lo_alpha[], float hi_alpha[])
@@ -227,7 +228,7 @@ namespace
           probability = exp((double)(-energy_difference/TEMPERATURE));
         }
 
-    return(drand48() <= probability);
+    return drand48() <= probability;
   }
 }
 
@@ -367,7 +368,7 @@ void Snake::jiggle()
       delta[n] = itsElem[i[n]].delta;
     }
 
-  Get_sides(no, a);
+  getEdgeLengths(no, a);
 
   Get_angles(no, alpha, theta);
 
@@ -417,7 +418,7 @@ void Snake::jiggle()
           continue;
         }
 
-      Get_sides(new_no, new_a);
+      getEdgeLengths(new_no, new_a);
       Get_angles(new_no, new_alpha, new_theta);
 
       if (Monte_Carlo(alpha, new_alpha, lo_alpha, hi_alpha))
