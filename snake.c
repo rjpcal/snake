@@ -135,13 +135,13 @@ namespace
     const double xp = aleph + bet;
     const double yp = sqrt(gimel - bet*bet - aleph*aleph);
 
-    Vector no2_one, no2_two;
+    const Vector no2_one
+      (no1->x + xp*dx/e - yp*dy/e,
+       no1->y + xp*dy/e + yp*dx/e);
 
-    no2_one.x = no1->x + xp*dx/e - yp*dy/e;
-    no2_one.y = no1->y + xp*dy/e + yp*dx/e;
-
-    no2_two.x = no1->x + xp*dx/e + yp*dy/e;
-    no2_two.y = no1->y + xp*dy/e - yp*dx/e;
+    const Vector no2_two
+      (no1->x + xp*dx/e + yp*dy/e,
+       no1->y + xp*dy/e - yp*dx/e);
 
     const double dis_one = distance(no2_one, *no2);
     const double dis_two = distance(no2_two, *no2);
