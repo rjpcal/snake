@@ -31,7 +31,7 @@ private:
   double backgAveSpacing;
 
   void pushElement(const Element& e);
-  int tooClose(int upto, double x, double y, int except);
+  int tooClose(double x, double y, int except);
   void insideElements();
   void hexGridElements();
   void fillElements();

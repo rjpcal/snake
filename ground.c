@@ -23,9 +23,9 @@ void Ground::pushElement(const Element& e)
   array[totalNumber++] = e;
 }
 
-int Ground::tooClose(int upto, double x, double y, int except)
+int Ground::tooClose(double x, double y, int except)
 {
-  for (int n = 0; n < upto; ++n)
+  for (int n = 0; n < totalNumber; ++n)
     {
       double dx = fabs(array[n].pos.x - x);
       if (dx > halfX)
@@ -107,7 +107,7 @@ void Ground::hexGridElements()
 
       for (int i = 0; i < nx; ++i, x += dx)
         {
-          if (tooClose(snake.getLength(), x, y, snake.getLength()+1))
+          if (tooClose(x, y, -1))
             continue;
 
           pushElement(Element(x, y, 2 * M_PI * drand48(), Element::OUTSIDE));
@@ -117,7 +117,7 @@ void Ground::hexGridElements()
 
 void Ground::fillElements()
 {
-  const double tryFillArea   = 6.0;
+  const double tryFillArea = 6.0;
 
   const double dx = sqrt(tryFillArea);
 
@@ -126,7 +126,7 @@ void Ground::fillElements()
   for (double x = -halfX; x <= halfX; x += dx)
     for (double y = -halfY; y <= halfY; y += dx)
       {
-        if (tooClose(totalNumber, x, y, totalNumber+1))
+        if (tooClose(x, y, -1))
           continue;
 
         pushElement(Element(x, y, 2 * M_PI * drand48(), Element::OUTSIDE));
@@ -152,7 +152,7 @@ void Ground::jitterElement()
           v.x = array[n].pos.x + 2*jitter*drand48() - jitter;
           v.y = array[n].pos.y + 2*jitter*drand48() - jitter;
 
-          if (!tooClose(totalNumber, v.x, v.y, n))
+          if (!tooClose(v.x, v.y, n))
             {
               if (v.x < -halfX) v.x += 2.*halfX;
               if (v.x >  halfX) v.x -= 2.*halfX;
