@@ -1,6 +1,5 @@
 #include "ground.h"
 
-#include "gabor.h"
 #include "geom.h"
 
 #include <assert.h>
@@ -173,12 +172,14 @@ void Ground::dumpFrame() const
     }
 }
 
-Ground::Ground(int foregNumber, double foregSpacing,
+Ground::Ground(double gaborPeriod, double gaborSigma, int gaborSize,
+               int foregNumber, double foregSpacing,
                int sizeX_, int sizeY_,
                double backgIniSpacing_,
-               double backgMinSpacing_,
-               const GaborSet& g) :
+               double backgMinSpacing_)
+  :
   snake(foregNumber, foregSpacing),
+  gabors(gaborPeriod, gaborSigma, gaborSize),
   sizeX(sizeX_),
   sizeY(sizeY_),
   halfX(0.5*sizeX),
@@ -187,8 +188,7 @@ Ground::Ground(int foregNumber, double foregSpacing,
   backgMinSpacing(backgMinSpacing_),
   backgMinSpacingSqr(backgMinSpacing*backgMinSpacing),
   insideNumber(0),
-  totalNumber(0),
-  gabors(g)
+  totalNumber(0)
 {
   // pull in elements from the snake
   for (int n = 0; n < snake.getLength(); ++n)

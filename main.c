@@ -1,4 +1,3 @@
-#include "gabor.h"
 #include "ground.h"
 #include "params.h"
 
@@ -18,8 +17,6 @@ int main( int argc, char** argv )
 
   pm.print();
 
-  GaborSet gabors(pm.pmGaborPeriod, pm.pmGaborSigma, pm.pmGaborSize);
-
   pm.writeHeader();
 
   for(int n = 0; n < pm.pmDisplayNumber; ++n)
@@ -32,11 +29,11 @@ int main( int argc, char** argv )
       srand48(n);
 #endif
 
-      Ground g(pm.pmForegNumber, pm.pmForegSpacing,
+      Ground g(pm.pmGaborPeriod, pm.pmGaborSigma, pm.pmGaborSize,
+               pm.pmForegNumber, pm.pmForegSpacing,
                pm.pmSizeX, pm.pmSizeY,
                pm.pmBackgIniSpacing,
-               pm.pmBackgMinSpacing,
-               gabors);
+               pm.pmBackgMinSpacing);
 
       g.writeArray(pm.pmFilestem, n);
 
