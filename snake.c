@@ -9,7 +9,6 @@
 namespace
 {
   const double HIDELTA     = (M_PI/4.);
-  const double LODELTA     = (-M_PI/4.);
   const double TEMPERATURE = 0.05;
   const double INCREMENT   = 0.1;
 
@@ -188,7 +187,7 @@ namespace
 
     for (int n = 0; n < 4; ++n)
       {
-        const float zero_point = 0.5 * alpha_sum[n];
+        const float zero_point = alpha_sum[n];
 
         const float oldval = fabs(old_alpha[n] - zero_point);
         const float newval = fabs(new_alpha[n] - zero_point);
@@ -354,14 +353,11 @@ void Snake::jiggle()
   const Tuple4 theta = getThetas(no);
   const Tuple4 alpha = getAlphas(theta);
 
-  const Tuple4 alpha_sum(2*alpha[0] - HIDELTA + itsElem[i[0]].delta
-                         + itsElem[i[0]].delta - LODELTA,
-                         2*alpha[1] - HIDELTA + itsElem[i[1]].delta
-                         + itsElem[i[1]].delta - LODELTA,
-                         2*alpha[2] - HIDELTA + itsElem[i[2]].delta
-                         + itsElem[i[2]].delta - LODELTA,
-                         2*alpha[3] - HIDELTA + itsElem[i[3]].delta
-                         + itsElem[i[3]].delta - LODELTA);
+  const Tuple4 alpha_sum(alpha[0] + itsElem[i[0]].delta,
+                         alpha[1] + itsElem[i[1]].delta,
+                         alpha[2] + itsElem[i[2]].delta,
+                         alpha[3] + itsElem[i[3]].delta);
+
   Vector new_no[4];
 
   for (;;)
