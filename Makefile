@@ -2,8 +2,8 @@ CC      = g++ -Wall -Werror
 CFLAGS	= -O4 -pg
 LFLAGS  = -lm
 
-SRC    = gabor.c ground.c params.c snake.c window.c timing.c  main.c
-INC    = gabor.h ground.h params.h snake.h timing.h window.h  geom.h 
+SRC    = gabor.c ground.c params.c snake.c window.c  main.c
+INC    = gabor.h ground.h params.h snake.h window.h  geom.h 
 
 OBJ    = $(SRC:.c=.o)
 
@@ -26,11 +26,9 @@ test:
 	  pnmarith -difference regtest_$$i.pnm orig_cpp_6/regtest_$$i.pnm \
 	  > diff_$$i.pnm; done
 
-main.o: $(INC)
-window.o: $(INC)
-geom.o: $(INC)
-snake.o: $(INC)
-ground.o: $(INC)
 gabor.o: $(INC)
-timing.o: $(INC)
+ground.o: $(INC)
 params.o: $(INC)
+snake.o: $(INC)
+window.o: $(INC)
+main.o: $(INC)

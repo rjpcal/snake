@@ -2,11 +2,11 @@
 #include "ground.h"
 #include "params.h"
 #include "snake.h"
-#include "timing.h"
 #include "window.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 int main( int argc, char** argv )
 {
@@ -16,7 +16,16 @@ int main( int argc, char** argv )
       return 1;
     }
 
-  SeedRand();
+#if 0
+  struct timeval tp;
+  struct timezone tzp;
+
+  gettimeofday( &tp, &tzp );
+
+  srand48( tp.tv_sec );
+#else
+  srand48( 0 );
+#endif
 
   const Params pm(argv[1], "sta");
 
@@ -24,8 +33,6 @@ int main( int argc, char** argv )
 
   // alloc mem for our fake window:
   FakeWindow fakewin(pm.pmSizeX, pm.pmSizeY);
-
-  SeedRand();
 
   GaborSet gabors(pm.pmGaborPeriod, pm.pmGaborSigma, pm.pmGaborSize);
 
