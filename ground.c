@@ -1,14 +1,13 @@
-
 #include "ground.h"
 
 #include "defs.h"
 #include "gabor.h"
 #include "geom.h"
 #include "main.h"
-#include "params.h"
 #include "timing.h"
 #include "window.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #define            DIFFUSION_CYCLES         10
@@ -24,8 +23,6 @@ namespace
   float              FOREG_ORIENTATION;
 
   const double SQRT3 = 1.7320508075;
-
-  float              BACKG_MIN_SPACING_SQR;
 }
 
 int Ground::tooClose( int upto, float x, float y, int except )
@@ -36,17 +33,17 @@ int Ground::tooClose( int upto, float x, float y, int except )
       if( dx > halfX )
         dx = sizeX - dx;
 
-      if( dx > PM.BACKG_MIN_SPACING )
+      if( dx > backgMinSpacing )
         continue;
 
       float dy = fabs( array[n].ypos - y );
       if( dy > halfY )
         dy = sizeY - dy;
 
-      if( dy > PM.BACKG_MIN_SPACING )
+      if( dy > backgMinSpacing )
         continue;
 
-      if( dx*dx+dy*dy > BACKG_MIN_SPACING_SQR )
+      if( dx*dx+dy*dy > backgMinSpacingSqr )
         continue;
 
       if( n == except )
@@ -60,15 +57,15 @@ int Ground::tooClose( int upto, float x, float y, int except )
 
 void Ground::insideElements()
 {
-  int pn = PM.FOREG_NUMBER;
+  patchNumber = snake.getLength();
 
-  for(int n = PM.FOREG_NUMBER; n < NPatch; ++n)
+  for(int n = snake.getLength(); n < NPatch; ++n)
     {
       int side = 1;
 
-      for(int i = 0; i < PM.FOREG_NUMBER; ++i)
+      for(int i = 0; i < snake.getLength(); ++i)
         {
-          const int j = (i+1) % PM.FOREG_NUMBER;
+          const int j = (i+1) % snake.getLength();
 
           const float Yij = array[i].xpos - array[j].xpos;
           const float Xij = array[j].ypos - array[i].ypos;
@@ -85,20 +82,18 @@ void Ground::insideElements()
       if( side )
         {
           array[n].flag = 1;
-          pn++;
+          ++patchNumber;
         }
     }
-
-  PM.PATCH_NUMBER = pn;
 }
 
-void Ground::contourElements(const Snake& s)
+void Ground::contourElements()
 {
-  for(int n = 0; n < PM.FOREG_NUMBER; ++n)
+  for(int n = 0; n < snake.getLength(); ++n)
     {
       float x, y, theta;
 
-      if( s.getElement( n, &x, &y, &theta ) )
+      if( snake.getElement( n, &x, &y, &theta ) )
         {
           array[NPatch].flag  = 2;
           array[NPatch].xpos  = x;
@@ -117,11 +112,11 @@ void Ground::contourElements(const Snake& s)
 
 void Ground::gridElements()
 {
-  const float dx = PM.BACKG_INI_SPACING;
-  const float dy = SQRT3 * PM.BACKG_INI_SPACING / 2.0;
+  const float dx = backgIniSpacing;
+  const float dy = SQRT3 * backgIniSpacing / 2.0;
 
-  const int nx = (int)( ( 2.0 * halfX - PM.BACKG_MIN_SPACING - 0.5*dx ) / dx );
-  const int ny = (int)( ( 2.0 * halfY - PM.BACKG_MIN_SPACING ) / dy );
+  const int nx = (int)( ( 2.0 * halfX - backgMinSpacing - 0.5*dx ) / dx );
+  const int ny = (int)( ( 2.0 * halfY - backgMinSpacing ) / dy );
 
   const float ix =  -0.5 * (nx-1) * dx - 0.25 * dx;
   const float iy =  -0.5 * (ny-1) * dy;
@@ -133,7 +128,7 @@ void Ground::gridElements()
     {
       for(i = 0, x = ix+0.5*(j%2)*dx; i < nx; ++i, x += dx)
         {
-          if( tooClose( PM.FOREG_NUMBER, x, y, PM.FOREG_NUMBER+1 ) )
+          if( tooClose( snake.getLength(), x, y, snake.getLength()+1 ) )
             continue;
 
           array[NPatch].flag = 0;
@@ -206,11 +201,11 @@ void Ground::fillElements()
 
 void Ground::jitterElement()
 {
-  const float jitter = (PM.BACKG_MIN_SPACING/16.0);
+  const float jitter = (backgMinSpacing/16.0);
 
   for(int niter = 0; niter < BACKGROUND_ITERATION; ++niter)
     {
-      for(int n = PM.FOREG_NUMBER; n < NPatch; ++n)
+      for(int n = snake.getLength(); n < NPatch; ++n)
         {
           const float dx = 2.*jitter*drand48() - jitter;
           const float dy = 2.*jitter*drand48() - jitter;
@@ -234,17 +229,22 @@ void Ground::jitterElement()
 
 /*****************************************************************/
 
-Ground::Ground(const Snake& s, int sizeX_, int sizeY_) :
+Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
+               float backgIniSpacing_,
+               float backgMinSpacing_) :
+  snake(s),
   sizeX(sizeX_),
   sizeY(sizeY_),
   halfX(0.5*sizeX),
-  halfY(0.5*sizeY)
+  halfY(0.5*sizeY),
+  backgIniSpacing(backgIniSpacing_),
+  backgMinSpacing(backgMinSpacing_),
+  backgMinSpacingSqr(backgMinSpacing*backgMinSpacing),
+  patchNumber(0),
+  backgNumber(0),
+  NPatch(0)
 {
-  BACKG_MIN_SPACING_SQR = PM.BACKG_MIN_SPACING*PM.BACKG_MIN_SPACING;
-
-  NPatch = 0;
-
-  contourElements(s);
+  contourElements();
 
   gridElements();
 
@@ -257,8 +257,8 @@ Ground::Ground(const Snake& s, int sizeX_, int sizeY_) :
   insideElements();
 
   printf( " FOREG_NUMBER %d    PATCH_NUMBER %d    TOTAL_NUMBER %d\n",
-          PM.FOREG_NUMBER, PM.PATCH_NUMBER, NPatch );
-  PM.BACKG_NUMBER = NPatch - PM.PATCH_NUMBER;
+          snake.getLength(), patchNumber, NPatch );
+  backgNumber = NPatch - patchNumber;
 }
 
 void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
@@ -271,7 +271,7 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
       const float randtheta = TWOPI * drand48();
 
       const float theta =
-        (i < PM.FOREG_NUMBER)
+        (i < snake.getLength())
         ? Zerototwopi( array[i].theta + M_PI_2 )
         : randtheta;
 
@@ -281,14 +281,14 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
       const double* p = g.getPatch( theta, phi );
 
       // bottom left:
-      const int x0  = xcenter - PM.GABOR_SIZE / 2;
-      const int y0  = ycenter - PM.GABOR_SIZE / 2;
+      const int x0  = xcenter - g.getPatchSize() / 2;
+      const int y0  = ycenter - g.getPatchSize() / 2;
       // top right:
-      const int x1 = x0 + PM.GABOR_SIZE;
-      const int y1 = y0 + PM.GABOR_SIZE;
+      const int x1 = x0 + g.getPatchSize();
+      const int y1 = y0 + g.getPatchSize();
 
       for (int y = y0; y < y1; ++y)
         for (int x = x0; x < x1; ++x)
-          w->blendVal(x, y, p[x-x0+(y-y0)*PM.GABOR_SIZE]);
+          w->blendVal(x, y, p[x-x0+(y-y0)*g.getPatchSize()]);
     }
 }

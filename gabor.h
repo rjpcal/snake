@@ -10,8 +10,10 @@ public:
   GaborSet(double period, double sigma, int size);
   ~GaborSet();
 
+  int getPatchSize() const { return patchSize; }
   const double* getPatch(float theta, float phi) const;
 
 private:
+  const int patchSize;
   double* Patch[GABOR_MAX_ORIENT][GABOR_MAX_PHASE];
 };

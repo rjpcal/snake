@@ -1,9 +1,7 @@
-
 #include "snake.h"
 
 #include "defs.h"
 #include "geom.h"
-#include "params.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -466,10 +464,10 @@ namespace
   }
 }
 
-Snake::Snake(int l) :
+Snake::Snake(int l, float spacing) :
   length(l)
 {
-  const float radius = (float)( length * PM.FOREG_SPACING ) / TWOPI;
+  const float radius = (float)(length * spacing) / TWOPI;
 
   const float alpha_off = TWOPI * drand48();
 

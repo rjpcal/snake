@@ -47,9 +47,11 @@ int main( int argc, char** argv )
     {
       srand48(n);
 
-      Snake s(PM.FOREG_NUMBER);
+      Snake s(PM.FOREG_NUMBER, PM.FOREG_SPACING);
 
-      Ground* g = new Ground(s, PM.DISPLAY_X, PM.DISPLAY_Y);
+      Ground* g = new Ground(s, PM.DISPLAY_X, PM.DISPLAY_Y,
+                             PM.BACKG_INI_SPACING,
+                             PM.BACKG_MIN_SPACING);
 
       WriteArray(g);
 

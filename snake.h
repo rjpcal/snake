@@ -15,8 +15,9 @@ struct Element
 class Snake
 {
 public:
-  Snake(int l);
+  Snake(int l, float spacing);
 
+  int getLength() const { return length; }
   int getElement(int n, float* x, float* y, float* theta) const;
 
   int length;

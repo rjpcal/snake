@@ -6,8 +6,6 @@ struct Params
   int   DISPLAY_X;
   int   DISPLAY_Y;
   int   FOREG_NUMBER;
-  int   PATCH_NUMBER;
-  int   BACKG_NUMBER;
   float FOREG_SPACING;
   float FOREG_ECCENTRICITY;
   float FOREG_JITTER;

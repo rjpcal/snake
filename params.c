@@ -61,9 +61,9 @@ void WriteParams(char extension[])
   PUTINT(   (PM.DISPLAY_X),          ("DISPLAY_X") );
   PUTINT(   (PM.DISPLAY_Y),          ("DISPLAY_Y") );
   PUTINT(   (PM.FOREG_NUMBER) ,      ("FOREG_NUMBER") );
-  PUTINT(   (PM.PATCH_NUMBER) ,      ("PATCH_NUMBER") );
-  PUTINT(   (PM.BACKG_NUMBER),       ("BACKG_NUMBER") );
-  PUTINT(   (-1),                 ("TOTAL_NUMBER") );
+  PUTINT(   (-1),                    ("PATCH_NUMBER") );
+  PUTINT(   (-1),                    ("BACKG_NUMBER") );
+  PUTINT(   (-1),                    ("TOTAL_NUMBER") );
   PUTFLOAT( (PM.FOREG_SPACING) ,     ("FOREG_SPACING") );
   PUTFLOAT( (PM.FOREG_ECCENTRICITY), ("FOREG_ECCENTRICITY") );
   PUTFLOAT( (PM.FOREG_JITTER),       ("FOREG_JITTER") );
@@ -127,8 +127,6 @@ void PrintParams()
   PRINTINT(   (PM.DISPLAY_X),          ("DISPLAY_X") );
   PRINTINT(   (PM.DISPLAY_Y),          ("DISPLAY_Y") );
   PRINTINT(   (PM.FOREG_NUMBER) ,      ("FOREG_NUMBER") );
-  PRINTINT(   (PM.PATCH_NUMBER) ,      ("PATCH_NUMBER") );
-  PRINTINT(   (PM.BACKG_NUMBER),       ("BACKG_NUMBER") );
   PRINTFLOAT( (PM.FOREG_SPACING) ,     ("FOREG_SPACING") );
   PRINTFLOAT( (PM.FOREG_ECCENTRICITY), ("FOREG_ECCENTRICITY") );
   PRINTFLOAT( (PM.FOREG_JITTER),       ("FOREG_JITTER") );
@@ -171,12 +169,12 @@ void WriteArray(const Ground* g)
 
   Openfile( &fp, APPEND, "snk" );
 
-  PUTINT(   (DISPLAY_COUNT),      ("DISPLAY_COUNT") );
-  PUTINT(   (g->totalNumber()),   ("TOTAL_NUMBER") );
+  PUTINT(   (DISPLAY_COUNT),         ("DISPLAY_COUNT") );
+  PUTINT(   (g->totalNumber()),      ("TOTAL_NUMBER") );
   PUTINT(   (PM.FOREG_NUMBER),       ("FOREG_NUMBER") );
-  PUTINT(   (PM.PATCH_NUMBER),       ("PATCH_NUMBER") );
+  PUTINT(   (g->getPatchNumber()),   ("PATCH_NUMBER") );
   PUTFLOAT( (PM.FOREG_SPACING) ,     ("FOREG_SPACING") );
-  PUTFLOAT( (g->backgAveSpacing()),("BACKG_AVE_SPACING") );
+  PUTFLOAT( (g->backgAveSpacing()),  ("BACKG_AVE_SPACING") );
   PUTFLOAT( (PM.BACKG_INI_SPACING),  ("BACKG_INI_SPACING") );
   PUTFLOAT( (PM.BACKG_MIN_SPACING),  ("BACKG_MIN_SPACING") );
 

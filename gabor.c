@@ -67,7 +67,8 @@ namespace
   }
 }
 
-GaborSet::GaborSet(double period, double sigma, int size)
+GaborSet::GaborSet(double period, double sigma, int size) :
+  patchSize(size)
 {
   const float omega = TWOPI / period;
 
