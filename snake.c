@@ -15,59 +15,46 @@ namespace
 {
   int          FOREGROUND_ITERATION =    400;
 
-  void Pick_nodes( int length, int ni[] );
-  void Swap( int *a, int *b );
-  void Get_sides( Vector no[], float a[] );
-  void Get_angles( Vector no[], float alpha[], float theta[] );
-  int Squash_quadrangle( Vector *no0, Vector *no1, Vector *no2, Vector *no3, Vector *new_no0, Vector *new_no1, Vector *new_no2, Vector *new_no3, float theta0, float incr );
-  int New_apex( Vector *no1, Vector *no2, Vector *no3, float b, float c );
-  int Monte_Carlo( float old_alpha[], float new_alpha[], float lo_alpha[], float hi_alpha[] );
+  void swap2(int& a, int& b) { int a1 = a; a = b; b = a1;}
+
+  void sort2(int& a, int& b) { if (a > b) swap2(a,b); }
+
+  void Get_sides(Vector no[], float a[]);
+  void Get_angles(Vector no[], float alpha[], float theta[]);
+  int Squash_quadrangle(Vector *no0, Vector *no1, Vector *no2, Vector *no3, Vector *new_no0, Vector *new_no1, Vector *new_no2, Vector *new_no3, float theta0, float incr);
+  int New_apex(Vector *no1, Vector *no2, Vector *no3, float b, float c);
+  int Monte_Carlo(float old_alpha[], float new_alpha[], float lo_alpha[], float hi_alpha[]);
 
   float increment;
 
-  void Pick_nodes(int length, int ni[])
+  void pickRandom4(int length, int i[])
   {
-    int i0, i1, i2, i3;
-
-    i0 = (int)(length * drand48());
+    i[0] = int(length * drand48());
 
     do
       {
-        i1 = (int)(length * drand48());
+        i[1] = int(length * drand48());
       }
-    while(i1 == i0);
+    while(i[1] == i[0]);
 
     do
       {
-        i2 = (int)(length * drand48());
+        i[2] = int(length * drand48());
       }
-    while(i2 == i0 || i2 == i1);
+    while(i[2] == i[0] || i[2] == i[1]);
 
     do
       {
-        i3 = (int)(length * drand48());
+        i[3] = int(length * drand48());
       }
-    while(i3 == i0 || i3 == i1 || i3 == i2);
+    while(i[3] == i[0] || i[3] == i[1] || i[3] == i[2]);
 
-    if (i0 > i1) Swap(&i0, &i1);
-    if (i0 > i2) Swap(&i0, &i2);
-    if (i0 > i3) Swap(&i0, &i3);
-    if (i1 > i2) Swap(&i1, &i2);
-    if (i1 > i3) Swap(&i1, &i3);
-    if (i2 > i3) Swap(&i2, &i3);
-
-    ni[0] = i0;
-    ni[1] = i1;
-    ni[2] = i2;
-    ni[3] = i3;
-  }
-
-  void Swap(int *a, int *b)
-  {
-    int t;
-    t  = *a;
-    *a = *b;
-    *b = t;
+    sort2(i[0], i[1]);
+    sort2(i[0], i[2]);
+    sort2(i[0], i[3]);
+    sort2(i[1], i[2]);
+    sort2(i[1], i[3]);
+    sort2(i[2], i[3]);
   }
 
   void Get_sides(Vector no[], float a[])
@@ -151,13 +138,13 @@ namespace
 
     /*                                                    */
     /*   x'      dx/e   dy/e     x - no1->x               */
-    /* ( ) = (           ) (          )             */
+    /* (   ) = (             ) (            )             */
     /*   y'     -dy/e   dx/e     y - no1->y               */
     /*                                                    */
 
     /*                                                    */
     /*   x' =          aleph + bet                        */
-    /*   y' = +- sqrt(gimel - bet**2 - aleph**2)        */
+    /*   y' = +- sqrt( gimel - bet**2 - aleph**2 )        */
     /*                                                    */
     /*   aleph = (b**2-c**2)/(2*e)                        */
     /*   bet   = e/2                                      */
@@ -166,7 +153,7 @@ namespace
 
     /*                                                    */
     /*   x       no1->x       dx/e  -dy/e     x'          */
-    /* ( ) = (      ) + (           ) ( )         */
+    /* (   ) = (        ) + (             ) (   )         */
     /*   y       no1->y       dy/e   dx/e     y'          */
     /*                                                    */
 
@@ -362,13 +349,14 @@ void Snake::computeDeltaTheta()
 
 void Snake::jiggle()
 {
-  int n, i[4];
+  int n;
   int ok = 0;
   float a[4], delta[4], alpha[4], theta[4], lo_alpha[4], hi_alpha[4],
     incr, new_alpha[4], new_theta[4], new_a[4];
   Vector no[4], new_no[4];
 
-  Pick_nodes(itsLength, i);
+  int i[4];
+  pickRandom4(itsLength, i);
 
   increment = INCREMENT;
 
@@ -457,7 +445,7 @@ void Snake::newNodes(int ni, int nj,
 
   /*                                              */
   /*   x'      c1        a11   a12     x - b1     */
-  /* ( ) = (  ) + (           ) (    )    */
+  /* (   ) = (    ) + (             ) (      )    */
   /*   y'      c2        a21   a12     y - b2     */
   /*                                              */
 
