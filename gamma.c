@@ -19,9 +19,6 @@
 #define RRATIO          0.236
 #define GRATIO          0.679
 #define BRATIO          0.085
-#define MAXCONTRAST     100.0
-
-#define Red             0x0000ff
 
 int White, Grey, Black;
 
