@@ -46,7 +46,7 @@ int Ground::tooClose(int upto, float x, float y, int except)
 
 void Ground::insideElements()
 {
-  patchNumber = snake.getLength();
+  insideNumber = snake.getLength();
 
   for (int n = snake.getLength(); n < totalNumber; ++n)
     {
@@ -71,7 +71,7 @@ void Ground::insideElements()
       if (side)
         {
           array[n].flag = 1;
-          ++patchNumber;
+          ++insideNumber;
         }
     }
 }
@@ -201,8 +201,8 @@ void Ground::jitterElement()
     {
       for (int n = snake.getLength(); n < totalNumber; ++n)
         {
-          const float dx = 2.*jitter*drand48() - jitter;
-          const float dy = 2.*jitter*drand48() - jitter;
+          const float dx = 2*jitter*drand48() - jitter;
+          const float dy = 2*jitter*drand48() - jitter;
 
           float x  = array[n].xpos + dx;
           float y  = array[n].ypos + dy;
@@ -234,8 +234,7 @@ Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
   backgIniSpacing(backgIniSpacing_),
   backgMinSpacing(backgMinSpacing_),
   backgMinSpacingSqr(backgMinSpacing*backgMinSpacing),
-  patchNumber(0),
-  backgNumber(0),
+  insideNumber(0),
   totalNumber(0)
 {
   contourElements();
@@ -253,8 +252,7 @@ Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
   insideElements();
 
   printf(" FOREG_NUMBER %d    PATCH_NUMBER %d    TOTAL_NUMBER %d\n",
-          snake.getLength(), patchNumber, totalNumber);
-  backgNumber = totalNumber - patchNumber;
+          snake.getLength(), insideNumber, totalNumber);
 }
 
 void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
@@ -304,7 +302,7 @@ void Ground::writeArray(const char* filestem, int displayCount) const
   putint(fp, displayCount, "DISPLAY_COUNT");
   putint(fp, totalNumber, "TOTAL_NUMBER");
   putint(fp, snake.getLength(), "FOREG_NUMBER");
-  putint(fp, patchNumber, "PATCH_NUMBER");
+  putint(fp, insideNumber, "PATCH_NUMBER");
   putfloat(fp, snake.getSpacing(), "FOREG_SPACING");
   putfloat(fp, backgAveSpacing, "BACKG_AVE_SPACING");
   putfloat(fp, backgIniSpacing, "BACKG_INI_SPACING");

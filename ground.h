@@ -16,11 +16,6 @@ public:
 
   void writeArray(const char* filestem, int displayCount) const;
 
-  int flag(int i) const { return array[i].flag; }
-  float xpos(int i) const { return array[i].xpos; }
-  float ypos(int i) const { return array[i].ypos; }
-  float theta(int i) const { return array[i].theta; }
-
 private:
   const Snake& snake;
   const int sizeX;
@@ -30,9 +25,8 @@ private:
   const float backgIniSpacing;
   const float backgMinSpacing;
   const float backgMinSpacingSqr;
-  int patchNumber;
-  int backgNumber;
-  int NPatch;
+  int insideNumber;
+  int totalNumber;
   Element array[ MAX_GABOR_NUMBER ];
   float backgAveSpacing;
 
