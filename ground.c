@@ -9,17 +9,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define            DIFFUSION_CYCLES         10
-#define            BACKGROUND_ITERATION   1000
-#define            TRY_TO_FILL_NUMBER   250000
-#define            TRY_TO_FILL_AREA         6.0
-
 /*************************** local *******************************/
 
 namespace
 {
-  float              BACKG_ORIENTATION;
-  float              FOREG_ORIENTATION;
+
+  const int            DIFFUSION_CYCLES        = 10;
+  const int            BACKGROUND_ITERATION    = 1000;
+  const int            TRY_TO_FILL_NUMBER      = 250000;
+  const double         TRY_TO_FILL_AREA        = 6.0;
 
   const double SQRT3 = 1.7320508075;
 }
