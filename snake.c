@@ -440,31 +440,101 @@ void Snake::jiggle()
 void Snake::replaceNodes(int i1, const Vector& new1,
                          int i2, const Vector& new2)
 {
-  /*                                              */
-  /*   x'      c1        a11   a12     x - b1     */
-  /* (   ) = (    ) + (             ) (      )    */
-  /*   y'      c2        a21   a12     y - b2     */
-  /*                                              */
-
   const Vector old1 = itsElem[i1].pos;
   const Vector old2 = itsElem[i2].pos;
 
-  const double old_dx  = old2.x - old1.x;
-  const double old_dy  = old2.y - old1.y;
+  // OK, our jiggling algorithm has determined new locations for node-1 and
+  // node-2. Now, we want to adjust all the intermediate points
+  // accordingly. This amounts to (1) a translation (move node-1 from its
+  // old to new location), (2) a rotation (rotate node-2 around node-1 to
+  // its new location), and (3) a scaling (contract or expand to put node-2
+  // in the right spot). We can then apply these same transformations to
+  // the intermediate points.
 
-  const double new_dx = new2.x - new1.x;
-  const double new_dy = new2.y - new1.y;
+  /*                                                                   */
+  /*               scale by      rotate by (a'-a)                      */
+  /*               distance         degrees                            */
+  /*                ratio              |                               */
+  /*                  |                |                               */
+  /*                  |                v                               */
+  /*                  v                                                */
+  /*    a11  a12              cos a'-a   -sin a'-a                     */
+  /*  (          ) = d'/d * (                      )                   */
+  /*    a21  a12              sin a'-a    cos a'-a                     */
+  /*                                                                   */
 
-  const double l_2 = old_dx*old_dx + old_dy*old_dy;
+  // Now we can (1) compute this directly:
+#if 1
+  const double d = distance(old2, old1);
+  const double a = getTheta(old2, old1);
 
-  const double a11 = (new_dx*old_dx + new_dy*old_dy)/l_2;
-  const double a12 = (new_dx*old_dy - new_dy*old_dx)/l_2;
+  const double dp = distance(new2, new1);
+  const double ap = getTheta(new2, new1);
 
-  const double a21 = (new_dy*old_dx - new_dx*old_dy)/l_2;
-  const double a22 = (new_dy*old_dy + new_dx*old_dx)/l_2;
+  const double diff_a = ap - a;
 
+  const double ratio_d = (dp/d);
+
+  const double cos_diff_a = cos(diff_a);
+  const double sin_diff_a = sin(diff_a);
+
+  const double a11 =   ratio_d * cos_diff_a;
+  const double a12 = - ratio_d * sin_diff_a;
+  const double a21 =   ratio_d * sin_diff_a;
+  const double a22 =   ratio_d * cos_diff_a;
+#else
+
+  // or (2) simplify it to avoid cos+sin:
+
+  /*                                                                   */
+  /*    a11  a12              cos a'  -sin a'       cos -a   -sin -a   */
+  /*  (          ) = d'/d * (                 ) * (                  ) */
+  /*    a21  a12              sin a'   cos a'       sin -a    cos -a   */
+  /*                                                                   */
+  /*                                                                   */
+  /*                          cos a'  -sin a'        cos a   sin a     */
+  /*               = d'/d * (                 ) * (                )   */
+  /*                          sin a'   cos a'       -sin a   cos a     */
+  /*                                                                   */
+  /*                                                                   */
+  /*                          dx'/d' -dy'/d'        dx/d   dy/d        */
+  /*               = d'/d * (                ) * (              )      */
+  /*                          dy'/d'  dx'/d'       -dy/d   dx/d        */
+  /*                                                                   */
+  /*                                                                   */
+  /*                          dx'/d  -dy'/d         dx/d   dy/d        */
+  /*               =        (                ) * (              )      */
+  /*                          dy'/d   dx'/d        -dy/d   dx/d        */
+  /*                                                                   */
+  /*                                                                   */
+  /*                   dx'*dx+dy'*dy   dx'*dy-dy'*dx                   */
+  /*               = (                               ) / d^2           */
+  /*                   dy'*dx-dx'*dy   dy'*dy+dx'*dx                   */
+  /*                                                                   */
+
+  const double dx  = old2.x - old1.x;
+  const double dy  = old2.y - old1.y;
+
+  const double d_sq = dx*dx + dy*dy;
+
+  const double dxp = new2.x - new1.x;
+  const double dyp = new2.y - new1.y;
+
+  const double a11 = (dxp*dx + dyp*dy)/d_sq;
+  const double a12 = (dxp*dy - dyp*dx)/d_sq;
+  const double a21 = (dyp*dx - dxp*dy)/d_sq;
+  const double a22 = (dyp*dy + dxp*dx)/d_sq;
+#endif
+
+  // Loop over all the nodes in between the nodes given by i1 and i2
   for (int n = (i1+1)%itsLength; n != i2; n = (n+1)%itsLength)
     {
+      /*                                              */
+      /*   x'      c1       a11   a12     x - b1      */
+      /* (   ) = (    ) + (           ) (        )    */
+      /*   y'      c2       a21   a12     y - b2      */
+      /*                                              */
+
       const double diffx = itsElem[n].pos.x - old1.x;
       const double diffy = itsElem[n].pos.y - old1.y;
 
