@@ -293,16 +293,6 @@ void Snake::computeTheta()
     }
 }
 
-void Snake::computeDelta(double* deltas)
-{
-  for (int n0 = 0; n0 < itsLength; ++n0)
-    {
-      const int n1 = (n0+1)%itsLength;
-
-      deltas[n1] = minuspitopi(itsElem[n1].theta - itsElem[n0].theta);
-    }
-}
-
 /*        (xpos[n],ypos[n])     position n                                   */
 /*        (xpos[n+1],ypos[n+1]) position n+1                                 */
 /*        (0.5*(xpos[n]+xpos[n+1]), 0.5*(ypos[n]+ypos[n+1]))                 */
@@ -338,10 +328,7 @@ void Snake::computeDelta(double* deltas)
 
 void Snake::jiggle()
 {
-  double deltas[itsLength];
-
   this->computeTheta();
-  this->computeDelta(deltas);
 
   int i[4];
   pickRandom4(itsLength, i);
@@ -357,6 +344,14 @@ void Snake::jiggle()
 
   const Tuple4 theta = getThetas(no);
   const Tuple4 alpha = getAlphas(theta);
+
+  double deltas[itsLength];
+  for (int n1 = 0; n1 < itsLength; ++n1)
+    {
+      const int n0 = (n1+itsLength-1)%itsLength;
+
+      deltas[n1] = minuspitopi(itsElem[n1].theta - itsElem[n0].theta);
+    }
 
   const Tuple4 delta(deltas[i[0]],
                      deltas[i[1]],
@@ -402,7 +397,6 @@ void Snake::jiggle()
     }
 
   this->computeTheta();
-//   this->computeDelta();
 }
 
 void Snake::replaceNodes(int i1, const Vector& new1,

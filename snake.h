@@ -34,7 +34,6 @@ private:
 
   void center();
   void computeTheta();
-  void computeDelta(double* deltas);
   void jiggle();
   void replaceNodes(int i1, const Vector& new1,
                     int n2, const Vector& new2);
