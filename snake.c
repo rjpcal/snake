@@ -103,55 +103,84 @@ namespace
                         double new_theta)
   {
     {
-      const double d_0_1 = distance(old_0, old_1);
+      // Here we adjust the position of node-1 by jiggling its angle with
+      // respect to node-0:
 
-      new_1->x = old_0.x + d_0_1 * cos(new_theta);
-      new_1->y = old_0.y + d_0_1 * sin(new_theta);
+      const double d = distance(old_0, old_1);
+
+      new_1->x = old_0.x + d * cos(new_theta);
+      new_1->y = old_0.y + d * sin(new_theta);
     }
 
-    /*                                                    */
-    /*   x'      dx/e   dy/e     x - new_1->x             */
-    /* (   ) = (             ) (              )           */
-    /*   y'     -dy/e   dx/e     y - new_1->y             */
-    /*                                                    */
+    /*                                                     */
+    /*                             . (2)                   */
+    /*                           ./|                       */
+    /*                  b      ./  `.                      */
+    /*                       ./     |                      */
+    /*                     ./       `.                     */
+    /*                   ./          |                     */
+    /*                 ./            `.  c                 */
+    /*       (NEW 1) ./_________      |                    */
+    /*                `--.  ang       `.                   */
+    /*                    `--.         |                   */
+    /*                        `--.     `.                  */
+    /*                      a     `--.  |                  */
+    /*                                `--. (3)             */
+    /*                                                     */
 
-    /*                                                    */
-    /*   x' =          aleph + bet                        */
-    /*   y' = +- sqrt( gimel - bet**2 - aleph**2 )        */
-    /*                                                    */
-    /*   aleph = (d_1_2**2-d_2_3**2)/(2*e)                */
-    /*   bet   = e/2                                      */
-    /*   gimel = (d_1_2**2+d_2_3**2)/2                    */
-    /*                                                    */
 
-    /*                                                    */
-    /*   x       new_1->x       dx/e  -dy/e     x'        */
-    /* (   ) = (            ) + (           ) (   )       */
-    /*   y       new_1->y       dy/e   dx/e     y'        */
-    /*                                                    */
+    /*
 
-    /*                                                                */
-    /*                             . (2)                              */
-    /*                           ./|                                  */
-    /*                  c      ./   .                                 */
-    /*                       ./     |                                 */
-    /*                     ./        .                                */
-    /*                   ./          |                                */
-    /*                 ./             .  b                            */
-    /*           (3) ./               |                               */
-    /*                `--.             .                              */
-    /*                    `--.         |                              */
-    /*                        `--.      .                             */
-    /*                      a     `--.  |                             */
-    /*                                `--. (NEW 1)                    */
-    /*                                                                */
+    OK, we've picked a new node-1... now we want to hold node-3 fixed and
+    try to find a node-2 that will keep the other distances constant. In
+    trigonometric terms, we're trying to solve for the missing vertex of a
+    triangle, given (1) the positions of the other two vertices, and (2)
+    the lengths of all three sides.
 
-    const double dx_3_1    = old_3.x - new_1->x;
-    const double dy_3_1    = old_3.y - new_1->y;
+    We do this in two steps:
 
-    const double a = sqrt(dx_3_1*dx_3_1 + dy_3_1*dy_3_1);
+      (1) assume node-1 is at (0,0), the origin
+             and node-3 is at (a,0)
+
+          then find node-2 in this unrotated coord system
+
+      (2) now take the rotation angle (ang) required to put node-3 back in
+          its proper position, and rotate node-2 by that angle as well
+
+    From http://mathworld.wolfram.com/Triangle.html:
+
+    A triangle with sides a, b, and c can be constructed by selecting
+    vertices (0,0), (a,0), and (x,y), then solving:
+
+        x^2   + y^2  =  b^2
+      (x-a)^2 + y^2  =  c^2
+
+    to obtain:
+
+           a^2 + b^2 - c^2
+       x = ---------------
+                 2a
+
+                    ,------------------------------
+                   /          (a^2 + b^2 - c^2)^2
+       y = +/- _  /  b^2  -  ---------------------
+                \/                   4a^2
+
+                   ,-----------------------------------------------
+                -\/  2(a^2b^2 + b^2c^2 + a^2c^2) - a^4 - b^4 - c^4
+         = +/- -----------------------------------------------------
+                                       2a
+
+    (note that the website has an incorrect formula for the solved y!)
+
+    */
+
+    const double a = distance(old_3, *new_1);
     const double b = distance(old_1, old_2);
     const double c = distance(old_2, old_3);
+
+    const double cos_ang = (old_3.x - new_1->x) / a;  // adjac / hypot
+    const double sin_ang = (old_3.y - new_1->y) / a;  // oppos / hypot
 
     const double a_sq = a*a;
     const double b_sq = b*b;
@@ -164,16 +193,20 @@ namespace
     if (det < 0)
       return false;
 
+    // OK, here's the unrotated coords of node-2:
+
     const double xp = (a*a + b*b - c*c) / (2.0*a);
     const double yp = sqrt(det) / (2.0*a);
 
+    // Here's the two candidate re-rotated coords:
+
     const Vector new_2a
-      (new_1->x + xp*dx_3_1/a - yp*dy_3_1/a,
-       new_1->y + xp*dy_3_1/a + yp*dx_3_1/a);
+      (new_1->x + xp*cos_ang - yp*sin_ang,
+       new_1->y + xp*sin_ang + yp*cos_ang);
 
     const Vector new_2b
-      (new_1->x + xp*dx_3_1/a + yp*dy_3_1/a,
-       new_1->y + xp*dy_3_1/a - yp*dx_3_1/a);
+      (new_1->x + xp*cos_ang + yp*sin_ang,
+       new_1->y + xp*sin_ang - yp*cos_ang);
 
     const double d_2_2a = distance(new_2a, old_2);
     const double d_2_2b = distance(new_2b, old_2);
