@@ -218,8 +218,7 @@ namespace
 Snake::Snake(int l, double sp) :
   itsLength(l),
   itsSpacing(sp),
-  itsElem(new Element[itsLength]),
-  itsDeltas(new double[itsLength])
+  itsElem(new Element[itsLength])
 {
   const double radius = (double)(itsLength * itsSpacing) / (2*M_PI);
 
@@ -233,8 +232,6 @@ Snake::Snake(int l, double sp) :
       itsElem[n].ypos   = -radius * sin(alpha+alpha_off);
     }
 
-  this->computeDeltaTheta();
-
   for (int count = 0; count < FOREGROUND_ITERS; ++count)
     {
       this->jiggle();
@@ -245,7 +242,6 @@ Snake::Snake(int l, double sp) :
 
 Snake::~Snake()
 {
-  delete [] itsDeltas;
   delete [] itsElem;
 }
 
@@ -284,7 +280,7 @@ void Snake::center()
     }
 }
 
-void Snake::computeDeltaTheta()
+void Snake::computeTheta()
 {
   for (int n0 = 0; n0 < itsLength; ++n0)
     {
@@ -294,14 +290,16 @@ void Snake::computeDeltaTheta()
       const double dy = itsElem[n1].ypos - itsElem[n0].ypos;
 
       itsElem[n0].theta = zerototwopi(atan2(dy, dx));
-
     }
+}
 
+void Snake::computeDelta(double* deltas)
+{
   for (int n0 = 0; n0 < itsLength; ++n0)
     {
       const int n1 = (n0+1)%itsLength;
 
-      itsDeltas[n1] = minuspitopi(itsElem[n1].theta - itsElem[n0].theta);
+      deltas[n1] = minuspitopi(itsElem[n1].theta - itsElem[n0].theta);
     }
 }
 
@@ -340,6 +338,11 @@ void Snake::computeDeltaTheta()
 
 void Snake::jiggle()
 {
+  double deltas[itsLength];
+
+  this->computeTheta();
+  this->computeDelta(deltas);
+
   int i[4];
   pickRandom4(itsLength, i);
 
@@ -355,10 +358,10 @@ void Snake::jiggle()
   const Tuple4 theta = getThetas(no);
   const Tuple4 alpha = getAlphas(theta);
 
-  const Tuple4 delta(itsDeltas[i[0]],
-                     itsDeltas[i[1]],
-                     itsDeltas[i[2]],
-                     itsDeltas[i[3]]);
+  const Tuple4 delta(deltas[i[0]],
+                     deltas[i[1]],
+                     deltas[i[2]],
+                     deltas[i[3]]);
 
   Vector new_no[4];
 
@@ -398,7 +401,8 @@ void Snake::jiggle()
       itsElem[i[n]].ypos = new_no[n].y;
     }
 
-  this->computeDeltaTheta();
+  this->computeTheta();
+//   this->computeDelta();
 }
 
 void Snake::replaceNodes(int i1, const Vector& new1,

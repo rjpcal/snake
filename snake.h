@@ -31,10 +31,10 @@ private:
   const int itsLength;
   const double itsSpacing;
   Element* const itsElem;
-  double* const itsDeltas;  /* difference of thetas */
 
   void center();
-  void computeDeltaTheta();
+  void computeTheta();
+  void computeDelta(double* deltas);
   void jiggle();
   void replaceNodes(int i1, const Vector& new1,
                     int n2, const Vector& new2);
