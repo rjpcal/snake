@@ -324,7 +324,6 @@ void Snake::computeDeltaTheta()
 
 void Snake::jiggle()
 {
-  int n;
   float a[4], delta[4], alpha[4], theta[4], lo_alpha[4], hi_alpha[4],
     incr, new_alpha[4], new_theta[4], new_a[4];
   Vector no[4], new_no[4];
@@ -334,7 +333,7 @@ void Snake::jiggle()
 
   increment = INCREMENT;
 
-  for (n=0; n<4; n++)
+  for (int n = 0; n < 4; ++n)
     {
       no[n].x  = itsElem[i[n]].xpos;
       no[n].y  = itsElem[i[n]].ypos;
@@ -345,13 +344,13 @@ void Snake::jiggle()
 
   getAngles(no, alpha, theta);
 
-  for (n=0; n<4; n++)
+  for (int n = 0; n < 4; ++n)
     {
       lo_alpha[n] = alpha[n] - (HIDELTA - delta[n]);
       hi_alpha[n] = alpha[n] + (delta[n] - LODELTA);
     }
 
-  for (; ;)
+  for (;;)
     {
       incr = (drand48()<0.5) ? -increment : increment;
 
@@ -377,10 +376,10 @@ void Snake::jiggle()
         break;
     }
 
-  for (n=0; n<4; n++)
+  for (int n = 0; n < 4; ++n)
     this->newNodes(i[n], i[(n+1)%4], new_no[n], new_no[(n+1)%4]);
 
-  for (n=0; n<4; n++)
+  for (int n = 0; n < 4; ++n)
     {
       itsElem[i[n]].xpos = new_no[n].x;
       itsElem[i[n]].ypos = new_no[n].y;
