@@ -9,7 +9,6 @@ struct Element
   double theta;  /* angle to x-axis, 0 to TWOPI */
   double xpos;   /* x-position of node */
   double ypos;   /* y-position of node */
-  double delta;  /* difference of thetas */
 };
 
 struct Vector
@@ -32,6 +31,7 @@ private:
   const int itsLength;
   const double itsSpacing;
   Element* const itsElem;
+  double* const itsDeltas;  /* difference of thetas */
 
   void center();
   void computeDeltaTheta();

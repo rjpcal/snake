@@ -218,7 +218,8 @@ namespace
 Snake::Snake(int l, double sp) :
   itsLength(l),
   itsSpacing(sp),
-  itsElem(new Element[itsLength])
+  itsElem(new Element[itsLength]),
+  itsDeltas(new double[itsLength])
 {
   const double radius = (double)(itsLength * itsSpacing) / (2*M_PI);
 
@@ -244,6 +245,7 @@ Snake::Snake(int l, double sp) :
 
 Snake::~Snake()
 {
+  delete [] itsDeltas;
   delete [] itsElem;
 }
 
@@ -294,7 +296,7 @@ void Snake::computeDeltaTheta()
     {
       const int n1 = (n0+1)%itsLength;
 
-      itsElem[n1].delta = minuspitopi(itsElem[n1].theta - itsElem[n0].theta);
+      itsDeltas[n1] = minuspitopi(itsElem[n1].theta - itsElem[n0].theta);
     }
 }
 
@@ -348,10 +350,10 @@ void Snake::jiggle()
   const Tuple4 theta = getThetas(no);
   const Tuple4 alpha = getAlphas(theta);
 
-  const Tuple4 delta(itsElem[i[0]].delta,
-                     itsElem[i[1]].delta,
-                     itsElem[i[2]].delta,
-                     itsElem[i[3]].delta);
+  const Tuple4 delta(itsDeltas[i[0]],
+                     itsDeltas[i[1]],
+                     itsDeltas[i[2]],
+                     itsDeltas[i[3]]);
 
   Vector new_no[4];
 
