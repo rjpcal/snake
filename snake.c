@@ -345,13 +345,16 @@ void Snake::jiggle()
   increment = INCREMENT;
 
   Vector no[4];
-  float delta[4];
   for (int n = 0; n < 4; ++n)
     {
       no[n].x  = itsElem[i[n]].xpos;
       no[n].y  = itsElem[i[n]].ypos;
-      delta[n] = itsElem[i[n]].delta;
     }
+
+  const Tuple4 delta(itsElem[i[0]].delta,
+                     itsElem[i[1]].delta,
+                     itsElem[i[2]].delta,
+                     itsElem[i[3]].delta);
 
   const Tuple4 theta = getThetas(no);
   const Tuple4 alpha = getAlphas(theta);
