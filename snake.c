@@ -169,8 +169,8 @@ namespace
     return newApex(new_no1, new_no2, new_no3, a[1], a[2]);
   }
 
-  bool monteCarlo(const float old_alpha[], const float new_alpha[],
-                  const float lo_alpha[], const float hi_alpha[])
+  bool monteCarlo(const float old_alpha[4], const float new_alpha[4],
+                  const float lo_alpha[4], const float hi_alpha[4])
   {
     bool zero_probability = false;
 
@@ -185,7 +185,6 @@ namespace
 
         if (newval > HIDELTA)
           {
-            energy_difference = 999.0f;
             zero_probability = true;
             increment = 0.8 * increment;
             break;
@@ -205,7 +204,7 @@ namespace
         }
       else
         {
-          probability = exp((double)(-energy_difference/TEMPERATURE));
+          probability = exp(-energy_difference/TEMPERATURE);
         }
 
     return drand48() <= probability;
