@@ -324,23 +324,13 @@ void Snake::computeDeltaTheta()
 
 void Snake::jiggle()
 {
-  float delta[4];
-  float alpha[4];
-  float theta[4];
-  float lo_alpha[4];
-  float hi_alpha[4];
-  float incr;
-  float new_alpha[4];
-  float new_theta[4];
-  float new_a[4];
-  Vector no[4];
-  Vector new_no[4];
-
   int i[4];
   pickRandom4(itsLength, i);
 
   increment = INCREMENT;
 
+  Vector no[4];
+  float delta[4];
   for (int n = 0; n < 4; ++n)
     {
       no[n].x  = itsElem[i[n]].xpos;
@@ -348,17 +338,23 @@ void Snake::jiggle()
       delta[n] = itsElem[i[n]].delta;
     }
 
+  float alpha[4];
+  float theta[4];
   getAngles(no, alpha, theta);
 
+  float lo_alpha[4];
+  float hi_alpha[4];
   for (int n = 0; n < 4; ++n)
     {
       lo_alpha[n] = alpha[n] - (HIDELTA - delta[n]);
       hi_alpha[n] = alpha[n] + (delta[n] - LODELTA);
     }
 
+  Vector new_no[4];
+
   for (;;)
     {
-      incr = (drand48()<0.5) ? -increment : increment;
+      const float incr = (drand48()<0.5) ? -increment : increment;
 
       const int r = int(4 * drand48());
 
@@ -375,7 +371,8 @@ void Snake::jiggle()
           continue;
         }
 
-      getEdgeLengths(new_no, new_a);
+      float new_alpha[4];
+      float new_theta[4];
       getAngles(new_no, new_alpha, new_theta);
 
       if (monteCarlo(alpha, new_alpha, lo_alpha, hi_alpha))
