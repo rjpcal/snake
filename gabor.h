@@ -1,5 +1,5 @@
-#define GABOR_MAX_ORIENT      64
-#define GABOR_MAX_PHASE        8
+const int GABOR_MAX_ORIENT = 64;
+const int GABOR_MAX_PHASE = 8;
 
 class GaborSet
 {
