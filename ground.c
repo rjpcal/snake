@@ -62,33 +62,28 @@ int Ground::tooClose( int upto, float x, float y, int except )
   return 0;
 }
 
-void Ground::insideElements( int total_number, int foreg_number,
-                             int *ppatch_number )
+void Ground::insideElements()
 {
-  int n, i, j, side, pn;
-  float Xij, Yij, Xin, Yin;
-  float vp[ MAX_FOREG_NUMBER ];
+  int pn = FOREG_NUMBER;
 
-  pn = foreg_number;
-
-  for( n=foreg_number; n<total_number; n++ )
+  for(int n = FOREG_NUMBER; n < NPatch; ++n)
     {
-      side = 1;
+      int side = 1;
 
-      for( i=0; i<foreg_number; i++ )
+      for(int i = 0; i < FOREG_NUMBER; ++i)
         {
-          j = (i+1) % foreg_number;
+          const int j = (i+1) % FOREG_NUMBER;
 
-          Yij      = array[i].xpos - array[j].xpos;
-          Xij      = array[j].ypos - array[i].ypos;
+          const float Yij = array[i].xpos - array[j].xpos;
+          const float Xij = array[j].ypos - array[i].ypos;
 
-          Xin      = array[n].xpos - array[i].xpos;
-          Yin      = array[n].ypos - array[i].ypos;
+          const float Xin = array[n].xpos - array[i].xpos;
+          const float Yin = array[n].ypos - array[i].ypos;
 
-          if( ( vp[i] = Xij*Xin + Yij*Yin ) < 0.0 )
-            {
-              side = 0;
-            }
+          const float vp = Xij*Xin + Yij*Yin;
+
+          if( vp < 0.0 )
+            side = 0;
         }
 
       if( side )
@@ -98,7 +93,7 @@ void Ground::insideElements( int total_number, int foreg_number,
         }
     }
 
-  *ppatch_number = pn;
+  PATCH_NUMBER = pn;
 }
 
 void Ground::contourElements()
@@ -213,7 +208,7 @@ void Ground::fillElements()
   NPatch = npts;
 }
 
-void Ground::jitterElement( void )
+void Ground::jitterElement()
 {
   for(int niter = 0; niter < BACKGROUND_ITERATION; ++niter)
     {
@@ -267,7 +262,7 @@ Ground::Ground()
       this->fillElements();
     }
 
-  this->insideElements( NPatch, FOREG_NUMBER, &PATCH_NUMBER );
+  this->insideElements();
 
   printf( " FOREG_NUMBER %d    PATCH_NUMBER %d    TOTAL_NUMBER %d\n",
           FOREG_NUMBER, PATCH_NUMBER, NPatch );

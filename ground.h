@@ -28,9 +28,9 @@ private:
   float         BACKG_AVE_SPACING;
 
   int tooClose(int upto, float x, float y, int except);
-  void insideElements( int total_number, int foreg_number, int *ppatch_number );
+  void insideElements();
   void contourElements();
   void gridElements();
   void fillElements();
-  void jitterElement( void );
+  void jitterElement();
 };
