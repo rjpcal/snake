@@ -3,15 +3,11 @@
 #include "geom.h"
 
 #include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 namespace
 {
   const double DELTA_THETA    = M_PI / GABOR_MAX_ORIENT;
   const double DELTA_PHASE    = 2 * M_PI / GABOR_MAX_PHASE;
-  const double OFF_THETA      = 0.5 * DELTA_THETA;
-  const double OFF_PHASE      = 0.5 * DELTA_PHASE;
 
   double* createPatch(double sigma, double omega, double theta,
                       double phi, double contrast, int xysize)
@@ -52,7 +48,7 @@ namespace
   {
     theta = zerotopi(theta);
 
-    int index = int((theta + OFF_THETA) / DELTA_THETA);
+    int index = int(theta/DELTA_THETA + 0.5);
 
     return index % GABOR_MAX_ORIENT;
   }
@@ -61,7 +57,7 @@ namespace
   {
     phi   = zerototwopi(phi);
 
-    int index = int((phi + OFF_PHASE) / DELTA_PHASE);
+    int index = int(phi/DELTA_PHASE + 0.5);
 
     return index % GABOR_MAX_PHASE;
   }
