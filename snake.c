@@ -112,8 +112,6 @@ namespace
     /*   y       no1->y       dy/e   dx/e     y'          */
     /*                                                    */
 
-    Vector no2_one, no2_two;
-
     const float dx    = no3->x - no1->x;
     const float dy    = no3->y - no1->y;
 
@@ -129,19 +127,16 @@ namespace
     const float xp = aleph + bet;
     const float yp = sqrt(gimel - bet*bet - aleph*aleph);
 
+    Vector no2_one, no2_two;
+
     no2_one.x = no1->x + xp*dx/e - yp*dy/e;
     no2_one.y = no1->y + xp*dy/e + yp*dx/e;
 
     no2_two.x = no1->x + xp*dx/e + yp*dy/e;
     no2_two.y = no1->y + xp*dy/e - yp*dx/e;
 
-    const float dis_one =
-      (no2_one.x - no2->x)*(no2_one.x - no2->x)
-      + (no2_one.y - no2->y)*(no2_one.y - no2->y);
-
-    const float dis_two =
-      (no2_two.x - no2->x)*(no2_two.x - no2->x)
-      + (no2_two.y - no2->y)*(no2_two.y - no2->y);
+    const float dis_one = distance(no2_one, *no2);
+    const float dis_two = distance(no2_two, *no2);
 
     *no2 = (dis_one < dis_two) ? no2_one : no2_two;
 
