@@ -3,13 +3,14 @@
 
 #include "defs.h"
 #include "ground.h"
-#include "keydef.h"
 #include "main.h"
 #include "params.h"
 
 #include <stdlib.h>
 
 long FILEMARKER;
+
+#define RAD2DEG             (180./M_PI)
 
 void WriteHeader( void )
 {

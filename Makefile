@@ -4,7 +4,7 @@ LFLAGS  = -lm
 
 SRC    = main.c window.c gamma.c snake.c ground.c geom.c params.c file.c timing.c gabor.c
 INC    = defs.h file.h gabor.h gamma.h \
-	geom.h ground.h keydef.h main.h params.h snake.h timing.h window.h
+	geom.h ground.h main.h params.h snake.h timing.h window.h
 
 OBJ    = $(SRC:.c=.o)
 

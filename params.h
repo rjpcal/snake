@@ -18,9 +18,24 @@ extern float GABOR_PERIOD;
 extern float GABOR_SIGMA;
 extern int   GABOR_SIZE;
 extern int   DISPLAY_NUMBER;
-extern char  FILENAME[];
+extern const char* FILENAME;
 
-extern char  line[], text[];
+#define      READ                  'r'
+#define      WRITE                 'w'
+#define      APPEND                'a'
+#define      OPTIONAL              'o'
+
+#define GETINT(name) {fgets(line,120,fp);sscanf(line,"%s %d",text,&(name));}
+#define GETFLOAT(name) {fgets(line,120,fp);sscanf(line,"%s %f",text,&(name));}
+#define GETTEXT(name) {fgets(line,120,fp);sscanf(line,"%s %s",text,(name));}
+
+#define PUTINT(name,text) {fprintf(fp,"%-19s %d\n",(text),(name));}
+#define PUTFLOAT(name,text) {fprintf(fp,"%-19s %.2f\n",(text),(name));}
+#define PUTTEXT(name,text) {fprintf(fp,"%-19s %s\n",(text),(name));}
+
+#define PRINTINT(name,text) {printf( "%-19s %d\n",(text),(name));}
+#define PRINTFLOAT(name,text) {printf( "%-19s %.2f\n",(text),(name));}
+#define PRINTTEXT(name,text) {printf( "%-19s %s\n",(text),(name));}
 
 extern void ReadParams( char extension[] );
 extern void WriteParams( char extension[] );

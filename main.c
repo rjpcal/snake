@@ -13,10 +13,8 @@
 
 void Exit();
 
-char PROGRAM[ STRINGSIZE ];
-
-int   DISPLAY_SET_NUMBER;
-int   DISPLAY_COUNT;
+int DISPLAY_SET_NUMBER;
+int DISPLAY_COUNT;
 
 int main( int argc, char** argv )
 {
@@ -26,8 +24,7 @@ int main( int argc, char** argv )
       Exit();
     }
 
-  sprintf( PROGRAM, "%s", argv[0]);
-  sprintf( FILENAME,"%s", argv[1]);
+  FILENAME = argv[1];
 
   SeedRand();
 

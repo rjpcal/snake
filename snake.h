@@ -1,8 +1,6 @@
 #ifndef SNAKE_H_DEFINED
 #define SNAKE_H_DEFINED
 
-#define      MAX_FOREG_NUMBER           128
-
 typedef struct Element
 {
     int   flag;   /* 2 contour, 1 inside, 0 outside */

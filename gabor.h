@@ -1,6 +1,9 @@
 
 #include "defs.h"
 
+#define GABOR_MAX_ORIENT      64
+#define GABOR_MAX_PHASE        8
+
 extern Colorindex *Patch[][GABOR_MAX_PHASE];
 
 extern void AllocGabor( void );

@@ -3,7 +3,6 @@
 
 #include "defs.h"
 #include "gabor.h"
-#include "keydef.h"
 #include "main.h"
 
 #include <string.h>
@@ -27,9 +26,12 @@ float GABOR_PERIOD;
 float GABOR_SIGMA;
 int   GABOR_SIZE;
 int   DISPLAY_NUMBER;
-char  FILENAME[STRINGSIZE];
+const char* FILENAME = "nofile";
 
-char  line[STRINGSIZE], text[STRINGSIZE];
+namespace
+{
+  char line[STRINGSIZE], text[STRINGSIZE];
+}
 
 void ReadParams( char extension[] )
 {

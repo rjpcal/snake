@@ -29,6 +29,7 @@ Colorindex colindex[LUMI_LEVELS]; /* contains colindex values for each lumi */
 
 double lumi[MAX_COLINDEX]; /*contains lumi val( 0 -> 1) for each index; */
 
+struct cmapval { unsigned char r, g, b; };
 cmapval colormap[MAX_COLINDEX];
 
 void nrerror(char error_text[]);

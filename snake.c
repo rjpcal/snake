@@ -8,8 +8,8 @@
 #include <math.h>
 #include <stdlib.h>
 
-#define      HIDELTA               (PI/4.)
-#define      LODELTA              (-PI/4.)
+#define      HIDELTA               (M_PI/4.)
+#define      LODELTA              (-M_PI/4.)
 #define      TEMPERATURE               0.05
 #define      INCREMENT                 0.1
 
@@ -321,10 +321,10 @@ void Get_angles( VECTOR no[], float alpha[], float theta[] )
     theta[2] = b2 = atan2((double) dy2, (double) dx2 );
     theta[3] = b3 = atan2((double) dy3, (double) dx3 );
 
-    alpha[0]= Zerototwopi( PI - b0 + b3 );
-    alpha[1]= Zerototwopi( PI - b1 + b0 );
-    alpha[2]= Zerototwopi( PI - b2 + b1 );
-    alpha[3]= Zerototwopi( PI - b3 + b2 );
+    alpha[0]= Zerototwopi( M_PI - b0 + b3 );
+    alpha[1]= Zerototwopi( M_PI - b1 + b0 );
+    alpha[2]= Zerototwopi( M_PI - b2 + b1 );
+    alpha[3]= Zerototwopi( M_PI - b3 + b2 );
 }
 
 int Squash_quadrangle( VECTOR *no0, VECTOR *no1, VECTOR *no2, VECTOR *no3, VECTOR *new_no0, VECTOR *new_no1, VECTOR *new_no2, VECTOR *new_no3, float theta0, float incr )

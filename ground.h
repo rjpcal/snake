@@ -3,6 +3,8 @@
 
 class FakeWindow;
 
+#define MAX_GABOR_NUMBER    1800
+
 class Ground
 {
 public:

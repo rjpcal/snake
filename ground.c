@@ -27,6 +27,8 @@ namespace
 
   float              HALF_X_FRAME;
   float              HALF_Y_FRAME;
+
+  const double SQRT3 = 1.7320508075;
 }
 
 int Ground::tooClose( int upto, float x, float y, int except )

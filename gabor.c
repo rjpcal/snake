@@ -54,7 +54,7 @@ void InitGabor( void )
 
     GABOR_OMEGA    = TWOPI / GABOR_PERIOD;
 
-    DELTA_THETA    = PI / GABOR_MAX_ORIENT;
+    DELTA_THETA    = M_PI / GABOR_MAX_ORIENT;
     OFF_THETA      = 0.5 * DELTA_THETA;
     DELTA_PHASE    = TWOPI / GABOR_MAX_PHASE;
     OFF_PHASE      = 0.5 * DELTA_PHASE;

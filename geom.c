@@ -16,10 +16,10 @@ float Zerototwopi( float angle )
 
 float Minuspitopi( float angle )
 {
-    while( angle < -PI )
+    while( angle < -M_PI )
         angle += TWOPI;
 
-    while( angle >= PI )
+    while( angle >= M_PI )
         angle -= TWOPI;
 
     return( angle );
@@ -28,10 +28,10 @@ float Minuspitopi( float angle )
 float Zerotopi( float angle )
 {
     while( angle < 0. )
-        angle += PI;
+        angle += M_PI;
 
-    while( angle >= PI )
-        angle -= PI;
+    while( angle >= M_PI )
+        angle -= M_PI;
 
     return( angle );
 }
