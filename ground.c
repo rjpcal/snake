@@ -112,17 +112,14 @@ void Ground::fillElements()
 
   const double dx = sqrt(tryFillArea);
 
-  int c = 0;
-
   for (double x = -halfX; x <= halfX; x += dx)
     for (double y = -halfY; y <= halfY; y += dx)
       {
-        if (tryPush(Element(x, y, 2 * M_PI * drand48(), Element::OUTSIDE)))
-          ++c;
+        tryPush(Element(x, y, 2 * M_PI * drand48(), Element::OUTSIDE));
       }
 
   backgAveSpacing = sqrt(2.0*sizeX*sizeY/(SQRT3*totalNumber));
-  printf(" added %d to ave spacing %f\n", c, backgAveSpacing);
+  printf(" %d elements, ave spacing %f\n", totalNumber, backgAveSpacing);
 }
 
 void Ground::jitterElement()
@@ -136,8 +133,8 @@ void Ground::jitterElement()
       for (int n = snake.getLength(); n < totalNumber; ++n)
         {
           Vector v;
-          v.x = array[n].pos.x + 2*jitter*drand48() - jitter;
-          v.y = array[n].pos.y + 2*jitter*drand48() - jitter;
+          v.x = array[n].pos.x + jitter*(2*drand48() - 1);
+          v.y = array[n].pos.y + jitter*(2*drand48() - 1);
 
           if (v.x < -halfX) v.x += 2.*halfX;
           if (v.x >  halfX) v.x -= 2.*halfX;
