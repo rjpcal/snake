@@ -1,15 +1,14 @@
-
 #include "geom.h"
 
-#include "defs.h"
+#include <math.h>
 
 float Zerototwopi( float angle )
 {
     while( angle < 0. )
-        angle += TWOPI;
+        angle += (2*M_PI);
 
-    while( angle >= TWOPI )
-        angle -= TWOPI;
+    while( angle >= (2*M_PI) )
+        angle -= (2*M_PI);
 
     return( angle );
 }
@@ -17,10 +16,10 @@ float Zerototwopi( float angle )
 float Minuspitopi( float angle )
 {
     while( angle < -M_PI )
-        angle += TWOPI;
+        angle += (2*M_PI);
 
     while( angle >= M_PI )
-        angle -= TWOPI;
+        angle -= (2*M_PI);
 
     return( angle );
 }

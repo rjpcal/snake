@@ -1,6 +1,5 @@
 #include "main.h"
 
-#include "defs.h"
 #include "gabor.h"
 #include "ground.h"
 #include "params.h"

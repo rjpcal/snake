@@ -1,6 +1,5 @@
 #include "ground.h"
 
-#include "defs.h"
 #include "gabor.h"
 #include "geom.h"
 #include "main.h"
@@ -135,7 +134,7 @@ void Ground::gridElements()
           array[NPatch].flag = 0;
           array[NPatch].xpos = x;
           array[NPatch].ypos = y;
-          array[NPatch].theta = TWOPI * drand48();
+          array[NPatch].theta = 2 * M_PI * drand48();
 
           ++NPatch;
         }
@@ -184,7 +183,7 @@ void Ground::fillElements()
       array[npts].flag  = 0;
       array[npts].xpos  = xl[i];
       array[npts].ypos  = yl[i];
-      array[npts].theta = TWOPI * drand48();
+      array[npts].theta = 2 * M_PI * drand48();
       npts++;
     }
 
@@ -268,8 +267,8 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
 
   for(int i = 0; i < NPatch; ++i)
     {
-      const float phi   = TWOPI * drand48();
-      const float randtheta = TWOPI * drand48();
+      const float phi   = 2 * M_PI * drand48();
+      const float randtheta = 2 * M_PI * drand48();
 
       const float theta =
         (i < snake.getLength())

@@ -1,6 +1,5 @@
 #include "snake.h"
 
-#include "defs.h"
 #include "geom.h"
 
 #include <math.h>
@@ -468,13 +467,13 @@ Snake::Snake(int l, float sp) :
   length(l),
   spacing(sp)
 {
-  const float radius = (float)(length * spacing) / TWOPI;
+  const float radius = (float)(length * spacing) / (2*M_PI);
 
-  const float alpha_off = TWOPI * drand48();
+  const float alpha_off = 2 * M_PI * drand48();
 
   for(int n = 0; n < length; ++n)
     {
-      const float alpha = TWOPI * n / length;
+      const float alpha = 2 * M_PI * n / length;
 
       foreg[n].xpos   =  radius * cos((double) alpha+alpha_off );
       foreg[n].ypos   = -radius * sin((double) alpha+alpha_off );

@@ -3,13 +3,14 @@
 
 #include "geom.h"
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 namespace
 {
   const float DELTA_THETA    = M_PI / GABOR_MAX_ORIENT;
-  const float DELTA_PHASE    = TWOPI / GABOR_MAX_PHASE;
+  const float DELTA_PHASE    = 2 * M_PI / GABOR_MAX_PHASE;
   const float OFF_THETA      = 0.5 * DELTA_THETA;
   const float OFF_PHASE      = 0.5 * DELTA_PHASE;
 
@@ -70,7 +71,7 @@ namespace
 GaborSet::GaborSet(double period, double sigma, int size) :
   patchSize(size)
 {
-  const float omega = TWOPI / period;
+  const float omega = 2 * M_PI / period;
 
   for(int n=0; n<GABOR_MAX_ORIENT; ++n)
     for(int m=0; m<GABOR_MAX_PHASE; ++m)

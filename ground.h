@@ -1,4 +1,3 @@
-#include "defs.h"
 #include "snake.h"
 
 #define MAX_GABOR_NUMBER    1800

@@ -1,5 +1,3 @@
-#include "defs.h"
-
 #include <math.h>
 
 class FakeWindow

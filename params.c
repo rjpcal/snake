@@ -1,7 +1,5 @@
-
 #include "params.h"
 
-#include "defs.h"
 #include "gabor.h"
 #include "ground.h"
 #include "main.h"
