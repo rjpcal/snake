@@ -1,7 +1,9 @@
 
-#include "applic.h"
 #include "defs.h"
+#include "file.h"
+#include "gabor.h"
 #include "gamma.h"
+#include "ground.h"
 #include "params.h"
 #include "timing.h"
 #include "window.h"
@@ -15,6 +17,9 @@ char PROGRAM[ STRINGSIZE ];
 
 /// memory for fake window:
 Colorindex *win;
+
+int   DISPLAY_SET_NUMBER;
+int   DISPLAY_COUNT;
 
 int main( int argc, char** argv )
 {
@@ -44,9 +49,38 @@ int main( int argc, char** argv )
       (malloc(DISPLAY_X * DISPLAY_Y * sizeof(Colorindex)));
 
 
-    InitApplication();
+    SeedRand();
 
-    WriteApplication();
+    ReadParams( "sta" );    // FIXME???
+
+    PrintParams();    // FIXME???
+
+    InitGabor();
+
+    DISPLAY_COUNT = 0;
+
+    DISPLAY_SET_NUMBER = 1;
+
+    WriteHeader();
+
+    int n;
+
+    for( n=0; n<DISPLAY_NUMBER; n++ )
+    {
+        ZeroRand( n );
+
+        MakeForeg();
+
+        MakeGround();
+
+        WriteArray();
+
+        ShowArray();
+
+        Window2Raster();
+
+        DISPLAY_COUNT++;
+    }
 
     Exit();
 
@@ -55,11 +89,9 @@ int main( int argc, char** argv )
 
 void Exit( void )
 {
-#ifdef DUMMY
-    DONE("Exit");
-#endif
+    WrapGabor();
 
-    WrapApplication();
+    WriteParams( "sta" );
 
     exit(0);
 }

@@ -64,11 +64,6 @@ void ReadParams( char extension[] )
     Closefile( fp );
 }
 
-void CheckParams( void )
-{
-    InitGabor();
-}
-
 void WriteParams( char extension[] )
 {
     FILE *fp;
@@ -93,25 +88,6 @@ void WriteParams( char extension[] )
     PUTINT(   (GABOR_SIZE),         ("GABOR_SIZE") );
     PUTINT(   (DISPLAY_NUMBER),     ("DISPLAY_NUMBER") );
     PUTTEXT(  (FILENAME),           ("FILENAME") );
-
-    Closefile( fp );
-}
-
-void ListParams( void )
-{
-    FILE *fp;
-    int nparams = 0;
-    char params[60][STRINGSIZE];
-
-    WriteParams( "sta" );
-
-    Openfile( &fp, READ,   "sta" );
-
-    while( fgets( params[nparams], STRINGSIZE, fp) !=  NULL && nparams < 60 )
-    {
-        params[nparams][ strlen( params[nparams] ) - 1 ] = '\0';
-        nparams++;
-    }
 
     Closefile( fp );
 }
@@ -180,47 +156,3 @@ void PrintParams( void )
     PRINTTEXT(  (FILENAME),           ("FILENAME") );
 }
 
-
-/*******************************/
-
-void date( char *p )
-{
-    FILE *fp;
-
-    if( ( fp =  popen( "date", "r")) ==  NULL)
-    {
-        printf( "cannot access date");
-        return;
-    }
-    if( fgets( p, 50, fp) ==  NULL)
-    {
-        printf( "cannot read date");
-        return;
-    }
-    pclose(fp);
-}
-
-void process_id( char pid[] )
-{
-    FILE *fp;
-    char line[ STRINGSIZE ];
-
-    sprintf( line, "ps | grep %s", PROGRAM );
-
-    if( ( fp =  popen( line, "r")) ==    NULL)
-    {
-        printf( "cannot access PID");
-        return;
-    }
-    if( fgets( line, STRINGSIZE, fp) ==  NULL)
-    {
-        printf( "cannot read PID");
-        return;
-    }
-    pclose(fp);
-
-    sscanf( line, "%s", pid );
-
-    printf( " Process ID %s\n", pid );
-    fflush( stdout );
-}

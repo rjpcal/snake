@@ -23,11 +23,7 @@ extern char  FILENAME[];
 extern char  line[], text[];
 
 extern void ReadParams( char extension[] );
-extern void CheckParams( void );
 extern void WriteParams( char extension[] );
-extern void ListParams( void );
 extern void Openfile( FILE **fp, char mode, char extension[] );
 extern void Closefile( FILE *fp );
 extern void PrintParams( void );
-extern void date( char *p );
-extern void process_id( char pid[] );

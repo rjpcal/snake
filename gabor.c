@@ -19,10 +19,6 @@ void AllocGabor( void )
 {
     int i, j;
 
-#ifdef DUMMY
-    DONE( "AllocGabor" );
-#endif
-
     if( ALLOCFLAG )
         WrapGabor();
 
@@ -66,7 +62,7 @@ void InitGabor( void )
     for( n=0; n<GABOR_MAX_ORIENT; n++ )
     for( m=0; m<GABOR_MAX_PHASE; m++ )
     {
-        InitPatch(  Patch[n][m],
+        InitPatchx(  Patch[n][m],
                     GABOR_SIGMA,
                     GABOR_OMEGA,
                     Index2Theta( n ),

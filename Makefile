@@ -6,8 +6,8 @@ CFLAGS	= -I./ -O4 -g
 LFLAGS  = -lgl  -lfm -lX11 -lm -lGL 
 LFLAGS2 = -lm 
 
-SRC    = main.c applic.c window.c gamma.c snake.c ground.c geom.c params.c file.c timing.c gabor.c
-INC    = applic.h defs.h file.h gabor.h gamma.h \
+SRC    = main.c window.c gamma.c snake.c ground.c geom.c params.c file.c timing.c gabor.c
+INC    = defs.h file.h gabor.h gamma.h \
 	geom.h ground.h keydef.h main.h params.h snake.h timing.h window.h
 
 OTH    = Makefile *.sta
@@ -42,7 +42,6 @@ test:
 
 main.o: $(INC)
 window.o: $(INC)
-applic.o: $(INC)
 geom.o: $(INC)
 snake.o: $(INC)
 ground.o: $(INC)

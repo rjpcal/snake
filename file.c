@@ -1,12 +1,12 @@
 
 #include "file.h"
 
-#include "applic.h"
 #include "defs.h"
 #include "gabor.h"
 #include "geom.h"
 #include "ground.h"
 #include "keydef.h"
+#include "main.h"
 #include "params.h"
 #include "timing.h"
 
@@ -86,71 +86,6 @@ void WriteArray( void )
     Closefile( fp );
 }
 
-void ReadHeader( void )
-{
-    FILE *fp;
-
-    Openfile( &fp, READ, "snk" );
-
-    GETINT(   (DISPLAY_SET_NUMBER) );
-    GETINT(   (DISPLAY_NUMBER) );
-    GETINT(   (DISPLAY_X) );
-    GETINT(   (DISPLAY_Y) );
-    GETFLOAT( (GABOR_PERIOD) );
-    GETFLOAT( (GABOR_SIGMA) );
-    GETINT(   (GABOR_SIZE) );
-    GETFLOAT( (FOREG_ECCENTRICITY) );
-    GETFLOAT( (FOREG_JITTER) );
-    GETINT(   (FOREG_POSITIONS) );
-    GETFLOAT( (FOREG_DIFFERENCE) );
-
-    FILEMARKER = ftell( fp );
-
-    Closefile( fp );
-}
-
-
-void ReadArray( void )
-{
-    int i, x, y, o, s;
-    FILE *fp;
-
-    Openfile( &fp, READ, "snk" );
-
-    fseek( fp, FILEMARKER, SEEK_SET );
-
-    GETINT(   (DISPLAY_COUNT) );
-    GETINT(   (TOTAL_NUMBER) );
-    GETINT(   (FOREG_NUMBER) );
-    GETINT(   (PATCH_NUMBER) );
-    GETFLOAT( (FOREG_SPACING) );
-    GETFLOAT( (BACKG_AVE_SPACING) );
-    GETFLOAT( (BACKG_INI_SPACING) );
-    GETFLOAT( (BACKG_MIN_SPACING) );
-
-    BACKG_AVE_SPACING = sqrt((double)(2.0*DISPLAY_X*DISPLAY_Y)/(SQRT3*TOTAL_NUMBER));
-
-    printf( " TOTAL NUMBER %d   AVE SPACING %f\n",
-              TOTAL_NUMBER, BACKG_AVE_SPACING );
-
-    for( i=0; i<TOTAL_NUMBER; i++ )
-    {
-        fgets( line, STRINGSIZE, fp);
-        sscanf(line, "%d %d %d %d",  &x, &y, &o, &s );
-
-        array[i].xpos = (float) x;
-
-        array[i].ypos = (float) y;
-
-        array[i].theta = (float) DEG2RAD * o;
-    }
-
-    FILEMARKER = ftell( fp );
-
-    Closefile( fp );
-
-    Map2Array( TOTAL_NUMBER );
-}
 
 void Map2Array( int npts )
 {
