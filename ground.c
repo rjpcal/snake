@@ -46,7 +46,7 @@ void Ground::insideElements()
 
   for (int n = snake.getLength(); n < totalNumber; ++n)
     {
-      int side = 1;
+      bool inside = true;
 
       for (int i = 0; i < snake.getLength(); ++i)
         {
@@ -61,10 +61,13 @@ void Ground::insideElements()
           const double vp = Xij*Xin + Yij*Yin;
 
           if (vp < 0.0)
-            side = 0;
+            {
+              inside = false;
+              continue;
+            }
         }
 
-      if (side)
+      if (inside)
         {
           array[n].type = Element::INSIDE;
           ++insideNumber;
