@@ -180,7 +180,7 @@ namespace
   }
 
   bool monteCarlo(const Tuple4& old_alpha, const Tuple4& new_alpha,
-                  const Tuple4& lo_alpha, const Tuple4& hi_alpha)
+                  const Tuple4& alpha_sum)
   {
     bool zero_probability = false;
 
@@ -188,7 +188,7 @@ namespace
 
     for (int n = 0; n < 4; ++n)
       {
-        const float zero_point = 0.5 * (hi_alpha[n] + lo_alpha[n]);
+        const float zero_point = 0.5 * alpha_sum[n];
 
         const float oldval = fabs(old_alpha[n] - zero_point);
         const float newval = fabs(new_alpha[n] - zero_point);
@@ -354,16 +354,14 @@ void Snake::jiggle()
   const Tuple4 theta = getThetas(no);
   const Tuple4 alpha = getAlphas(theta);
 
-  const Tuple4 lo_alpha(alpha[0] - (HIDELTA - itsElem[i[0]].delta),
-                        alpha[1] - (HIDELTA - itsElem[i[1]].delta),
-                        alpha[2] - (HIDELTA - itsElem[i[2]].delta),
-                        alpha[3] - (HIDELTA - itsElem[i[3]].delta));
-
-  const Tuple4 hi_alpha(alpha[0] + (itsElem[i[0]].delta - LODELTA),
-                        alpha[1] + (itsElem[i[1]].delta - LODELTA),
-                        alpha[2] + (itsElem[i[2]].delta - LODELTA),
-                        alpha[3] + (itsElem[i[3]].delta - LODELTA));
-
+  const Tuple4 alpha_sum(alpha[0] - (HIDELTA - itsElem[i[0]].delta)
+                         + alpha[0] + (itsElem[i[0]].delta - LODELTA),
+                         alpha[1] - (HIDELTA - itsElem[i[1]].delta)
+                         + alpha[1] + (itsElem[i[1]].delta - LODELTA),
+                         alpha[2] - (HIDELTA - itsElem[i[2]].delta)
+                         + alpha[2] + (itsElem[i[2]].delta - LODELTA),
+                         alpha[3] - (HIDELTA - itsElem[i[3]].delta)
+                         + alpha[3] + (itsElem[i[3]].delta - LODELTA));
   Vector new_no[4];
 
   for (;;)
@@ -388,7 +386,7 @@ void Snake::jiggle()
       const Tuple4 new_theta = getThetas(new_no);
       const Tuple4 new_alpha = getAlphas(new_theta);
 
-      if (monteCarlo(alpha, new_alpha, lo_alpha, hi_alpha))
+      if (monteCarlo(alpha, new_alpha, alpha_sum))
         break;
     }
 
