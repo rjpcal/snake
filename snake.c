@@ -404,29 +404,29 @@ void Snake::replaceNodes(int i1, const Vector& new1,
   const float old1x  = itsElem[i1].xpos;
   const float old1y  = itsElem[i1].ypos;
 
-  const float dx  = itsElem[i2].xpos - old1x;
-  const float dy  = itsElem[i2].ypos - old1y;
+  const float old2x  = itsElem[i2].xpos;
+  const float old2y  = itsElem[i2].ypos;
 
-  const float c1  = new1.x;
-  const float c2  = new1.y;
+  const float old_dx  = old2x - old1x;
+  const float old_dy  = old2y - old1y;
 
-  const float dxp = new2.x - c1;
-  const float dyp = new2.y - c2;
+  const float new_dx = new2.x - new1.x;
+  const float new_dy = new2.y - new1.y;
 
-  const float l_2 = dx*dx + dy*dy;
+  const float l_2 = old_dx*old_dx + old_dy*old_dy;
 
-  const float a11 = (dxp*dx + dyp*dy)/l_2;
-  const float a12 = (dxp*dy - dyp*dx)/l_2;
+  const float a11 = (new_dx*old_dx + new_dy*old_dy)/l_2;
+  const float a12 = (new_dx*old_dy - new_dy*old_dx)/l_2;
 
-  const float a21 = (dyp*dx - dxp*dy)/l_2;
-  const float a22 = (dyp*dy + dxp*dx)/l_2;
+  const float a21 = (new_dy*old_dx - new_dx*old_dy)/l_2;
+  const float a22 = (new_dy*old_dy + new_dx*old_dx)/l_2;
 
   for (int n = (i1+1)%itsLength; n != i2; n = (n+1)%itsLength)
     {
       const float diffx = itsElem[n].xpos - old1x;
       const float diffy = itsElem[n].ypos - old1y;
 
-      itsElem[n].xpos = c1 + a11*diffx + a12*diffy;
-      itsElem[n].ypos = c2 + a21*diffx + a22*diffy;
+      itsElem[n].xpos = new1.x + a11*diffx + a12*diffy;
+      itsElem[n].ypos = new1.y + a21*diffx + a22*diffy;
     }
 }
