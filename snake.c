@@ -6,13 +6,13 @@
 #include <math.h>
 #include <stdlib.h>
 
-#define      HIDELTA               (M_PI/4.)
-#define      LODELTA              (-M_PI/4.)
-#define      TEMPERATURE               0.05
-#define      INCREMENT                 0.1
-
 namespace
 {
+  const double HIDELTA     = (M_PI/4.);
+  const double LODELTA     = (-M_PI/4.);
+  const double TEMPERATURE = 0.05;
+  const double INCREMENT   = 0.1;
+
   int          FOREGROUND_ITERATION =    400;
 
   float increment;
