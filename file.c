@@ -2,13 +2,10 @@
 #include "file.h"
 
 #include "defs.h"
-#include "gabor.h"
-#include "geom.h"
 #include "ground.h"
 #include "keydef.h"
 #include "main.h"
 #include "params.h"
-#include "timing.h"
 
 #include <stdlib.h>
 
@@ -84,38 +81,4 @@ void WriteArray(const Ground* g)
     }
 
     Closefile( fp );
-}
-
-
-void Map2Array(Ground* g, int npts)
-{
-    int i;
-    float theta, phi, Theta[ MAX_FOREG_NUMBER ], Phi[ MAX_FOREG_NUMBER ];
-
-    for( i=0; i<npts && i<FOREG_NUMBER; i++ )
-    {
-        Phi[i]   = Zerototwopi( TWOPI * drand48() );
-        Theta[i] = Zerototwopi( TWOPI * drand48() );
-    }
-
-    for( i=0; i<npts; i++ )
-    {
-        phi   = TWOPI * drand48();
-        theta = TWOPI * drand48();
-
-        if( i < FOREG_NUMBER )
-        {
-            phi   = Phi[ i ];
-            theta = Zerototwopi( g->array[i].theta + M_PI_2 );
-        }
-
-        g->XPatch[ i ] = (int)( g->array[ i ].xpos + DISPLAY_X / 2.0 + 0.5 );
-        g->YPatch[ i ] = (int)( g->array[ i ].ypos + DISPLAY_Y / 2.0 + 0.5 );
-
-        g->PPatch[ i ] = GetPatch( theta, phi );
-    }
-
-    g->NPatch = npts;
-
-    SeedRand();
 }

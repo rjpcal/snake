@@ -13,7 +13,7 @@ public:
   ELEMENT     array[ MAX_GABOR_NUMBER ];
   float       BACKG_AVE_SPACING;
 
-  static Ground* make(FakeWindow* wind);
+  static Ground* make();
 
 private:
   int tooClose(int upto, float x, float y, int except);
@@ -22,4 +22,5 @@ private:
   void gridElements( int *pnpts );
   void fillElements( int *pnpts );
   void jitterElement( void );
+  void map2array(int npts);
 };

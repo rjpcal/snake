@@ -3,8 +3,11 @@
 
 #include "defs.h"
 #include "file.h"
+#include "gabor.h"
+#include "geom.h"
 #include "main.h"
 #include "params.h"
+#include "timing.h"
 #include "window.h"
 
 #include <stdlib.h>
@@ -14,19 +17,6 @@
 #define            TRY_TO_FILL_NUMBER   250000
 #define            TRY_TO_FILL_AREA         6.0
 #define            DIFFUSION_STEP       (BACKG_MIN_SPACING/16.0)
-
-/*************************** global ******************************/
-
-// int                NPatch;
-
-// int                XPatch[ MAX_GABOR_NUMBER ],
-//                    YPatch[ MAX_GABOR_NUMBER ];
-
-// Colorindex         *PPatch[ MAX_GABOR_NUMBER ];
-
-// ELEMENT            array[ MAX_GABOR_NUMBER ];
-
-// float              BACKG_AVE_SPACING;
 
 /*************************** local *******************************/
 
@@ -270,9 +260,42 @@ void Ground::jitterElement( void )
     }
 }
 
+void Ground::map2array(int npts)
+{
+  int i;
+  float theta, phi, Theta[ MAX_FOREG_NUMBER ], Phi[ MAX_FOREG_NUMBER ];
+
+  for( i=0; i<npts && i<FOREG_NUMBER; i++ )
+    {
+      Phi[i]   = Zerototwopi( TWOPI * drand48() );
+      Theta[i] = Zerototwopi( TWOPI * drand48() );
+    }
+
+  for( i=0; i<npts; i++ )
+    {
+      phi   = TWOPI * drand48();
+      theta = TWOPI * drand48();
+
+      if( i < FOREG_NUMBER )
+        {
+          phi   = Phi[ i ];
+          theta = Zerototwopi( array[i].theta + M_PI_2 );
+        }
+
+      XPatch[ i ] = (int)( array[ i ].xpos + DISPLAY_X / 2.0 + 0.5 );
+      YPatch[ i ] = (int)( array[ i ].ypos + DISPLAY_Y / 2.0 + 0.5 );
+
+      PPatch[ i ] = GetPatch( theta, phi );
+    }
+
+  NPatch = npts;
+
+  SeedRand();
+}
+
 /*****************************************************************/
 
-Ground* Ground::make(FakeWindow* wind)
+Ground* Ground::make()
 {
   Ground* result = new Ground;
 
@@ -285,8 +308,7 @@ Ground* Ground::make(FakeWindow* wind)
 
   result->contourElements( &npts );
 
-  Map2Array(result, npts); // FIXME need this?
-  ShowArray(result, wind); // FIXME need this?
+  result->map2array(npts); // FIXME need this?
 
   TOTAL_NUMBER = npts;
 
@@ -300,8 +322,7 @@ Ground* Ground::make(FakeWindow* wind)
 
       result->fillElements( &npts );
 
-      Map2Array(result, npts);
-      ShowArray(result, wind); // FIXME need this?
+      result->map2array(npts);
 
       TOTAL_NUMBER = npts;
     }

@@ -57,7 +57,7 @@ int main( int argc, char** argv )
 
       MakeForeg();
 
-      Ground* g = Ground::make(&fakewin);
+      Ground* g = Ground::make();
 
       WriteArray(g);
 
@@ -83,4 +83,3 @@ void Exit( void )
 
   exit(0);
 }
-

@@ -13,31 +13,26 @@
 
 void ShowArray(const Ground* g, FakeWindow* wind)
 {
-  int i;
-  int xbotleft, ybotleft, xtopright, ytopright;
-  int tempColor;
-
   // let's clear our fake window:
-  tempColor = Grey;
-  for (i=0;i<DISPLAY_X*DISPLAY_Y;i++) wind->data[i]=Grey;
+  for (int i = 0; i < DISPLAY_X*DISPLAY_Y; ++i)
+    wind->data[i]=Grey;
 
   const int* px             = g->XPatch;
   const int* py             = g->YPatch;
   Colorindex* const* src    = g->PPatch;
 
-  for( i=0; i < g->NPatch; i++, px++, py++, src++ )
+  for(int i = 0; i < g->NPatch; ++i, ++px, ++py, ++src)
     {
-      xbotleft  = *px - GABOR_SIZE / 2;
-      ybotleft  = *py - GABOR_SIZE / 2;
-      xtopright = xbotleft + GABOR_SIZE - 1;
-      ytopright = ybotleft + GABOR_SIZE - 1;
+      int xbotleft  = *px - GABOR_SIZE / 2;
+      int ybotleft  = *py - GABOR_SIZE / 2;
+      int xtopright = xbotleft + GABOR_SIZE - 1;
+      int ytopright = ybotleft + GABOR_SIZE - 1;
 
-      int xx,yy;
-      for (yy=ybotleft;yy<=ytopright;yy++)
-        for (xx=xbotleft;xx<=xtopright;xx++)
+      for (int yy = ybotleft; yy <= ytopright; ++yy)
+        for (int xx = xbotleft; xx <= xtopright; ++xx)
           if (xx>=0 && xx<DISPLAY_X && yy>=0 && yy<DISPLAY_Y)
             {
-              if (fabs(wind->data[xx+yy*DISPLAY_X] - tempColor) < fabs((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)] - tempColor))
+              if (fabs(wind->data[xx+yy*DISPLAY_X] - Grey) < fabs((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)] - Grey))
                 wind->data[xx+yy*DISPLAY_X]=((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)]);
             }
     }
