@@ -187,10 +187,8 @@ namespace
 
     for (int n = 0; n < 4; ++n)
       {
-        const float zero_point = old_alpha[n] + delta[n];
-
-        const float oldval = fabs(old_alpha[n] - zero_point);
-        const float newval = fabs(new_alpha[n] - zero_point);
+        const float oldval = fabs(delta[n]);
+        const float newval = fabs(new_alpha[n] - old_alpha[n] - delta[n]);
 
         if (newval > HIDELTA)
           {
