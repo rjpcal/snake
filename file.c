@@ -106,7 +106,7 @@ void Map2Array( int npts )
         if( i < FOREG_NUMBER )
         {
             phi   = Phi[ i ];
-            theta = Zerototwopi( array[i].theta + HALFPI );
+            theta = Zerototwopi( array[i].theta + M_PI_2 );
         }
 
         XPatch[ i ] = (int)( array[ i ].xpos + DISPLAY_X / 2.0 + 0.5 );

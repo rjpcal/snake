@@ -23,14 +23,10 @@ int   DISPLAY_COUNT;
 
 int main( int argc, char** argv )
 {
-#ifdef DUMMY
-    DONE("main");
-#endif
-
-    if( argc<2 )
+  if( argc<2 )
     {
-        printf(" You forgot to supply a filename!\n");
-        Exit();
+      printf(" You forgot to supply a filename!\n");
+      Exit();
     }
 
     sprintf( PROGRAM, "%s", argv[0]);

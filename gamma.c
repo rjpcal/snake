@@ -53,27 +53,30 @@ void MakeColormap(void)
   short bpattern[8] = {0,1,0,1,0,1,0};
   short r,g,b;
 
-#ifdef KEEPTRACK
-    DONE("MakeColormap");
-#endif
-
   index = 0;
 
-  for (i=0; i < 255; i++) {
-    for (j=0; j < 7; j++) {
+  for (i=0; i < 255; ++i)
+    {
+      for (j=0; j < 7; ++j)
+        {
+          r = i + rpattern[j];
+          g = i + gpattern[j];
+          b = i + bpattern[j];
 
-      r = i + rpattern[j];
-      g = i + gpattern[j];
-      b = i + bpattern[j];
+          colormap[index].r = r;
+          colormap[index].g = g;
+          colormap[index].b = b;
 
-      mapcolor( index,r,g,b );
-      lumi[index] = luminance(r,g,b)/luminance(255,255,255);
+          lumi[index] = luminance(r,g,b)/luminance(255,255,255);
 
-      index++;
+          ++index;
+        }
     }
-  }
 
-  mapcolor( index,255,255,255 );
+  colormap[index].r = 255;
+  colormap[index].g = 255;
+  colormap[index].b = 255;
+
   lumi[index] = 1.0;
 
   for (i=0; i<LUMI_LEVELS; i++) {

@@ -53,10 +53,6 @@ void Window2Raster( void )
 
     static int count = 0;
 
-#ifdef DUMMY
-    DONE("Window2Raster");
-#endif
-
     ///swapbuffers();
     sprintf( fname, "%s_%d.ras", FILENAME, count++ );
     if( ( fp = fopen( fname, "w" ) ) == NULL )
@@ -100,7 +96,11 @@ void Window2Raster( void )
         x  = 0;
         y  = i*dy;
 
-        rectread( x, y, x+dx-1, y+dy-1, ptr );
+        int xx,yy;
+        for (yy = y; yy <= y+dy-1; ++yy)
+          for (xx = x; xx <= x+dx-1; ++xx)
+            if (xx>=0 && xx<DISPLAY_X && yy>=0 && yy<DISPLAY_Y)
+              ptr[xx - x + dx*(yy-y)] = win[xx + yy*DISPLAY_X];
 
         pt = ptr;
         ct = ctr;

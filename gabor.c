@@ -78,10 +78,6 @@ void InitPatch( Colorindex *ptr, float sigma, float omega, float theta, float ph
     float sin_theta, cos_theta, dx, dy, fx, fy,
           ssqr, dsqr, sinus, gauss;
 
-#ifdef DUMMY
-    DONE( "InitPatch" );
-#endif
-
     ssqr  = 2.*sigma*sigma;
 
     cos_theta = cos((double) theta );
