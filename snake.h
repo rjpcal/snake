@@ -14,6 +14,12 @@ struct Element
   float delta;  /* difference of thetas */
 };
 
+struct Vector
+{
+  float x;
+  float y;
+};
+
 class Snake
 {
 public:
@@ -26,6 +32,12 @@ public:
   const int length;
   const float spacing;
   Element foreg[ MAX_FOREG_NUMBER ];
+
+private:
+  void center();
+  void newDeltaTheta();
+  void jiggle();
+  void newNodes(int ni, int nj, Vector new_no_i, Vector new_no_j);
 };
 
 #endif // !SNAKE_H_DEFINED
