@@ -43,24 +43,6 @@ namespace
 
     return result;
   }
-
-  int theta2index(double theta)
-  {
-    theta = zerotopi(theta);
-
-    int index = int(theta/DELTA_THETA + 0.5);
-
-    return index % GABOR_MAX_ORIENT;
-  }
-
-  int phi2index(double phi)
-  {
-    phi   = zerototwopi(phi);
-
-    int index = int(phi/DELTA_PHASE + 0.5);
-
-    return index % GABOR_MAX_PHASE;
-  }
 }
 
 GaborSet::GaborSet(double period, double sigma, int size) :
@@ -89,8 +71,11 @@ GaborSet::~GaborSet()
 
 const double* GaborSet::getPatch(double theta, double phi) const
 {
-  const int itheta = theta2index(theta);
-  const int iphi   = phi2index(phi);
+  theta = zerotopi(theta);
+  phi = zerototwopi(phi);
 
-  return Patch[itheta][iphi];
+  const int itheta = int(theta/DELTA_THETA + 0.5);
+  const int iphi   = int(phi/DELTA_PHASE + 0.5);
+
+  return Patch[itheta % GABOR_MAX_ORIENT][iphi % GABOR_MAX_PHASE];
 }
