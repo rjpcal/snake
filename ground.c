@@ -155,17 +155,6 @@ void Ground::fillElements()
         continue;
 
       pushElement(Element(vl[i], 2 * M_PI * drand48(), Element::OUTSIDE));
-
-//       if (totalNumber > MAX_GABOR_NUMBER)
-//         {
-//           printf(" More than %d elements: %d\n", MAX_GABOR_NUMBER, totalNumber);
-//           exit(1);
-//         }
-
-//       array[totalNumber].type  = Element::OUTSIDE;
-//       array[totalNumber].pos   = vl[i];
-//       array[totalNumber].theta = 2 * M_PI * drand48();
-//       totalNumber++;
     }
 
   backgAveSpacing = sqrt((double)2.0*sizeX*sizeY/(SQRT3*totalNumber));
