@@ -82,14 +82,13 @@ void Ground::contourElements()
     {
       float x, y, theta;
 
-      if (snake.getElement(n, &x, &y, &theta))
-        {
-          array[totalNumber].type  = Element::CONTOUR;
-          array[totalNumber].xpos  = x;
-          array[totalNumber].ypos  = y;
-          array[totalNumber].theta = theta;
-          ++totalNumber;
-        }
+      snake.getElement(n, &x, &y, &theta);
+
+      array[totalNumber].type  = Element::CONTOUR;
+      array[totalNumber].xpos  = x;
+      array[totalNumber].ypos  = y;
+      array[totalNumber].theta = theta;
+      ++totalNumber;
     }
 
   if (totalNumber > MAX_GABOR_NUMBER)

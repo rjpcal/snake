@@ -2,6 +2,7 @@
 
 #include "geom.h"
 
+#include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -275,17 +276,13 @@ Snake::~Snake()
   delete [] itsElem;
 }
 
-int Snake::getElement(int n, float* x, float* y, float* theta) const
+void Snake::getElement(int n, float* x, float* y, float* theta) const
 {
-  if( n < itsLength )
-    {
-      *x = 0.5 * ( itsElem[n].xpos + itsElem[(n+1)%itsLength].xpos );
-      *y = 0.5 * ( itsElem[n].ypos + itsElem[(n+1)%itsLength].ypos );
-      *theta = Zerototwopi( -itsElem[n].theta );
-      return 1;
-    }
+  assert(n < itsLength);
 
-  return 0;
+  *x = 0.5 * ( itsElem[n].xpos + itsElem[(n+1)%itsLength].xpos );
+  *y = 0.5 * ( itsElem[n].ypos + itsElem[(n+1)%itsLength].ypos );
+  *theta = Zerototwopi( -itsElem[n].theta );
 }
 
 void Snake::center()
