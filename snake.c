@@ -219,7 +219,7 @@ Snake::Snake(int l, double sp) :
   itsSpacing(sp),
   itsElem(new Element[itsLength])
 {
-  const double radius = (double)(itsLength * itsSpacing) / (2*M_PI);
+  const double radius = (itsLength * itsSpacing) / (2*M_PI);
 
   const double alpha_off = 2 * M_PI * drand48();
 

@@ -133,7 +133,7 @@ void Ground::fillElements()
 
   Vector vl[ tryFillNumber ];
 
-  const double dx = (double) sqrt((double) tryFillArea);
+  const double dx = sqrt(tryFillArea);
 
   for (double x = -halfX; x <= halfX; x += dx)
     for (double y = -halfY; y <= halfY; y += dx)
@@ -153,7 +153,7 @@ void Ground::fillElements()
       pushElement(Element(vl[i], 2 * M_PI * drand48(), Element::OUTSIDE));
     }
 
-  backgAveSpacing = sqrt((double)2.0*sizeX*sizeY/(SQRT3*totalNumber));
+  backgAveSpacing = sqrt(2.0*sizeX*sizeY/(SQRT3*totalNumber));
   printf(" added %d to ave spacing %f\n",
          totalNumber-prevnumber, backgAveSpacing);
 }
