@@ -1,10 +1,8 @@
 SHELL	= /bin/sh
 
 CC      = gcc -Wall -Werror
-CFLAGS	= -I./ -O4 -g
-#CFLAGS = -I./ -O -DKEEPTRACK
-LFLAGS  = -lgl  -lfm -lX11 -lm -lGL 
-LFLAGS2 = -lm 
+CFLAGS	= -O4 -pg
+LFLAGS  = -lm
 
 SRC    = main.c window.c gamma.c snake.c ground.c geom.c params.c file.c timing.c gabor.c
 INC    = defs.h file.h gabor.h gamma.h \
@@ -14,23 +12,13 @@ OTH    = Makefile *.sta
 
 OBJ    = $(SRC:.c=.o)
 
-MAIN   = makesnake
-
-ALL    = $(MAIN)
-
-default all:	$(ALL)
+default all: makesnake
 
 clean:
-	rm -f core *~ *.o *.a $(ALL)
+	rm -f core *~ *.o *.a makesnake
 
-tar: $(SRC) $(INC) 
-	tar cvf $(MAIN).tar $(SRC1) $(INC) $(OTH)
-
-untar:
-	tar xvf $(MAIN).tar
-
-$(MAIN): $(OBJ)
-	$(CC) -o $@ $(OBJ) $(LFLAGS2)
+makesnake: $(OBJ)
+	$(CC) -pg -o $@ $(OBJ) $(LFLAGS)
 
 tags:
 	etags *.[ch]
