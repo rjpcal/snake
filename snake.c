@@ -15,19 +15,11 @@ namespace
 {
   int          FOREGROUND_ITERATION =    400;
 
+  float increment;
+
   void swap2(int& a, int& b) { int a1 = a; a = b; b = a1;}
 
   void sort2(int& a, int& b) { if (a > b) swap2(a,b); }
-
-  void Get_angles(Vector no[], float alpha[], float theta[]);
-  int Squash_quadrangle(Vector* no0, Vector* no1, Vector* no2, Vector* no3,
-                        Vector* new_no0, Vector* new_no1,
-                        Vector* new_no2, Vector* new_no3,
-                        float theta0, float incr);
-  int New_apex(Vector *no1, Vector *no2, Vector *no3, float b, float c);
-  int Monte_Carlo(float old_alpha[], float new_alpha[], float lo_alpha[], float hi_alpha[]);
-
-  float increment;
 
   void pickRandom4(int length, int i[])
   {
@@ -96,29 +88,6 @@ namespace
     alpha[3]= Zerototwopi(M_PI - theta[3] + theta[2]);
   }
 
-  int Squash_quadrangle(Vector* no0, Vector* no1, Vector* no2, Vector* no3,
-                        Vector* new_no0, Vector* new_no1,
-                        Vector* new_no2, Vector* new_no3,
-                        float theta0, float incr)
-  {
-    float a[4];
-    Vector no[4];
-
-    no[0] = *new_no0 = *no0;
-    no[1] =            *no1;
-    no[2] = *new_no2 = *no2;
-    no[3] = *new_no3 = *no3;
-
-    getEdgeLengths(no, a);
-
-    new_no1->x = new_no0->x + a[0] * cos((double)(theta0-incr));
-    new_no1->y = new_no0->y + a[0] * sin((double)(theta0-incr));
-
-    int ok = New_apex(new_no1, new_no2, new_no3, a[1], a[2]);
-
-    return ok;
-  }
-
   int New_apex(Vector *no1, Vector *no2, Vector *no3, float b, float c)
   {
     float dx, dy, e, aleph, bet, gimel, xp, yp, dis_one, dis_two;
@@ -176,6 +145,29 @@ namespace
         return 1;
       }
     return 0;
+  }
+
+  int Squash_quadrangle(Vector* no0, Vector* no1, Vector* no2, Vector* no3,
+                        Vector* new_no0, Vector* new_no1,
+                        Vector* new_no2, Vector* new_no3,
+                        float theta0, float incr)
+  {
+    float a[4];
+    Vector no[4];
+
+    no[0] = *new_no0 = *no0;
+    no[1] =            *no1;
+    no[2] = *new_no2 = *no2;
+    no[3] = *new_no3 = *no3;
+
+    getEdgeLengths(no, a);
+
+    new_no1->x = new_no0->x + a[0] * cos((double)(theta0-incr));
+    new_no1->y = new_no0->y + a[0] * sin((double)(theta0-incr));
+
+    int ok = New_apex(new_no1, new_no2, new_no3, a[1], a[2]);
+
+    return ok;
   }
 
   int Monte_Carlo(float old_alpha[], float new_alpha[], float lo_alpha[], float hi_alpha[])
