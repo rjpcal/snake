@@ -428,8 +428,6 @@ void Snake::transformPath(int i1, const Vector& new1,
   /*    a21  a12              sin a'-a    cos a'-a                     */
   /*                                                                   */
 
-  // Now we can (1) compute this directly:
-#if 1
   const double d = distance(old2, old1);
   const double a = getTheta(old2, old1);
 
@@ -447,49 +445,6 @@ void Snake::transformPath(int i1, const Vector& new1,
   const double a12 = - ratio_d * sin_diff_a;
   const double a21 =   ratio_d * sin_diff_a;
   const double a22 =   ratio_d * cos_diff_a;
-#else
-
-  // or (2) simplify it to avoid cos+sin:
-
-  /*                                                                   */
-  /*    a11  a12              cos a'  -sin a'       cos -a   -sin -a   */
-  /*  (          ) = d'/d * (                 ) * (                  ) */
-  /*    a21  a12              sin a'   cos a'       sin -a    cos -a   */
-  /*                                                                   */
-  /*                                                                   */
-  /*                          cos a'  -sin a'        cos a   sin a     */
-  /*               = d'/d * (                 ) * (                )   */
-  /*                          sin a'   cos a'       -sin a   cos a     */
-  /*                                                                   */
-  /*                                                                   */
-  /*                          dx'/d' -dy'/d'        dx/d   dy/d        */
-  /*               = d'/d * (                ) * (              )      */
-  /*                          dy'/d'  dx'/d'       -dy/d   dx/d        */
-  /*                                                                   */
-  /*                                                                   */
-  /*                          dx'/d  -dy'/d         dx/d   dy/d        */
-  /*               =        (                ) * (              )      */
-  /*                          dy'/d   dx'/d        -dy/d   dx/d        */
-  /*                                                                   */
-  /*                                                                   */
-  /*                   dx'*dx+dy'*dy   dx'*dy-dy'*dx                   */
-  /*               = (                               ) / d^2           */
-  /*                   dy'*dx-dx'*dy   dy'*dy+dx'*dx                   */
-  /*                                                                   */
-
-  const double dx  = old2.x - old1.x;
-  const double dy  = old2.y - old1.y;
-
-  const double d_sq = dx*dx + dy*dy;
-
-  const double dxp = new2.x - new1.x;
-  const double dyp = new2.y - new1.y;
-
-  const double a11 = (dxp*dx + dyp*dy)/d_sq;
-  const double a12 = (dxp*dy - dyp*dx)/d_sq;
-  const double a21 = (dyp*dx - dxp*dy)/d_sq;
-  const double a22 = (dyp*dy + dxp*dx)/d_sq;
-#endif
 
   // Loop over all the nodes in between the nodes given by i1 and i2
   for (int n = (i1+1)%itsLength; n != i2; n = (n+1)%itsLength)
