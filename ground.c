@@ -206,7 +206,7 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
       const double phi   = 2 * M_PI * drand48();
 
       const double theta =
-        (i < snake.getLength())
+        (array[i].type == Element::CONTOUR)
         ? zerototwopi(array[i].theta + M_PI_2)
         : array[i].theta;
 
