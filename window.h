@@ -31,4 +31,3 @@ public:
 };
 
 extern void ShowArray(const Ground* g, FakeWindow* wind);
-extern void Window2Raster(const FakeWindow* wind);

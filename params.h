@@ -37,8 +37,12 @@ extern const char* FILENAME;
 #define PRINTFLOAT(name,text) {printf( "%-19s %.2f\n",(text),(name));}
 #define PRINTTEXT(name,text) {printf( "%-19s %s\n",(text),(name));}
 
+class Ground;
+
 extern void ReadParams( char extension[] );
 extern void WriteParams( char extension[] );
 extern void Openfile( FILE **fp, char mode, char extension[] );
 extern void Closefile( FILE *fp );
 extern void PrintParams( void );
+extern void WriteHeader( void );
+extern void WriteArray(const Ground* g);
