@@ -287,11 +287,6 @@ Ground::Ground()
 
 void Ground::renderInto(FakeWindow* wind, const GaborSet& g) const
 {
-  int           XPatch[ MAX_GABOR_NUMBER ];    /** int pos of patches **/
-  int           YPatch[ MAX_GABOR_NUMBER ];
-  const double* PPatch[ MAX_GABOR_NUMBER ];
-
-  float theta, phi;
   float Theta[ MAX_FOREG_NUMBER ];
   float Phi[ MAX_FOREG_NUMBER ];
 
@@ -301,10 +296,12 @@ void Ground::renderInto(FakeWindow* wind, const GaborSet& g) const
       Theta[i] = Zerototwopi( TWOPI * drand48() );
     }
 
-  for(int i=0; i<NPatch; ++i)
+  wind->clear(0.0);
+
+  for(int i = 0; i < NPatch; ++i)
     {
-      phi   = TWOPI * drand48();
-      theta = TWOPI * drand48();
+      float phi   = TWOPI * drand48();
+      float theta = TWOPI * drand48();
 
       if( i < FOREG_NUMBER )
         {
@@ -312,35 +309,26 @@ void Ground::renderInto(FakeWindow* wind, const GaborSet& g) const
           theta = Zerototwopi( array[i].theta + M_PI_2 );
         }
 
-      XPatch[ i ] = (int)( array[ i ].xpos + DISPLAY_X / 2.0 + 0.5 );
-      YPatch[ i ] = (int)( array[ i ].ypos + DISPLAY_Y / 2.0 + 0.5 );
+      const int xcenter = (int)( array[i].xpos + DISPLAY_X / 2.0 + 0.5 );
+      const int ycenter = (int)( array[i].ypos + DISPLAY_Y / 2.0 + 0.5 );
 
-      PPatch[ i ] = g.getPatch( theta, phi );
-    }
+      const double* patch = g.getPatch( theta, phi );
 
-  wind->clear(0.0);
-
-  const int* px           = XPatch;
-  const int* py           = YPatch;
-  const double* const* pp = PPatch;
-
-  for(int i = 0; i < NPatch; ++i, ++px, ++py, ++pp)
-    {
       // bottom left:
-      int x0  = *px - GABOR_SIZE / 2;
-      int y0  = *py - GABOR_SIZE / 2;
+      const int x0  = xcenter - GABOR_SIZE / 2;
+      const int y0  = ycenter - GABOR_SIZE / 2;
       // top right:
-      int x1 = x0 + GABOR_SIZE;
-      int y1 = y0 + GABOR_SIZE;
+      const int x1 = x0 + GABOR_SIZE;
+      const int y1 = y0 + GABOR_SIZE;
 
       for (int yy = y0; yy < y1; ++yy)
         for (int xx = x0; xx < x1; ++xx)
           if (xx>=0 && xx<DISPLAY_X && yy>=0 && yy<DISPLAY_Y)
             {
               if (fabs(wind->data[xx+yy*DISPLAY_X])
-                  < fabs((*pp)[xx-x0+(yy-y0)*GABOR_SIZE]))
+                  < fabs(patch[xx-x0+(yy-y0)*GABOR_SIZE]))
                 wind->data[xx+yy*DISPLAY_X] =
-                  (*pp)[xx-x0+(yy-y0)*GABOR_SIZE];
+                  patch[xx-x0+(yy-y0)*GABOR_SIZE];
             }
     }
 }
