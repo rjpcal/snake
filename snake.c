@@ -88,7 +88,8 @@ namespace
     alpha[3]= Zerototwopi(M_PI - theta[3] + theta[2]);
   }
 
-  int newApex(Vector* no1, Vector* no2, Vector* no3, float b, float c)
+  int newApex(const Vector* no1, Vector* no2, const Vector* no3,
+              float b, float c)
   {
     /*                                                    */
     /*   x'      dx/e   dy/e     x - no1->x               */
@@ -147,27 +148,25 @@ namespace
     return 1;
   }
 
-  int Squash_quadrangle(Vector* no0, Vector* no1, Vector* no2, Vector* no3,
-                        Vector* new_no0, Vector* new_no1,
-                        Vector* new_no2, Vector* new_no3,
-                        float theta0, float incr)
+  int squashQuadrangle(const Vector* no0, const Vector* no1,
+                       const Vector* no2, const Vector* no3,
+                       Vector* new_no0, Vector* new_no1,
+                       Vector* new_no2, Vector* new_no3,
+                       float theta0, float incr)
   {
-    float a[4];
     Vector no[4];
-
     no[0] = *new_no0 = *no0;
     no[1] =            *no1;
     no[2] = *new_no2 = *no2;
     no[3] = *new_no3 = *no3;
 
+    float a[4];
     getEdgeLengths(no, a);
 
-    new_no1->x = new_no0->x + a[0] * cos((double)(theta0-incr));
-    new_no1->y = new_no0->y + a[0] * sin((double)(theta0-incr));
+    new_no1->x = new_no0->x + a[0] * cos(theta0-incr);
+    new_no1->y = new_no0->y + a[0] * sin(theta0-incr);
 
-    int ok = newApex(new_no1, new_no2, new_no3, a[1], a[2]);
-
-    return ok;
+    return newApex(new_no1, new_no2, new_no3, a[1], a[2]);
   }
 
   int Monte_Carlo(float old_alpha[], float new_alpha[], float lo_alpha[], float hi_alpha[])
@@ -368,15 +367,15 @@ void Snake::jiggle()
       const int r = int(4 * drand48());
 
       const int ok =
-        Squash_quadrangle(&no[(r+0)%4], &no[(r+1)%4],
-                          &no[(r+2)%4], &no[(r+3)%4],
-                          &new_no[(r+0)%4], &new_no[(r+1)%4],
-                          &new_no[(r+2)%4], &new_no[(r+3)%4],
-                          theta[r], incr);
+        squashQuadrangle(&no[(r+0)%4], &no[(r+1)%4],
+                         &no[(r+2)%4], &no[(r+3)%4],
+                         &new_no[(r+0)%4], &new_no[(r+1)%4],
+                         &new_no[(r+2)%4], &new_no[(r+3)%4],
+                         theta[r], incr);
 
       if (!ok)
         {
-          increment /= 2.;
+          increment /= 2.0;
           continue;
         }
 
