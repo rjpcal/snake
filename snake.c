@@ -324,9 +324,17 @@ void Snake::computeDeltaTheta()
 
 void Snake::jiggle()
 {
-  float a[4], delta[4], alpha[4], theta[4], lo_alpha[4], hi_alpha[4],
-    incr, new_alpha[4], new_theta[4], new_a[4];
-  Vector no[4], new_no[4];
+  float delta[4];
+  float alpha[4];
+  float theta[4];
+  float lo_alpha[4];
+  float hi_alpha[4];
+  float incr;
+  float new_alpha[4];
+  float new_theta[4];
+  float new_a[4];
+  Vector no[4];
+  Vector new_no[4];
 
   int i[4];
   pickRandom4(itsLength, i);
@@ -339,8 +347,6 @@ void Snake::jiggle()
       no[n].y  = itsElem[i[n]].ypos;
       delta[n] = itsElem[i[n]].delta;
     }
-
-  getEdgeLengths(no, a);
 
   getAngles(no, alpha, theta);
 
