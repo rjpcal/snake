@@ -148,19 +148,19 @@ namespace
     const double xp = aleph + bet;
     const double yp = sqrt(gimel - bet*bet - aleph*aleph);
 
-    const Vector no2_one
+    const Vector new_2a
       (new_1->x + xp*dx_3_1/d_3_1 - yp*dy_3_1/d_3_1,
        new_1->y + xp*dy_3_1/d_3_1 + yp*dx_3_1/d_3_1);
 
-    const Vector no2_two
+    const Vector new_2b
       (new_1->x + xp*dx_3_1/d_3_1 + yp*dy_3_1/d_3_1,
        new_1->y + xp*dy_3_1/d_3_1 - yp*dx_3_1/d_3_1);
 
-    const double dis_one = distance(no2_one, old_2);
-    const double dis_two = distance(no2_two, old_2);
+    const double d_2_2a = distance(new_2a, old_2);
+    const double d_2_2b = distance(new_2b, old_2);
 
     *new_0 = old_0;
-    *new_2 = (dis_one < dis_two) ? no2_one : no2_two;
+    *new_2 = (d_2_2a < d_2_2b) ? new_2a : new_2b;
     *new_3 = old_3;
 
     return true;
