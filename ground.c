@@ -24,6 +24,9 @@ bool Ground::tryPush(const Element& e)
 
   array[totalNumber++] = e;
 
+  dumpFrame();
+  dumpFrame();
+
   return true;
 }
 
@@ -152,14 +155,32 @@ void Ground::jitterElement()
               array[n].pos = v;
             }
         }
+
+      if (niter % 15 == 0) dumpFrame();
     }
 }
 
-/*****************************************************************/
+void Ground::dumpFrame() const
+{
+  if (0)
+    {
+      this->renderInto(window, gabors);
+
+      static int framecount = 0;
+
+      char fname[256];
+      snprintf(fname, 256, "frame_%06d.pnm", framecount++);
+
+      window->writePnm(fname);
+
+      printf("dumped frame %s\n", fname);
+    }
+}
 
 Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
                double backgIniSpacing_,
-               double backgMinSpacing_) :
+               double backgMinSpacing_,
+               FakeWindow* w, const GaborSet& g) :
   snake(s),
   sizeX(sizeX_),
   sizeY(sizeY_),
@@ -169,7 +190,9 @@ Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
   backgMinSpacing(backgMinSpacing_),
   backgMinSpacingSqr(backgMinSpacing*backgMinSpacing),
   insideNumber(0),
-  totalNumber(0)
+  totalNumber(0),
+  window(w),
+  gabors(g)
 {
   // pull in elements from the snake
   for (int n = 0; n < snake.getLength(); ++n)
@@ -204,6 +227,7 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
   for (int i = 0; i < totalNumber; ++i)
     {
       const double phi   = 2 * M_PI * drand48();
+//       const double phi = 0.0;
 
       const double theta =
         (array[i].type == Element::CONTOUR)

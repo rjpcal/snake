@@ -41,7 +41,8 @@ int main( int argc, char** argv )
 
       Ground g(s, pm.pmSizeX, pm.pmSizeY,
                pm.pmBackgIniSpacing,
-               pm.pmBackgMinSpacing);
+               pm.pmBackgMinSpacing,
+               &fakewin, gabors);
 
       g.writeArray(pm.pmFilestem, n);
 

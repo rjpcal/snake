@@ -8,7 +8,8 @@ class Ground
 public:
   Ground(const Snake& s, int sizeX_, int sizeY_,
          double backgIniSpacing_,
-         double backgMinSpacing_);
+         double backgMinSpacing_,
+         FakeWindow* w, const GaborSet& g);
 
   void renderInto(FakeWindow* wind, const GaborSet& g) const;
 
@@ -29,6 +30,11 @@ private:
   int totalNumber;
   Element array[ MAX_GABOR_NUMBER ];
   double backgAveSpacing;
+
+  FakeWindow* window;
+  const GaborSet& gabors;
+
+  void dumpFrame() const;
 
   bool tryPush(const Element& e);
   int tooClose(const Vector& v, int except);
