@@ -1,14 +1,10 @@
-SHELL	= /bin/sh
-
-CC      = gcc -Wall -Werror
+CC      = g++ -Wall -Werror
 CFLAGS	= -O4 -pg
 LFLAGS  = -lm
 
 SRC    = main.c window.c gamma.c snake.c ground.c geom.c params.c file.c timing.c gabor.c
 INC    = defs.h file.h gabor.h gamma.h \
 	geom.h ground.h keydef.h main.h params.h snake.h timing.h window.h
-
-OTH    = Makefile *.sta
 
 OBJ    = $(SRC:.c=.o)
 
@@ -24,9 +20,9 @@ tags:
 	etags *.[ch]
 
 test:
-	rm regtest*.ras
+	rm -f regtest*.ras
 	time ./makesnake regtest
-	for f in regtest*.ras; do echo $$f; diff $$f orig/$$f; done
+	for f in regtest*.ras; do echo $$f; diff $$f orig_cpp/$$f; done
 
 main.o: $(INC)
 window.o: $(INC)
