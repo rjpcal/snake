@@ -25,11 +25,11 @@ namespace
 
     double* ptr = result;
 
-    for(int iy=0; iy<xysize; ++iy)
+    for (int iy=0; iy<xysize; ++iy)
       {
         const double fy = iy - xysize / 2.0 + 0.5;
 
-        for(int ix=0; ix<xysize; ++ix)
+        for (int ix=0; ix<xysize; ++ix)
           {
             const double fx = ix - xysize / 2.0 + 0.5;
 
@@ -48,7 +48,7 @@ namespace
     return result;
   }
 
-  int Theta2Index( double theta )
+  int Theta2Index(double theta)
   {
     theta = Zerotopi(theta);
 
@@ -57,9 +57,9 @@ namespace
     return index % GABOR_MAX_ORIENT;
   }
 
-  int Phi2Index( double phi )
+  int Phi2Index(double phi)
   {
-    phi   = Zerototwopi( phi );
+    phi   = Zerototwopi(phi);
 
     int index = int((phi + OFF_PHASE) / DELTA_PHASE);
 
@@ -72,8 +72,8 @@ GaborSet::GaborSet(double period, double sigma, int size) :
 {
   const double omega = 2 * M_PI / period;
 
-  for(int n=0; n<GABOR_MAX_ORIENT; ++n)
-    for(int m=0; m<GABOR_MAX_PHASE; ++m)
+  for (int n=0; n<GABOR_MAX_ORIENT; ++n)
+    for (int m=0; m<GABOR_MAX_PHASE; ++m)
       {
         Patch[n][m] = CreatePatch(sigma,
                                   omega,
@@ -83,24 +83,24 @@ GaborSet::GaborSet(double period, double sigma, int size) :
                                   size);
       }
 
-  printf( " Gabors allocated\n" );
-  fflush( stdout );
+  printf(" Gabors allocated\n");
+  fflush(stdout);
 }
 
 GaborSet::~GaborSet()
 {
-  for(int i=0; i<GABOR_MAX_ORIENT; ++i)
-    for(int j=0; j<GABOR_MAX_PHASE; ++j)
+  for (int i=0; i<GABOR_MAX_ORIENT; ++i)
+    for (int j=0; j<GABOR_MAX_PHASE; ++j)
       delete [] Patch[i][j];
 
-  printf( " Gabors de-allocated\n" );
-  fflush( stdout );
+  printf(" Gabors de-allocated\n");
+  fflush(stdout);
 }
 
 const double* GaborSet::getPatch(double theta, double phi) const
 {
-  const int itheta = Theta2Index( theta );
-  const int iphi   = Phi2Index( phi );
+  const int itheta = Theta2Index(theta);
+  const int iphi   = Phi2Index(phi);
 
   return Patch[itheta][iphi];
 }
