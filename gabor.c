@@ -1,5 +1,11 @@
 
-#include "incl.h"
+#include "gabor.h"
+
+#include "gamma.h"
+#include "geom.h"
+#include "params.h"
+
+#include <stdlib.h>
 
 float GABOR_OMEGA, DELTA_THETA, DELTA_PHASE, OFF_THETA, OFF_PHASE;
 

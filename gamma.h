@@ -8,7 +8,6 @@ extern float gammp(float a, float x);
 extern void gser(float *gamser, float a, float x, float *gln);
 extern void gfc(float *gammcf,float a, float x, float *gln);
 extern void nrerror(char error_text[]);
-extern void CheckCalibration(void);
 
 extern int White, Grey, Black;
 

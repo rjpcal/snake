@@ -1,5 +1,16 @@
 
-#include "incl.h"
+#include "file.h"
+
+#include "applic.h"
+#include "defs.h"
+#include "gabor.h"
+#include "geom.h"
+#include "ground.h"
+#include "keydef.h"
+#include "params.h"
+#include "timing.h"
+
+#include <stdlib.h>
 
 long FILEMARKER;
 

@@ -7,7 +7,8 @@ LFLAGS  = -lgl  -lfm -lX11 -lm -lGL
 LFLAGS2 = -lm 
 
 SRC    = main.c applic.c window.c gamma.c snake.c ground.c geom.c params.c file.c timing.c gabor.c
-INC    = incl.h params.h keydef.h
+INC    = applic.h defs.h file.h gabor.h gamma.h \
+	geom.h ground.h keydef.h main.h params.h snake.h timing.h window.h
 
 OTH    = Makefile *.sta
 

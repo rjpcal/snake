@@ -1,6 +1,7 @@
 
 #include "applic.h"
 #include "defs.h"
+#include "gamma.h"
 #include "params.h"
 #include "timing.h"
 #include "window.h"
@@ -36,16 +37,12 @@ int main( int argc, char** argv )
 
     PrintParams();
 
-    /** invoke AFTER ReadParams **/
-
-    InitScreen();
+    MakeColormap();
 
     /// alloc mem for our fake window:
     win = (Colorindex*)
       (malloc(DISPLAY_X * DISPLAY_Y * sizeof(Colorindex)));
 
-
-    /** invoke AFTER InitScreen **/
 
     InitApplication();
 

@@ -1,5 +1,8 @@
 
-#include "incl.h"
+#include "timing.h"
+
+#include <stdlib.h>
+#include <sys/time.h>
 
 void SeedRand( void )
 {

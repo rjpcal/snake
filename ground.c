@@ -1,5 +1,13 @@
 
-#include "incl.h"
+#include "ground.h"
+
+#include "defs.h"
+#include "file.h"
+#include "main.h"
+#include "params.h"
+#include "window.h"
+
+#include <stdlib.h>
 
 #define            DIFFUSION_CYCLES         10
 #define            BACKGROUND_ITERATION   1000

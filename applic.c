@@ -1,5 +1,11 @@
 
-#include "incl.h"
+#include "file.h"
+#include "gabor.h"
+#include "ground.h"
+#include "params.h"
+#include "snake.h"
+#include "timing.h"
+#include "window.h"
 
 int   DISPLAY_SET_NUMBER;
 int   DISPLAY_COUNT;

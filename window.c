@@ -1,14 +1,12 @@
 
-#include "incl.h"
+#include "defs.h"
+#include "gamma.h"
+#include "ground.h"
+#include "params.h"
 
-/// for conversion to big endian:
-#include <netinet/in.h>
-
-void InitScreen(void)
-{
-    MakeColormap();
-    CheckCalibration();
-}
+#include <math.h>
+#include <stdlib.h>
+#include <netinet/in.h> // for conversion to big endian:
 
 
 void ShowArray( void )

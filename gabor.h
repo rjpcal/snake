@@ -1,4 +1,6 @@
 
+#include "defs.h"
+
 extern Colorindex *Patch[][GABOR_MAX_PHASE];
 
 extern void AllocGabor( void );

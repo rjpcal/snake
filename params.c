@@ -1,5 +1,14 @@
 
-#include "incl.h"
+#include "params.h"
+
+#include "defs.h"
+#include "gabor.h"
+#include "keydef.h"
+#include "main.h"
+
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 int   DISPLAY_X;
 int   DISPLAY_Y;

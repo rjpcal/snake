@@ -1,3 +1,6 @@
+#ifndef SNAKE_H_DEFINED
+#define SNAKE_H_DEFINED
+
 
 #define      MAX_FOREG_NUMBER           128
 
@@ -31,3 +34,5 @@ extern int Squash_quadrangle( VECTOR *no0, VECTOR *no1, VECTOR *no2, VECTOR *no3
 extern int New_apex( VECTOR *no1, VECTOR *no2, VECTOR *no3, float b, float c );
 extern int Monte_Carlo( float old_alpha[], float new_alpha[], float lo_alpha[], float hi_alpha[] );
 extern void New_nodes( int length, int ni, int nj, VECTOR new_no_i, VECTOR new_no_j );
+
+#endif // !SNAKE_H_DEFINED

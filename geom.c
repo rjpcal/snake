@@ -1,5 +1,7 @@
 
-#include "incl.h"
+#include "geom.h"
+
+#include "defs.h"
 
 float Zerototwopi( float angle )
 {
@@ -64,10 +66,10 @@ float AngleDiff( float alpha, float beta )
 float Minustoplushalfpi( float angle )
 {
     while( angle <= -PI/2. )
-	angle += PI;
+        angle += PI;
 
     while( angle > PI/2. )
-	angle -= PI;
+        angle -= PI;
 
     return( angle );
 }

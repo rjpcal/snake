@@ -1,5 +1,12 @@
 
-#include "incl.h"
+#include "snake.h"
+
+#include "defs.h"
+#include "geom.h"
+#include "params.h"
+
+#include <math.h>
+#include <stdlib.h>
 
 #define      HIDELTA               (PI/4.)
 #define      LODELTA              (-PI/4.)

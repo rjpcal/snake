@@ -1,8 +1,11 @@
 
+#include "defs.h"
+#include "snake.h"
+
 extern int         NPatch;
 
 extern int         XPatch[ ],    /** int pos of patches **/
-                   YPatch[ ];   
+                   YPatch[ ];
 
 extern Colorindex  *PPatch[ MAX_GABOR_NUMBER ];
 
