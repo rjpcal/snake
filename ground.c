@@ -96,13 +96,13 @@ void Ground::insideElements()
   PATCH_NUMBER = pn;
 }
 
-void Ground::contourElements()
+void Ground::contourElements(const Snake& s)
 {
   for(int n = 0; n < FOREG_NUMBER; ++n)
     {
       float x, y, theta;
 
-      if( GetElement( n, &x, &y, &theta ) )
+      if( s.getElement( n, &x, &y, &theta ) )
         {
           array[NPatch].flag  = 2;
           array[NPatch].xpos  = x;
@@ -243,7 +243,7 @@ void Ground::jitterElement()
 
 /*****************************************************************/
 
-Ground::Ground()
+Ground::Ground(const Snake& s)
 {
   HALF_X_FRAME = 0.5 * DISPLAY_X;
   HALF_Y_FRAME = 0.5 * DISPLAY_Y;
@@ -251,18 +251,17 @@ Ground::Ground()
 
   NPatch = 0;
 
-  this->contourElements();
+  contourElements(s);
 
-  this->gridElements();
+  gridElements();
 
   for(int i = 0; i < DIFFUSION_CYCLES; ++i)
     {
-      this->jitterElement();
-
-      this->fillElements();
+      jitterElement();
+      fillElements();
     }
 
-  this->insideElements();
+  insideElements();
 
   printf( " FOREG_NUMBER %d    PATCH_NUMBER %d    TOTAL_NUMBER %d\n",
           FOREG_NUMBER, PATCH_NUMBER, NPatch );

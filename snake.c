@@ -17,8 +17,6 @@ namespace
 {
   int          FOREGROUND_ITERATION =    400;
 
-  Element foreg[ MAX_FOREG_NUMBER ];
-
   struct Vector
   {
     float x;
@@ -27,11 +25,11 @@ namespace
 
   void MakeForeg( void );
   int GetElement( int n, float *x, float *y, float *theta );
-  void InitSnake( int length );
+  void InitSnake(Snake* s, int length);
   void EllipsoidSnake( int first, int length );
-  void Center_snake( int length );
-  void New_delta_theta( int length );
-  void Jiggle_snake( int length );
+  void Center_snake(Snake* s, int length);
+  void New_delta_theta(Snake* s, int length);
+  void Jiggle_snake(Snake* s, int length);
   void Pick_nodes( int length, int ni[] );
   void Swap( int *a, int *b );
   void Get_sides( Vector no[], float a[] );
@@ -39,9 +37,9 @@ namespace
   int Squash_quadrangle( Vector *no0, Vector *no1, Vector *no2, Vector *no3, Vector *new_no0, Vector *new_no1, Vector *new_no2, Vector *new_no3, float theta0, float incr );
   int New_apex( Vector *no1, Vector *no2, Vector *no3, float b, float c );
   int Monte_Carlo( float old_alpha[], float new_alpha[], float lo_alpha[], float hi_alpha[] );
-  void New_nodes( int length, int ni, int nj, Vector new_no_i, Vector new_no_j );
+  void New_nodes(Snake* s, int length, int ni, int nj, Vector new_no_i, Vector new_no_j );
 
-  void InitSnake( int length )
+  void InitSnake(Snake* s, int length)
   {
     int n;
     float alpha, alpha_off, radius;
@@ -54,14 +52,14 @@ namespace
       {
         alpha = TWOPI * n / length;
 
-        foreg[n].xpos   =  radius * cos((double) alpha+alpha_off );
-        foreg[n].ypos   = -radius * sin((double) alpha+alpha_off );
+        s->foreg[n].xpos   =  radius * cos((double) alpha+alpha_off );
+        s->foreg[n].ypos   = -radius * sin((double) alpha+alpha_off );
       }
 
-    New_delta_theta( length );
+    New_delta_theta(s, length);
   }
 
-  void Center_snake( int length )
+  void Center_snake(Snake* s, int length)
   {
     int n;
     float xc, yc;
@@ -70,8 +68,8 @@ namespace
 
     for( n=0; n<length; n++ )
       {
-        xc += foreg[n].xpos;
-        yc += foreg[n].ypos;
+        xc += s->foreg[n].xpos;
+        yc += s->foreg[n].ypos;
       }
 
     xc /= length;
@@ -79,24 +77,23 @@ namespace
 
     for( n=0; n<length; n++ )
       {
-        foreg[n].xpos -= xc;
-        foreg[n].ypos -= yc;
+        s->foreg[n].xpos -= xc;
+        s->foreg[n].ypos -= yc;
       }
   }
 
-  void New_delta_theta( int length )
+  void New_delta_theta(Snake* s, int length)
   {
     int n0, n1;
-    float dx, dy;
 
     for( n0=0; n0<length; n0++ )
       {
         n1 = (n0+1)%length;
 
-        dx = foreg[n1].xpos - foreg[n0].xpos;
-        dy = foreg[n1].ypos - foreg[n0].ypos;
+        const float dx = s->foreg[n1].xpos - s->foreg[n0].xpos;
+        const float dy = s->foreg[n1].ypos - s->foreg[n0].ypos;
 
-        foreg[n0].theta = Zerototwopi( atan2((double) dy, (double) dx ) );
+        s->foreg[n0].theta = Zerototwopi( atan2(dy, dx) );
 
       }
 
@@ -104,7 +101,7 @@ namespace
       {
         n1 = (n0+1)%length;
 
-        foreg[n1].delta = Minuspitopi( foreg[n1].theta - foreg[n0].theta );
+        s->foreg[n1].delta = Minuspitopi( s->foreg[n1].theta - s->foreg[n0].theta );
       }
   }
 
@@ -145,7 +142,7 @@ namespace
 
   float increment;
 
-  void Jiggle_snake( int length )
+  void Jiggle_snake(Snake* s, int length)
   {
     int n, i[4];
     int ok = 0;
@@ -159,9 +156,9 @@ namespace
 
     for( n=0; n<4; n++ )
       {
-        no[n].x  = foreg[i[n]].xpos;
-        no[n].y  = foreg[i[n]].ypos;
-        delta[n] = foreg[i[n]].delta;
+        no[n].x  = s->foreg[i[n]].xpos;
+        no[n].y  = s->foreg[i[n]].ypos;
+        delta[n] = s->foreg[i[n]].delta;
       }
 
     Get_sides( no, a );
@@ -222,15 +219,15 @@ namespace
       }
 
     for( n=0; n<4; n++ )
-      New_nodes( length, i[n], i[(n+1)%4], new_no[n], new_no[(n+1)%4] );
+      New_nodes(s, length, i[n], i[(n+1)%4], new_no[n], new_no[(n+1)%4]);
 
     for( n=0; n<4; n++ )
       {
-        foreg[i[n]].xpos = new_no[n].x;
-        foreg[i[n]].ypos = new_no[n].y;
+        s->foreg[i[n]].xpos = new_no[n].x;
+        s->foreg[i[n]].ypos = new_no[n].y;
       }
 
-    New_delta_theta( length );
+    New_delta_theta(s, length);
   }
 
   void Pick_nodes( int length, int ni[] )
@@ -452,7 +449,8 @@ namespace
     return( drand48() <= probability );
   }
 
-  void New_nodes( int length, int ni, int nj, Vector new_no_i, Vector new_no_j )
+  void New_nodes(Snake* s, int length, int ni, int nj,
+                 Vector new_no_i, Vector new_no_j)
   {
     int n;
     float dx, dy, dxp, dyp, l_2;
@@ -464,11 +462,11 @@ namespace
     /*   y'      c2        a21   a12     y - b2     */
     /*                                              */
 
-    b1  = foreg[ni].xpos;
-    b2  = foreg[ni].ypos;
+    b1  = s->foreg[ni].xpos;
+    b2  = s->foreg[ni].ypos;
 
-    dx  = foreg[nj].xpos - b1;
-    dy  = foreg[nj].ypos - b2;
+    dx  = s->foreg[nj].xpos - b1;
+    dy  = s->foreg[nj].ypos - b2;
 
     c1  = new_no_i.x;
     c2  = new_no_i.y;
@@ -486,28 +484,28 @@ namespace
 
     for( n=(ni+1)%length; n!=nj; n=(n+1)%length )
       {
-        dx = foreg[n].xpos - b1;
-        dy = foreg[n].ypos - b2;
+        dx = s->foreg[n].xpos - b1;
+        dy = s->foreg[n].ypos - b2;
 
-        foreg[n].xpos = c1 + a11*dx + a12*dy;
-        foreg[n].ypos = c2 + a21*dx + a22*dy;
+        s->foreg[n].xpos = c1 + a11*dx + a12*dy;
+        s->foreg[n].ypos = c2 + a21*dx + a22*dy;
       }
   }
 }
 
-void MakeForeg( void )
+Snake::Snake()
 {
-  InitSnake( FOREG_NUMBER );
+  InitSnake(this, FOREG_NUMBER);
 
   for(int count = 0; count < FOREGROUND_ITERATION; ++count)
     {
-      Jiggle_snake( FOREG_NUMBER );
+      Jiggle_snake(this, FOREG_NUMBER);
     }
 
-  Center_snake( FOREG_NUMBER );
+  Center_snake(this, FOREG_NUMBER);
 }
 
-int GetElement( int n, float *x, float *y, float *theta )
+int Snake::getElement(int n, float* x, float* y, float* theta) const
 {
   if( n < FOREG_NUMBER )
     {

@@ -5,11 +5,12 @@
 
 class FakeWindow;
 class GaborSet;
+class Snake;
 
 class Ground
 {
 public:
-  Ground();
+  Ground(const Snake& s);
 
   void renderInto(FakeWindow* wind, const GaborSet& g) const;
 
@@ -29,7 +30,7 @@ private:
 
   int tooClose(int upto, float x, float y, int except);
   void insideElements();
-  void contourElements();
+  void contourElements(const Snake& s);
   void gridElements();
   void fillElements();
   void jitterElement();

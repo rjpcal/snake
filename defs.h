@@ -7,6 +7,4 @@
 
 #define STRINGSIZE           120
 
-#define MAX_FOREG_NUMBER     128
-
 #endif // !DEFS_H_DEFINED

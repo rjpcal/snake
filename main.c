@@ -4,6 +4,7 @@
 #include "gabor.h"
 #include "ground.h"
 #include "params.h"
+#include "snake.h"
 #include "timing.h"
 #include "window.h"
 
@@ -46,9 +47,9 @@ int main( int argc, char** argv )
     {
       srand48(n);
 
-      MakeForeg();
+      Snake s;
 
-      Ground* g = new Ground();
+      Ground* g = new Ground(s);
 
       WriteArray(g);
 
