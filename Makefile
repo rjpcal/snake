@@ -31,6 +31,14 @@ untar:
 $(MAIN): $(OBJ)
 	$(CC) -o $@ $(OBJ) $(LFLAGS2)
 
+tags:
+	etags *.[ch]
+
+test:
+	rm regtest*.ras
+	./makesnake regtest
+	for f in regtest*.ras; do echo $$f; diff $$f orig/$$f; done
+
 main.o: $(INC)
 window.o: $(INC)
 applic.o: $(INC)
@@ -41,14 +49,3 @@ gabor.o: $(INC)
 timing.o: $(INC)
 params.o: $(INC)
 file.o: $(INC)
-
-
-
-
-
-
-
-
-
-
-

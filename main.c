@@ -1,32 +1,27 @@
 
-#include "incl.h"
+#include "applic.h"
+#include "defs.h"
+#include "params.h"
+#include "timing.h"
+#include "window.h"
 
-/************************* requires ********************
+#include <stdio.h>
+#include <stdlib.h>
 
-     SeedRandom()
-     ReadStatus()
-     PrintStatus()
-     InitScreen()
-     InitApplication()
-     SwitchApplication( char c )
-     WrapApplication()
-
-********************************************************/
+void Exit();
 
 char PROGRAM[ STRINGSIZE ];
 
 /// memory for fake window:
 Colorindex *win;
 
-main( argc, argv )
-int argc;
-char **argv;
+int main( int argc, char** argv )
 {
 #ifdef DUMMY
     DONE("main");
 #endif
 
-    if( argc<2 ) 
+    if( argc<2 )
     {
         printf(" You forgot to supply a filename!\n");
         Exit();
@@ -46,137 +41,28 @@ char **argv;
     InitScreen();
 
     /// alloc mem for our fake window:
-    win = malloc(DISPLAY_X * DISPLAY_Y * sizeof(Colorindex));
+    win = (Colorindex*)
+      (malloc(DISPLAY_X * DISPLAY_Y * sizeof(Colorindex)));
 
 
     /** invoke AFTER InitScreen **/
 
     InitApplication();
 
-    ///EventLoop();
     WriteApplication();
 
     Exit();
 
 }
 
-void EventLoop( void )
-{
-    long dev;
-    short val;
-
-#ifdef DUMMY
-    DONE("Eventloop");
-#endif
-
-    ///qdevice( KEYBD );
-    ///qdevice( ESCKEY );
-
-    while( 1 )
-    {
-      /*##
-        switch( dev = qread( &val ) )
-	{
-
-	    case ESCKEY:
-	    case WINQUIT:
-	        break;
-
-	    case KEYBD:
-	    ##*/
-  SwitchApplication( (char)('\0'+val) );
-  /*##
-		break;
-
-	    default:
-  	        break;
-	}
-	##*/
-    }
-}
-
 void Exit( void )
-{  
+{
 #ifdef DUMMY
     DONE("Exit");
 #endif
 
     WrapApplication();
 
-    ///    scrnselect(0); /* Return to control screen */
-  
-    ///gexit();
-    
     exit(0);
-}
-
-int KeyPress( void )
-{
-    long dev;
-    short val;
-    
-    dev = 0;
-    
-    ///if( qtest() )
-    ///{
-    ///    dev = qread( &val );
-    ///    qreset();
-    ///}
-
-    ///return( dev==KEYBD );
-    return 1;
-} 
-
-char GetReady( void )
-{
-    char c;
-    /*##
-    do
-    {
-        c = GetChar();
-    }
-    while( c != ' ' && c != 'q' );
-
-    return( c == ' ' );
-    ##*/
-    return 1;
-}
-
-char GetChar( void )
-{
-    char c;
-    long dev;
-    short val;
-    /*##
-    do
-    {
-        dev=qread(&val);
-    }
-    while(dev!=KEYBD);
-
-    c=(char) ('\0'+val);
-    
-    return( c );
-    ##*/
-    return 32;
-}
-
-char GetKeystroke( void )
-{
-    char c;
-    long dev;
-    short val;
-    /*##
-    do
-    {
-        dev=qread(&val);
-    }
-    while(dev!=KEYBD);
-
-    c=(char) ('\0'+val);
-
-    return( c );
-    ##*/
-    return 32;
 }
 

@@ -36,10 +36,6 @@ void WrapGabor( void )
 {
     int i, j;
 
-#ifdef DUMMY
-    DONE( "WrapGabor" );
-#endif
-
     for( i=0; i<GABOR_MAX_ORIENT; i++ )
     for( j=0; j<GABOR_MAX_PHASE; j++ )
         free( (char*) Patch[i][j] );
@@ -50,12 +46,7 @@ void WrapGabor( void )
 
 void InitGabor( void )
 {
-    int k, l, n, m;
-    float rad;
-
-#ifdef DUMMY
-    DONE( "InitGabor" );
-#endif
+    int n, m;
 
     AllocGabor();
 
@@ -69,21 +60,21 @@ void InitGabor( void )
     for( n=0; n<GABOR_MAX_ORIENT; n++ )
     for( m=0; m<GABOR_MAX_PHASE; m++ )
     {
-        InitPatch(  Patch[n][m], 
-  	            GABOR_SIGMA,
-	            GABOR_OMEGA,
-		    Index2Theta( n ),
-		    Index2Phi( m ),
-		    GABOR_CONTRAST,
-		    GABOR_SIZE );
+        InitPatch(  Patch[n][m],
+                    GABOR_SIGMA,
+                    GABOR_OMEGA,
+                    Index2Theta( n ),
+                    Index2Phi( m ),
+                    GABOR_CONTRAST,
+                    GABOR_SIZE );
     }
 }
 
 void InitPatch( Colorindex *ptr, float sigma, float omega, float theta, float phi, float contrast, int xysize )
 {
-    int i, ix, iy, index;
+    int ix, iy;
     float sin_theta, cos_theta, dx, dy, fx, fy,
-          ssqr, dsqr, sinus, gauss; 
+          ssqr, dsqr, sinus, gauss;
 
 #ifdef DUMMY
     DONE( "InitPatch" );
@@ -98,23 +89,23 @@ void InitPatch( Colorindex *ptr, float sigma, float omega, float theta, float ph
     {
         fy = (float)( iy - xysize / 2.0 + 0.5 );
 
-  	for( ix=0; ix<xysize; ix++ )
-	{
-	    fx = (float)( ix - xysize / 2.0 + 0.5 );
-	    
+        for( ix=0; ix<xysize; ix++ )
+        {
+            fx = (float)( ix - xysize / 2.0 + 0.5 );
+
             dx = cos_theta * fx - sin_theta * fy;
             dy = sin_theta * fx + cos_theta * fy;
 
-	    dsqr  = ( dx*dx + dy*dy ) / ssqr;
+            dsqr  = ( dx*dx + dy*dy ) / ssqr;
 
-	    sinus = cos((double) omega * dx + phi );
+            sinus = cos((double) omega * dx + phi );
 
-	    gauss = exp((double) -dsqr );
-	    if(BLANK_SNAKE == 0)
-	      *ptr++ = F2I( contrast * sinus * gauss );
-	    else
-	      *ptr++ = F2I( gauss );
-	}
+            gauss = exp((double) -dsqr );
+            if(BLANK_SNAKE == 0)
+              *ptr++ = F2I( contrast * sinus * gauss );
+            else
+              *ptr++ = F2I( gauss );
+        }
     }
 }
 

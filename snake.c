@@ -22,7 +22,7 @@ void MakeForeg( void )
     {
         Jiggle_snake( FOREG_NUMBER );
     }
-    
+
     Center_snake( FOREG_NUMBER );
 }
 
@@ -32,7 +32,7 @@ int GetElement( int n, float *x, float *y, float *theta )
     {
         *x = 0.5 * ( foreg[n].xpos + foreg[(n+1)%FOREG_NUMBER].xpos );
         *y = 0.5 * ( foreg[n].ypos + foreg[(n+1)%FOREG_NUMBER].ypos );
-	*theta = Zerototwopi( -foreg[n].theta );
+        *theta = Zerototwopi( -foreg[n].theta );
         return( 1 );
     }
 
@@ -45,17 +45,17 @@ void InitSnake( int length )
     float alpha, alpha_off, radius;
 
     radius     = (float)( length * FOREG_SPACING ) / TWOPI;
-    
+
     alpha_off  = TWOPI * drand48();
-    
+
     for( n=0; n<length; n++ )
     {
          alpha = TWOPI * n / length;
-    
+
          foreg[n].xpos   =  radius * cos((double) alpha+alpha_off );
          foreg[n].ypos   = -radius * sin((double) alpha+alpha_off );
     }
-   
+
     New_delta_theta( length );
 }
 
@@ -69,16 +69,16 @@ void Center_snake( int length )
     for( n=0; n<length; n++ )
     {
         xc += foreg[n].xpos;
-	yc += foreg[n].ypos;
+        yc += foreg[n].ypos;
     }
-    
+
     xc /= length;
     yc /= length;
 
     for( n=0; n<length; n++ )
     {
         foreg[n].xpos -= xc;
-	foreg[n].ypos -= yc;
+        foreg[n].ypos -= yc;
     }
 }
 
@@ -91,18 +91,18 @@ void New_delta_theta( int length )
     {
         n1 = (n0+1)%length;
 
-	dx = foreg[n1].xpos - foreg[n0].xpos;
-	dy = foreg[n1].ypos - foreg[n0].ypos;
+        dx = foreg[n1].xpos - foreg[n0].xpos;
+        dy = foreg[n1].ypos - foreg[n0].ypos;
 
-	foreg[n0].theta = Zerototwopi( atan2((double) dy, (double) dx ) );
-	
+        foreg[n0].theta = Zerototwopi( atan2((double) dy, (double) dx ) );
+
     }
 
     for( n0=0; n0<length; n0++ )
     {
         n1 = (n0+1)%length;
 
-	foreg[n1].delta = Minuspitopi( foreg[n1].theta - foreg[n0].theta );
+        foreg[n1].delta = Minuspitopi( foreg[n1].theta - foreg[n0].theta );
     }
 }
 
@@ -145,8 +145,9 @@ float increment;
 
 void Jiggle_snake( int length )
 {
-    int n, i[4], ok;
-    float a[4], delta[4], alpha[4], theta[4], lo_alpha[4], hi_alpha[4], 
+    int n, i[4];
+    int ok = 0;
+    float a[4], delta[4], alpha[4], theta[4], lo_alpha[4], hi_alpha[4],
           incr, new_alpha[4], new_theta[4], new_a[4];
     VECTOR no[4], new_no[4];
 
@@ -158,7 +159,7 @@ void Jiggle_snake( int length )
     {
         no[n].x  = foreg[i[n]].xpos;
         no[n].y  = foreg[i[n]].ypos;
-	delta[n] = foreg[i[n]].delta;
+        delta[n] = foreg[i[n]].delta;
     }
 
     Get_sides( no, a );
@@ -168,51 +169,51 @@ void Jiggle_snake( int length )
     for( n=0; n<4; n++ )
     {
         lo_alpha[n] = alpha[n] - ( HIDELTA - delta[n] );
-	hi_alpha[n] = alpha[n] + ( delta[n] - LODELTA );
+        hi_alpha[n] = alpha[n] + ( delta[n] - LODELTA );
     }
 
     for( ; ; )
     {
-	incr = ( drand48()<0.5 ) ? -increment : increment;
+        incr = ( drand48()<0.5 ) ? -increment : increment;
 
         switch( n = (int)( 4 * drand48() ) )
         {
         case 0:
-	    ok = Squash_quadrangle( &no[0], &no[1], &no[2], &no[3], 
-		    &new_no[0], &new_no[1], &new_no[2], &new_no[3],
-		     theta[0], incr );
-	    break;
-
-	case 1:
-	    ok = Squash_quadrangle( &no[1], &no[2], &no[3], &no[0], 
-		    &new_no[1], &new_no[2], &new_no[3], &new_no[0],
-	            theta[1], incr );
+            ok = Squash_quadrangle( &no[0], &no[1], &no[2], &no[3],
+                    &new_no[0], &new_no[1], &new_no[2], &new_no[3],
+                     theta[0], incr );
             break;
 
-	case 2:
-	    ok = Squash_quadrangle( &no[2], &no[3], &no[0], &no[1], 
-		    &new_no[2], &new_no[3], &new_no[0], &new_no[1],
-		    theta[2], incr );
-	    break;
+        case 1:
+            ok = Squash_quadrangle( &no[1], &no[2], &no[3], &no[0],
+                    &new_no[1], &new_no[2], &new_no[3], &new_no[0],
+                    theta[1], incr );
+            break;
 
-	case 3:
-	    ok = Squash_quadrangle( &no[3], &no[0], &no[1], &no[2], 
-	            &new_no[3], &new_no[0], &new_no[1], &new_no[2],
-	            theta[3], incr );
-	    break;
+        case 2:
+            ok = Squash_quadrangle( &no[2], &no[3], &no[0], &no[1],
+                    &new_no[2], &new_no[3], &new_no[0], &new_no[1],
+                    theta[2], incr );
+            break;
 
-	default:
-	    break;
-	}
+        case 3:
+            ok = Squash_quadrangle( &no[3], &no[0], &no[1], &no[2],
+                    &new_no[3], &new_no[0], &new_no[1], &new_no[2],
+                    theta[3], incr );
+            break;
+
+        default:
+            break;
+        }
 
         if( !ok )
-	{
-	    increment /= 2.;
+        {
+            increment /= 2.;
             continue;
-	}
+        }
 
-	Get_sides( new_no, new_a );
-	Get_angles( new_no, new_alpha, new_theta );
+        Get_sides( new_no, new_a );
+        Get_angles( new_no, new_alpha, new_theta );
 
         if( Monte_Carlo( alpha, new_alpha, lo_alpha, hi_alpha ) )
             break;
@@ -376,30 +377,30 @@ int New_apex( VECTOR *no1, VECTOR *no2, VECTOR *no3, float b, float c )
     /*   y       no1->y       dy/e   dx/e     y'          */
     /*                                                    */
 
-    aleph = (b*b-c*c)/(2.*e);     
+    aleph = (b*b-c*c)/(2.*e);
     bet   = e/2.;
     gimel = (b*b+c*c)/2.;
 
     if( gimel >= bet*bet + aleph*aleph )
     {
           xp = aleph + bet;
-	  yp = sqrt((double)( gimel - bet*bet - aleph*aleph )); 
+          yp = sqrt((double)( gimel - bet*bet - aleph*aleph ));
 
-	  no2_one.x = no1->x + xp*dx/e - yp*dy/e;
-	  no2_one.y = no1->y + xp*dy/e + yp*dx/e;
+          no2_one.x = no1->x + xp*dx/e - yp*dy/e;
+          no2_one.y = no1->y + xp*dy/e + yp*dx/e;
 
-	  no2_two.x = no1->x + xp*dx/e + yp*dy/e;
-	  no2_two.y = no1->y + xp*dy/e - yp*dx/e;
+          no2_two.x = no1->x + xp*dx/e + yp*dy/e;
+          no2_two.y = no1->y + xp*dy/e - yp*dx/e;
 
-	  dis_one = (no2_one.x - no2->x)*(no2_one.x - no2->x )
-	          + (no2_one.y - no2->y)*(no2_one.y - no2->y );
-                  
-	  dis_two = (no2_two.x - no2->x)*(no2_two.x - no2->x )
-	          + (no2_two.y - no2->y)*(no2_two.y - no2->y );
-                  
+          dis_one = (no2_one.x - no2->x)*(no2_one.x - no2->x )
+                  + (no2_one.y - no2->y)*(no2_one.y - no2->y );
+
+          dis_two = (no2_two.x - no2->x)*(no2_two.x - no2->x )
+                  + (no2_two.y - no2->y)*(no2_two.y - no2->y );
+
           *no2 = ( dis_one < dis_two ) ? no2_one : no2_two;
 
-	  return( 1 );
+          return( 1 );
     }
     return( 0);
 }
@@ -407,7 +408,7 @@ int New_apex( VECTOR *no1, VECTOR *no2, VECTOR *no3, float b, float c )
 int Monte_Carlo( float old_alpha[], float new_alpha[], float lo_alpha[], float hi_alpha[] )
 {
     int n, zero_probability_flag;
-    float energy_difference, zero_point, old, new, probability;
+    float energy_difference, zero_point, old, anew, probability;
 
     zero_probability_flag = 0;
 
@@ -416,20 +417,20 @@ int Monte_Carlo( float old_alpha[], float new_alpha[], float lo_alpha[], float h
     {
         zero_point = 0.5 * ( hi_alpha[n] + lo_alpha[n] );
 
-	old = fabs( old_alpha[n] - zero_point );
-	new = fabs( new_alpha[n] - zero_point );
+        old = fabs( old_alpha[n] - zero_point );
+        anew = fabs( new_alpha[n] - zero_point );
 
-	if( new > HIDELTA )
-	{
+        if( anew > HIDELTA )
+        {
             energy_difference = 999.;
-	    zero_probability_flag = 1;
+            zero_probability_flag = 1;
             increment = 0.8 * increment;
-	    break;
-	}
-	else
-	{
-	    energy_difference += new*new - old*old;
-	}
+            break;
+        }
+        else
+        {
+            energy_difference += anew*anew - old*old;
+        }
     }
 
     if( zero_probability_flag )
@@ -483,10 +484,10 @@ void New_nodes( int length, int ni, int nj, VECTOR new_no_i, VECTOR new_no_j )
 
     for( n=(ni+1)%length; n!=nj; n=(n+1)%length )
     {
-	dx = foreg[n].xpos - b1;
-	dy = foreg[n].ypos - b2;
+        dx = foreg[n].xpos - b1;
+        dy = foreg[n].ypos - b2;
 
-	foreg[n].xpos = c1 + a11*dx + a12*dy;
-	foreg[n].ypos = c2 + a21*dx + a22*dy;
+        foreg[n].xpos = c1 + a11*dx + a12*dy;
+        foreg[n].ypos = c2 + a21*dx + a22*dy;
     }
 }

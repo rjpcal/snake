@@ -53,7 +53,7 @@ void MakeGround( void )
     for( i=0; i<DIFFUSION_CYCLES; i++ )
     {
         JitterElement();
-    
+
         FillElements( &npts );
 
         Map2Array( npts );
@@ -81,19 +81,19 @@ void ContourElements( int *pnpts )
     for( n=0; n<FOREG_NUMBER; n++ )
     {
         if( GetElement( n, &x, &y, &theta ) )
-	{
+        {
             array[npts].flag  = 2;
             array[npts].xpos  = x;
             array[npts].ypos  = y;
-	    array[npts].theta = theta;
-	    npts++;
-	}
+            array[npts].theta = theta;
+            npts++;
+        }
     }
 
     if( npts > MAX_GABOR_NUMBER )
     {
         printf( " More than %d elements!\n", MAX_GABOR_NUMBER );
-	Exit();
+        Exit();
     }
 
     *pnpts = npts;
@@ -106,35 +106,35 @@ void GridElements( int *pnpts )
     dx = BACKG_INI_SPACING;
     nx = (int)( ( 2.0 * HALF_X_FRAME - BACKG_MIN_SPACING - 0.5*dx ) / dx );
     ix =  -0.5 * (nx-1) * dx - 0.25 * dx;
-  
+
     dy = SQRT3 * BACKG_INI_SPACING / 2.0;
     ny = (int)( ( 2.0 * HALF_Y_FRAME - BACKG_MIN_SPACING ) / dy );
     iy =  -0.5 * (ny-1) * dy;
-    
+
     npts = *pnpts;
     if(BLANK_SNAKE == 0)
     {
       for( j=0, y=iy; j<ny; j++, y+=dy )
       {
-	for( i=0, x=ix+0.5*(j%2)*dx; i<nx; i++, x+=dx )
-	{
-	  if( TooClose( FOREG_NUMBER, x, y, FOREG_NUMBER+1 ) )
-	    continue;
-	  
-	  array[npts].flag = 0;
-	  array[npts].xpos = x;
-	  array[npts].ypos = y;
-	  array[npts].theta = TWOPI * drand48();
-	  
-	  npts++;
-	}
+        for( i=0, x=ix+0.5*(j%2)*dx; i<nx; i++, x+=dx )
+        {
+          if( TooClose( FOREG_NUMBER, x, y, FOREG_NUMBER+1 ) )
+            continue;
+
+          array[npts].flag = 0;
+          array[npts].xpos = x;
+          array[npts].ypos = y;
+          array[npts].theta = TWOPI * drand48();
+
+          npts++;
+        }
       }
     }
 
     if( npts > MAX_GABOR_NUMBER )
     {
         printf( " More than %d elements!\n", MAX_GABOR_NUMBER );
-	Exit();
+        Exit();
     }
 
     *pnpts = npts;
@@ -142,7 +142,7 @@ void GridElements( int *pnpts )
 
 void FillElements( int *pnpts )
 {
-    int i, j, npts, ntry, InsideContour();
+    int i, npts, ntry, InsideContour();
     float x, y, dx, xl[ TRY_TO_FILL_NUMBER ], yl[ TRY_TO_FILL_NUMBER ];
 
     ntry = (int)( DISPLAY_X * DISPLAY_Y / TRY_TO_FILL_AREA );
@@ -151,7 +151,7 @@ void FillElements( int *pnpts )
     {
         printf( " TRY_TO_FILL_NUMBER too small!\n" );
         printf( "\n Need %d, have %d\n", ntry, TRY_TO_FILL_NUMBER );
-	Exit();
+        Exit();
     }
 
     ntry = 0;
@@ -162,8 +162,8 @@ void FillElements( int *pnpts )
     for( y = -HALF_Y_FRAME; y <= HALF_Y_FRAME; y+=dx )
     {
         xl[ ntry ] = x;
-	yl[ ntry ] = y;
-	ntry++;
+        yl[ ntry ] = y;
+        ntry++;
     }
 
     npts = *pnpts;
@@ -171,25 +171,25 @@ void FillElements( int *pnpts )
     {
       for( i=0; i<ntry; i++ )
       {
-	if( TooClose( npts, xl[i], yl[i], npts+1 ) )
-	  continue;
-	
+        if( TooClose( npts, xl[i], yl[i], npts+1 ) )
+          continue;
+
         array[npts].flag  = 0;
-	array[npts].xpos  = xl[i];
-	array[npts].ypos  = yl[i];
+        array[npts].xpos  = xl[i];
+        array[npts].ypos  = yl[i];
         array[npts].theta = TWOPI * drand48();
-	npts++;
+        npts++;
       }
     }
-    
+
     if( npts > MAX_GABOR_NUMBER )
     {
         printf( " More than %d elements: %d\n", MAX_GABOR_NUMBER, npts );
-	Exit();
+        Exit();
     }
 
     BACKG_AVE_SPACING = sqrt((double)2.0*DISPLAY_X*DISPLAY_Y/(SQRT3*npts));
-    printf( " added %d to ave spacing %f\n", 
+    printf( " added %d to ave spacing %f\n",
             (npts-(*pnpts)), BACKG_AVE_SPACING );
 
     *pnpts = npts;
@@ -197,39 +197,39 @@ void FillElements( int *pnpts )
 
 void JitterElement( void )
 {
-    int i, n, niter, flag;
+    int n, niter;
     float x, y, dx, dy, jitter;
-    
+
     jitter = DIFFUSION_STEP;
 
     for( niter=0; niter<BACKGROUND_ITERATION; niter++ )
     {
         for( n=FOREG_NUMBER; n<TOTAL_NUMBER; n++ )
-	{
-	    dx = 2.*jitter*drand48() - jitter;
-	    dy = 2.*jitter*drand48() - jitter;
+        {
+            dx = 2.*jitter*drand48() - jitter;
+            dy = 2.*jitter*drand48() - jitter;
 
-	    x  = array[n].xpos + dx;
-	    y  = array[n].ypos + dy;
+            x  = array[n].xpos + dx;
+            y  = array[n].ypos + dy;
 
-	    if( !TooClose( TOTAL_NUMBER, x, y, n ) )
-	    {
+            if( !TooClose( TOTAL_NUMBER, x, y, n ) )
+            {
                 if( x < -HALF_X_FRAME )
-		    x += 2.*HALF_X_FRAME;
+                    x += 2.*HALF_X_FRAME;
 
-		if( x >  HALF_X_FRAME )
-		    x -= 2.*HALF_X_FRAME;
+                if( x >  HALF_X_FRAME )
+                    x -= 2.*HALF_X_FRAME;
 
-		if( y < -HALF_Y_FRAME )
-		    y += 2.*HALF_Y_FRAME;
+                if( y < -HALF_Y_FRAME )
+                    y += 2.*HALF_Y_FRAME;
 
-		if( y >  HALF_Y_FRAME )
-		    y -= 2.*HALF_Y_FRAME;
+                if( y >  HALF_Y_FRAME )
+                    y -= 2.*HALF_Y_FRAME;
 
-	        array[n].xpos = x;
-		array[n].ypos = y;
-	    }
-	}
+                array[n].xpos = x;
+                array[n].ypos = y;
+            }
+        }
     }
 }
 
@@ -244,26 +244,26 @@ int TooClose( int upto, float x, float y, int except )
     for( n=0; n<upto; n++ )
     {
         dx = fabs( array[n].xpos - x );
-	if( dx > HALF_X_FRAME )
-	    dx = 2.*HALF_X_FRAME - dx;
+        if( dx > HALF_X_FRAME )
+            dx = 2.*HALF_X_FRAME - dx;
 
-	if( dx > BACKG_MIN_SPACING )
-	    continue;
+        if( dx > BACKG_MIN_SPACING )
+            continue;
 
-	dy = fabs( array[n].ypos - y );
-	if( dy > HALF_Y_FRAME )
-	    dy = 2.*HALF_Y_FRAME - dy;
+        dy = fabs( array[n].ypos - y );
+        if( dy > HALF_Y_FRAME )
+            dy = 2.*HALF_Y_FRAME - dy;
 
-	if( dy > BACKG_MIN_SPACING )
-	    continue;
+        if( dy > BACKG_MIN_SPACING )
+            continue;
 
-	if( sqrt(dx*dx+dy*dy) > BACKG_MIN_SPACING )
-	    continue;
+        if( sqrt(dx*dx+dy*dy) > BACKG_MIN_SPACING )
+            continue;
 
         if( n == except )
-	    continue;
+            continue;
 
-	return( 1 );
+        return( 1 );
     }
 
     return( 0 );
@@ -273,7 +273,7 @@ void InsideElements( int total_number, int foreg_number, int *ppatch_number )
 {
 
     int n, i, j, side, pn;
-    float Xij, Yij, Xin, Yin, radius;
+    float Xij, Yij, Xin, Yin;
     float vp[ MAX_FOREG_NUMBER ];
 
     pn = foreg_number;
@@ -283,7 +283,7 @@ void InsideElements( int total_number, int foreg_number, int *ppatch_number )
         side = 1;
 
         for( i=0; i<foreg_number; i++ )
-	{
+        {
             j = (i+1) % foreg_number;
 
             Yij      = array[i].xpos - array[j].xpos;
@@ -291,31 +291,31 @@ void InsideElements( int total_number, int foreg_number, int *ppatch_number )
 
             Xin      = array[n].xpos - array[i].xpos;
             Yin      = array[n].ypos - array[i].ypos;
-        
+
             if( ( vp[i] = Xij*Xin + Yij*Yin ) < 0.0 )
             {
                 side = 0;
-	    }
-	}
+            }
+        }
 
-	/*****************************************************
+        /*****************************************************
         radius = sqrt((double) array[n].xpos*array[n].xpos
                              + array[n].ypos*array[n].ypos );
 
         if( radius < 300.0 )
-	{
+        {
             printf( " %d %5.2f VP ", n, radius, side );
             for( i=0; i<foreg_number; i++ )
                 printf( " %5.0f", vp[i] );
             printf( " side %d\n", side );
-	}
-	*****************************************************/
+        }
+        *****************************************************/
 
         if( side )
-	{
+        {
             array[n].flag = 1;
             pn++;
-	}
+        }
     }
 
     *ppatch_number = pn;

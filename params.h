@@ -1,4 +1,6 @@
 
+#include <stdio.h>
+
 extern int   DISPLAY_X;
 extern int   DISPLAY_Y;
 extern int   FOREG_NUMBER;
@@ -27,11 +29,5 @@ extern void ListParams( void );
 extern void Openfile( FILE **fp, char mode, char extension[] );
 extern void Closefile( FILE *fp );
 extern void PrintParams( void );
-extern void SetParameters1( void );
-extern void SetParameters2( void );
-extern void SetParameters3( void );
-extern void EnterInt( int *pi );
-extern void EnterFloat( float *pf );
-extern void EnterText( char *ps );
 extern void date( char *p );
 extern void process_id( char pid[] );
