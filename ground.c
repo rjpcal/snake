@@ -152,13 +152,13 @@ void Ground::jitterElement()
           v.x = array[n].pos.x + 2*jitter*drand48() - jitter;
           v.y = array[n].pos.y + 2*jitter*drand48() - jitter;
 
+          if (v.x < -halfX) v.x += 2.*halfX;
+          if (v.x >  halfX) v.x -= 2.*halfX;
+          if (v.y < -halfY) v.y += 2.*halfY;
+          if (v.y >  halfY) v.y -= 2.*halfY;
+
           if (!tooClose(v.x, v.y, n))
             {
-              if (v.x < -halfX) v.x += 2.*halfX;
-              if (v.x >  halfX) v.x -= 2.*halfX;
-              if (v.y < -halfY) v.y += 2.*halfY;
-              if (v.y >  halfY) v.y -= 2.*halfY;
-
               array[n].pos = v;
             }
         }
