@@ -497,29 +497,25 @@ namespace
 
 void MakeForeg( void )
 {
-    int i, count;
+  InitSnake( FOREG_NUMBER );
 
-    i = 0;
-
-    InitSnake( FOREG_NUMBER );
-
-    for( count=0; count<FOREGROUND_ITERATION; count++)
+  for(int count = 0; count < FOREGROUND_ITERATION; ++count)
     {
-        Jiggle_snake( FOREG_NUMBER );
+      Jiggle_snake( FOREG_NUMBER );
     }
 
-    Center_snake( FOREG_NUMBER );
+  Center_snake( FOREG_NUMBER );
 }
 
 int GetElement( int n, float *x, float *y, float *theta )
 {
-    if( n < FOREG_NUMBER )
+  if( n < FOREG_NUMBER )
     {
-        *x = 0.5 * ( foreg[n].xpos + foreg[(n+1)%FOREG_NUMBER].xpos );
-        *y = 0.5 * ( foreg[n].ypos + foreg[(n+1)%FOREG_NUMBER].ypos );
-        *theta = Zerototwopi( -foreg[n].theta );
-        return( 1 );
+      *x = 0.5 * ( foreg[n].xpos + foreg[(n+1)%FOREG_NUMBER].xpos );
+      *y = 0.5 * ( foreg[n].ypos + foreg[(n+1)%FOREG_NUMBER].ypos );
+      *theta = Zerototwopi( -foreg[n].theta );
+      return 1;
     }
 
-    return( 0 );
+  return 0;
 }
