@@ -272,7 +272,7 @@ void Ground::jitterElement( void )
 
 /*****************************************************************/
 
-Ground* Ground::make()
+Ground* Ground::make(FakeWindow* wind)
 {
   Ground* result = new Ground;
 
@@ -286,7 +286,7 @@ Ground* Ground::make()
   result->contourElements( &npts );
 
   Map2Array(result, npts); // FIXME need this?
-  ShowArray(result); // FIXME need this?
+  ShowArray(result, wind); // FIXME need this?
 
   TOTAL_NUMBER = npts;
 
@@ -301,7 +301,7 @@ Ground* Ground::make()
       result->fillElements( &npts );
 
       Map2Array(result, npts);
-      ShowArray(result); // FIXME need this?
+      ShowArray(result, wind); // FIXME need this?
 
       TOTAL_NUMBER = npts;
     }

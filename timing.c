@@ -14,8 +14,3 @@ void SeedRand( void )
 //     srand48( tp.tv_sec );
     srand48( 0 );
 }
-
-void ZeroRand( int seed )
-{
-    srand48( seed );
-}

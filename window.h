@@ -3,5 +3,11 @@
 
 class Ground;
 
-extern void ShowArray(const Ground* g);
-extern void Window2Raster( void );
+class FakeWindow
+{
+public:
+  Colorindex* data;
+};
+
+extern void ShowArray(const Ground* g, FakeWindow* wind);
+extern void Window2Raster(const FakeWindow* wind);

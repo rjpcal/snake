@@ -1,6 +1,8 @@
 #include "defs.h"
 #include "snake.h"
 
+class FakeWindow;
+
 class Ground
 {
 public:
@@ -11,7 +13,7 @@ public:
   ELEMENT     array[ MAX_GABOR_NUMBER ];
   float       BACKG_AVE_SPACING;
 
-  static Ground* make();
+  static Ground* make(FakeWindow* wind);
 
 private:
   int tooClose(int upto, float x, float y, int except);
@@ -21,4 +23,3 @@ private:
   void fillElements( int *pnpts );
   void jitterElement( void );
 };
-

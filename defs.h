@@ -5,7 +5,6 @@
 
 typedef int Colorindex;
 typedef struct { unsigned char r, g, b; } cmapval;
-extern Colorindex *win;
 
 #define PI                  M_PI
 #define TWOPI               (2*M_PI)

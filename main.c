@@ -15,9 +15,6 @@ void Exit();
 
 char PROGRAM[ STRINGSIZE ];
 
-/// memory for fake window:
-Colorindex *win;
-
 int   DISPLAY_SET_NUMBER;
 int   DISPLAY_COUNT;
 
@@ -41,8 +38,8 @@ int main( int argc, char** argv )
   MakeColormap();
 
   // alloc mem for our fake window:
-  win = (Colorindex*)
-    (malloc(DISPLAY_X * DISPLAY_Y * sizeof(Colorindex)));
+  FakeWindow fakewin;
+  fakewin.data = new Colorindex[DISPLAY_X*DISPLAY_Y];
 
   SeedRand();
 
@@ -54,21 +51,19 @@ int main( int argc, char** argv )
 
   WriteHeader();
 
-  int n;
-
-  for( n=0; n<DISPLAY_NUMBER; n++ )
+  for(int n = 0; n < DISPLAY_NUMBER; ++n)
     {
-      ZeroRand( n );
+      srand48(n);
 
       MakeForeg();
 
-      Ground* g = Ground::make();
+      Ground* g = Ground::make(&fakewin);
 
       WriteArray(g);
 
-      ShowArray(g);
+      ShowArray(g, &fakewin);
 
-      Window2Raster();
+      Window2Raster(&fakewin);
 
       DISPLAY_COUNT++;
 
