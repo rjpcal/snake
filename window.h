@@ -23,6 +23,12 @@ public:
   void blendVal(int x, int y, double val)
   {
     if (x >=0 && x < sizeX && y >= 0 && y < sizeY)
+      data[x+y*sizeX] += val;
+  }
+
+  void substValMaxAbs(int x, int y, double val)
+  {
+    if (x >=0 && x < sizeX && y >= 0 && y < sizeY)
       if (fabs(data[x+y*sizeX]) < fabs(val))
         data[x+y*sizeX] = val;
   }
