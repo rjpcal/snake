@@ -19,7 +19,7 @@ void CheckFrameTime( void )
 
     FRAMETIME = DeltaTime( &tp[0], &tp[1] ) / 100.0;
 
-    printf( " Video frame time %7.4lf ms\n", FRAMETIME );  
+    printf( " Video frame time %7.4lf ms\n", FRAMETIME );
 }
 
 void SeedRand( void )
@@ -29,7 +29,8 @@ void SeedRand( void )
 
     gettimeofday( &tp, &tzp );
 
-    srand48( tp.tv_sec );
+//     srand48( tp.tv_sec );
+    srand48( 0 );
 }
 
 void ZeroRand( int seed )
@@ -71,7 +72,7 @@ void CheckVideoCount( int number )
     if( usec_stop > 1000000L )
     {
         sec_stop  += 1L;
-	usec_stop -= 1000000L;
+        usec_stop -= 1000000L;
     }
 
     do
@@ -124,7 +125,7 @@ void CheckTime( float aim_for_seconds )
     if( usec_stop > 1000000L )
     {
         sec_stop  += 1L;
-	usec_stop -= 1000000L;
+        usec_stop -= 1000000L;
     }
 
     do
