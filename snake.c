@@ -13,7 +13,7 @@ namespace
   const double TEMPERATURE = 0.05;
   const double INCREMENT   = 0.1;
 
-  int          FOREGROUND_ITERATION =    400;
+  const int    FOREGROUND_ITERS = 400;
 
   float increment;
 
@@ -127,7 +127,7 @@ namespace
       return 0;
 
     const float xp = aleph + bet;
-    const float yp = sqrt((double)(gimel - bet*bet - aleph*aleph));
+    const float yp = sqrt(gimel - bet*bet - aleph*aleph);
 
     no2_one.x = no1->x + xp*dx/e - yp*dy/e;
     no2_one.y = no1->y + xp*dy/e + yp*dx/e;
@@ -224,13 +224,13 @@ Snake::Snake(int l, float sp) :
     {
       const float alpha = 2 * M_PI * n / itsLength;
 
-      itsElem[n].xpos   =  radius * cos((double) alpha+alpha_off);
-      itsElem[n].ypos   = -radius * sin((double) alpha+alpha_off);
+      itsElem[n].xpos   =  radius * cos(alpha+alpha_off);
+      itsElem[n].ypos   = -radius * sin(alpha+alpha_off);
     }
 
   this->computeDeltaTheta();
 
-  for (int count = 0; count < FOREGROUND_ITERATION; ++count)
+  for (int count = 0; count < FOREGROUND_ITERS; ++count)
     {
       this->jiggle();
     }
