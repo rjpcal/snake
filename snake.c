@@ -9,7 +9,7 @@
 
 namespace
 {
-  const double HIDELTA           = (M_PI/4.);
+  const double MAX_DELTA         = M_PI/4.0; // == 45 degrees
   const double TEMPERATURE       = 0.05;
   const double INITIAL_INCREMENT = 0.1;
 
@@ -209,41 +209,25 @@ namespace
 
   // This function must return true in order to accept the new set of nodes
   // in jiggle().
-  bool monteCarlo(const Tuple4& old_alpha, const Tuple4& new_alpha,
-                  const Tuple4& delta, double& increment)
+  bool monteCarlo(const Tuple4& newdelta, const Tuple4& olddelta,
+                  double& increment)
   {
-    bool zero_probability = false;
-
-    double energy_difference = 0.0f;
+    double energy_diff = 0.0f;
 
     for (int n = 0; n < 4; ++n)
       {
-        const double oldval = fabs(delta[n]);
-        const double newval = fabs(new_alpha[n] - old_alpha[n] - delta[n]);
+        if (fabs(newdelta[n]) > MAX_DELTA)
+          {
+            increment *= 0.8;
+            return false;
+          }
 
-        if (newval > HIDELTA)
-          {
-            zero_probability = true;
-            increment = 0.8 * increment;
-            break;
-          }
-        else
-          {
-            energy_difference += newval*newval - oldval*oldval;
-          }
+        energy_diff += newdelta[n]*newdelta[n] - olddelta[n]*olddelta[n];
       }
 
-    double probability = 0.0f;
-
-    if (!zero_probability)
-      if (energy_difference < 0.)
-        {
-          probability = 1.0f;
-        }
-      else
-        {
-          probability = exp(-energy_difference/TEMPERATURE);
-        }
+    // Note, if energy_diff is < 0, then the probability is > 0, so
+    // as expected drand48() will always be < probability.
+    const double probability = exp(-energy_diff/TEMPERATURE);
 
     return drand48() <= probability;
   }
@@ -376,6 +360,7 @@ void Snake::jiggle()
   const Tuple4 old_theta = getThetas(old_pos);
   const Tuple4 old_alpha = getAlphas(old_theta);
 
+  // The .theta member is the angle to the *next* element
   const Tuple4 old_delta
     (minuspitopi(elem(i[0]).theta - elem(i[0]-1).theta),
      minuspitopi(elem(i[1]).theta - elem(i[1]-1).theta),
@@ -409,8 +394,13 @@ void Snake::jiggle()
 
       const Tuple4 new_theta = getThetas(new_pos);
       const Tuple4 new_alpha = getAlphas(new_theta);
+      const Tuple4 new_delta
+        (old_delta[0] + (old_alpha[0]-new_alpha[0]),
+         old_delta[1] + (old_alpha[1]-new_alpha[1]),
+         old_delta[2] + (old_alpha[2]-new_alpha[2]),
+         old_delta[3] + (old_alpha[3]-new_alpha[3]));
 
-      if (monteCarlo(old_alpha, new_alpha, old_delta, increment))
+      if (monteCarlo(new_delta, old_delta, increment))
         break;
     }
 
