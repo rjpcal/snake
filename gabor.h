@@ -4,15 +4,14 @@
 #define GABOR_MAX_ORIENT      64
 #define GABOR_MAX_PHASE        8
 
-extern Colorindex *Patch[][GABOR_MAX_PHASE];
+class GaborSet
+{
+public:
+  GaborSet();
+  ~GaborSet();
 
-extern void AllocGabor( void );
-extern void WrapGabor( void );
-extern void InitGabor( void );
-extern void InitPatch( Colorindex *ptr, float sigma, float omega, float theta, float phi, float contrast, int size );
-extern Colorindex *GetPatch( float theta, float phi );
-extern float Index2Theta( int index );
-extern int Theta2Index( float theta );
-extern float Index2Phi( int index );
-extern int Phi2Index( float phi );
+  Colorindex* getPatch(float theta, float phi ) const;
+
+  Colorindex* Patch[GABOR_MAX_ORIENT][GABOR_MAX_PHASE];
+};
 

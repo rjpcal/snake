@@ -2,7 +2,6 @@
 #include "ground.h"
 
 #include "defs.h"
-#include "file.h"
 #include "gabor.h"
 #include "geom.h"
 #include "main.h"
@@ -262,7 +261,7 @@ void Ground::jitterElement( void )
     }
 }
 
-void Ground::map2array(int npts)
+void Ground::map2array(const GaborSet& g, int npts)
 {
   int i;
   float theta, phi, Theta[ MAX_FOREG_NUMBER ], Phi[ MAX_FOREG_NUMBER ];
@@ -287,7 +286,7 @@ void Ground::map2array(int npts)
       XPatch[ i ] = (int)( array[ i ].xpos + DISPLAY_X / 2.0 + 0.5 );
       YPatch[ i ] = (int)( array[ i ].ypos + DISPLAY_Y / 2.0 + 0.5 );
 
-      PPatch[ i ] = GetPatch( theta, phi );
+      PPatch[ i ] = g.getPatch( theta, phi );
     }
 
   NPatch = npts;
@@ -297,10 +296,8 @@ void Ground::map2array(int npts)
 
 /*****************************************************************/
 
-Ground* Ground::make()
+Ground::Ground(const GaborSet& g)
 {
-  Ground* result = new Ground;
-
   int i, npts;
 
   HALF_X_FRAME = 0.5 * DISPLAY_X;
@@ -308,32 +305,30 @@ Ground* Ground::make()
 
   npts = 0;
 
-  result->contourElements( &npts );
+  this->contourElements( &npts );
 
-  result->map2array(npts); // FIXME need this?
+  this->map2array(g, npts); // FIXME need to do this?
 
   TOTAL_NUMBER = npts;
 
-  result->gridElements( &npts );
+  this->gridElements( &npts );
 
   TOTAL_NUMBER = npts;
 
   for( i=0; i<DIFFUSION_CYCLES; i++ )
     {
-      result->jitterElement();
+      this->jitterElement();
 
-      result->fillElements( &npts );
+      this->fillElements( &npts );
 
-      result->map2array(npts);
+      this->map2array(g, npts);
 
       TOTAL_NUMBER = npts;
     }
 
-  result->insideElements( TOTAL_NUMBER, FOREG_NUMBER, &PATCH_NUMBER );
+  this->insideElements( TOTAL_NUMBER, FOREG_NUMBER, &PATCH_NUMBER );
 
   printf( " FOREG_NUMBER %d    PATCH_NUMBER ??    TOTAL_NUMBER %d\n",
           FOREG_NUMBER, TOTAL_NUMBER );
   BACKG_NUMBER = TOTAL_NUMBER - PATCH_NUMBER;
-
-  return result;
 }

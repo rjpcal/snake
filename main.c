@@ -1,6 +1,5 @@
 
 #include "defs.h"
-#include "file.h"
 #include "gabor.h"
 #include "gamma.h"
 #include "ground.h"
@@ -39,7 +38,7 @@ int main( int argc, char** argv )
 
   SeedRand();
 
-  InitGabor();
+  GaborSet gabors;
 
   DISPLAY_COUNT = 0;
 
@@ -53,7 +52,7 @@ int main( int argc, char** argv )
 
       MakeForeg();
 
-      Ground* g = Ground::make();
+      Ground* g = new Ground(gabors);
 
       WriteArray(g);
 
@@ -76,8 +75,6 @@ int main( int argc, char** argv )
 
 void Exit( void )
 {
-  WrapGabor();
-
   WriteParams( "sta" );
 
   exit(0);
