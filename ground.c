@@ -117,45 +117,25 @@ void Ground::hexGridElements()
 
 void Ground::fillElements()
 {
-  const int    tryFillNumber = 250000;
   const double tryFillArea   = 6.0;
 
-  int ntry = int(sizeX * sizeY / tryFillArea);
-
-  if (ntry > tryFillNumber)
-    {
-      printf(" tryFillNumber too small!\n");
-      printf("\n Need %d, have %d\n", ntry, tryFillNumber);
-      exit(1);
-    }
-
-  ntry = 0;
-
-  Vector vl[ tryFillNumber ];
-
   const double dx = sqrt(tryFillArea);
+
+  int c = 0;
 
   for (double x = -halfX; x <= halfX; x += dx)
     for (double y = -halfY; y <= halfY; y += dx)
       {
-        vl[ ntry ].x = x;
-        vl[ ntry ].y = y;
-        ntry++;
+        if (tooClose(totalNumber, x, y, totalNumber+1))
+          continue;
+
+        pushElement(Element(x, y, 2 * M_PI * drand48(), Element::OUTSIDE));
+
+        ++c;
       }
 
-  const int prevnumber = totalNumber;
-
-  for (int i = 0; i < ntry; ++i)
-    {
-      if (tooClose(totalNumber, vl[i].x, vl[i].y, totalNumber+1))
-        continue;
-
-      pushElement(Element(vl[i], 2 * M_PI * drand48(), Element::OUTSIDE));
-    }
-
   backgAveSpacing = sqrt(2.0*sizeX*sizeY/(SQRT3*totalNumber));
-  printf(" added %d to ave spacing %f\n",
-         totalNumber-prevnumber, backgAveSpacing);
+  printf(" added %d to ave spacing %f\n", c, backgAveSpacing);
 }
 
 void Ground::jitterElement()
