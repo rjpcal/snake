@@ -58,7 +58,7 @@ namespace
     return sqrt(dx*dx + dy*dy);
   }
 
-  void getEdgeLengths(Vector no[4], float a[4])
+  void getEdgeLengths(const Vector no[4], float a[4])
   {
     a[0] = distance(no[0], no[1]);
     a[1] = distance(no[1], no[2]);
@@ -66,7 +66,7 @@ namespace
     a[3] = distance(no[3], no[0]);
   }
 
-  void getAngles(Vector no[], float alpha[], float theta[])
+  void getAngles(const Vector no[4], float alpha[4], float theta[4])
   {
     const float dx0     = no[1].x - no[0].x;
     const float dy0     = no[1].y - no[0].y;
