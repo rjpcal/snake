@@ -2,7 +2,6 @@
 #include "ground.h"
 #include "params.h"
 #include "snake.h"
-#include "window.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,9 +18,6 @@ int main( int argc, char** argv )
   const Params pm(argv[1], "sta");
 
   pm.print();
-
-  // alloc mem for our fake window:
-  FakeWindow fakewin(pm.pmSizeX, pm.pmSizeY);
 
   GaborSet gabors(pm.pmGaborPeriod, pm.pmGaborSigma, pm.pmGaborSize);
 
@@ -42,15 +38,14 @@ int main( int argc, char** argv )
       Ground g(s, pm.pmSizeX, pm.pmSizeY,
                pm.pmBackgIniSpacing,
                pm.pmBackgMinSpacing,
-               &fakewin, gabors);
+               gabors);
 
       g.writeArray(pm.pmFilestem, n);
 
-      g.renderInto(&fakewin, gabors);
-
       char fname[256];
       snprintf(fname, 256, "%s_%d.pnm", pm.pmFilestem, n);
-      fakewin.writePnm(fname);
+
+      g.writePnm(fname);
     }
 
   pm.write("sta");

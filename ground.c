@@ -161,14 +161,12 @@ void Ground::dumpFrame() const
 {
   if (0)
     {
-      this->renderInto(window, gabors);
-
       static int framecount = 0;
 
       char fname[256];
       snprintf(fname, 256, "frame_%06d.pnm", framecount++);
 
-      window->writePnm(fname);
+      this->writePnm(fname);
 
       printf("dumped frame %s\n", fname);
     }
@@ -177,7 +175,7 @@ void Ground::dumpFrame() const
 Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
                double backgIniSpacing_,
                double backgMinSpacing_,
-               FakeWindow* w, const GaborSet& g) :
+               const GaborSet& g) :
   snake(s),
   sizeX(sizeX_),
   sizeY(sizeY_),
@@ -188,7 +186,6 @@ Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
   backgMinSpacingSqr(backgMinSpacing*backgMinSpacing),
   insideNumber(0),
   totalNumber(0),
-  window(w),
   gabors(g)
 {
   // pull in elements from the snake
@@ -217,9 +214,9 @@ Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
           snake.getLength(), insideNumber, totalNumber);
 }
 
-void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
+void Ground::renderInto(FakeWindow& w, const GaborSet& g) const
 {
-  w->clear(0.0);
+  w.clear(0.0);
 
   for (int i = 0; i < totalNumber; ++i)
     {
@@ -245,7 +242,7 @@ void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
 
       for (int y = y0; y < y1; ++y)
         for (int x = x0; x < x1; ++x)
-          w->blendVal(x, y, p[x-x0+(y-y0)*g.getPatchSize()]);
+          w.blendVal(x, y, p[x-x0+(y-y0)*g.getPatchSize()]);
     }
 }
 
@@ -283,4 +280,13 @@ void Ground::writeArray(const char* filestem, int displayCount) const
     }
 
   fclose(fp);
+}
+
+void Ground::writePnm(const char* filename) const
+{
+  FakeWindow window(sizeX, sizeY);
+
+  this->renderInto(window, gabors);
+
+  window.writePnm(filename);
 }

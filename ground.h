@@ -1,7 +1,8 @@
 #include "snake.h"
 
-class FakeWindow;
 class GaborSet;
+
+class FakeWindow;
 
 class Ground
 {
@@ -9,14 +10,16 @@ public:
   Ground(const Snake& s, int sizeX_, int sizeY_,
          double backgIniSpacing_,
          double backgMinSpacing_,
-         FakeWindow* w, const GaborSet& g);
-
-  void renderInto(FakeWindow* wind, const GaborSet& g) const;
+         const GaborSet& g);
 
   void writeArray(const char* filestem, int displayCount) const;
 
+  void writePnm(const char* filename) const;
+
 private:
   static const int MAX_GABOR_NUMBER = 1800;
+
+  void renderInto(FakeWindow& window, const GaborSet& g) const;
 
   const Snake& snake;
   const int sizeX;
@@ -31,7 +34,6 @@ private:
   Element array[ MAX_GABOR_NUMBER ];
   double backgAveSpacing;
 
-  FakeWindow* window;
   const GaborSet& gabors;
 
   void dumpFrame() const;
