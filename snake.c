@@ -130,33 +130,36 @@ namespace
     /*   y       new_1->y       dy/e   dx/e     y'        */
     /*                                                    */
 
+    /*                                                                */
+    /*                             . (2)                              */
+    /*                           ./|                                  */
+    /*                  c      ./   .                                 */
+    /*                       ./     |                                 */
+    /*                     ./        .                                */
+    /*                   ./          |                                */
+    /*                 ./             .  b                            */
+    /*           (3) ./               |                               */
+    /*                `--.             .                              */
+    /*                    `--.         |                              */
+    /*                        `--.      .                             */
+    /*                      a     `--.  |                             */
+    /*                                `--. (NEW 1)                    */
+    /*                                                                */
+
     const double dx_3_1    = old_3.x - new_1->x;
     const double dy_3_1    = old_3.y - new_1->y;
 
-    const double d_3_1     = sqrt(dx_3_1*dx_3_1 + dy_3_1*dy_3_1);
-
-    const double d_1_2 = distance(old_1, old_2);
-    const double d_2_3 = distance(old_2, old_3);
-
-    const double a = d_3_1;
-    const double b = d_1_2;
-    const double c = d_2_3;
+    const double a = sqrt(dx_3_1*dx_3_1 + dy_3_1*dy_3_1);
+    const double b = distance(old_1, old_2);
+    const double c = distance(old_2, old_3);
 
     const double a_sq = a*a;
     const double b_sq = b*b;
     const double c_sq = c*c;
 
-#if 0
-    const double aleph = (b*b - c*c)/(2.0*a);
-    const double bet   = a/2.0;
-    const double gimel = (b*b + c*c)/2.0;
-
-    const double det = (gimel - bet*bet - aleph*aleph);
-#else
     const double det =
       2*(a_sq*b_sq + b_sq*c_sq + a_sq*c_sq)
       - a_sq*a_sq - b_sq*b_sq - c_sq*c_sq;
-#endif
 
     if (det < 0)
       return false;
