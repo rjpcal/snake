@@ -179,7 +179,7 @@ namespace
   }
 
   bool monteCarlo(const Tuple4& old_alpha, const Tuple4& new_alpha,
-                  const Tuple4& alpha_sum)
+                  const Tuple4& delta)
   {
     bool zero_probability = false;
 
@@ -187,7 +187,7 @@ namespace
 
     for (int n = 0; n < 4; ++n)
       {
-        const float zero_point = alpha_sum[n];
+        const float zero_point = old_alpha[n] + delta[n];
 
         const float oldval = fabs(old_alpha[n] - zero_point);
         const float newval = fabs(new_alpha[n] - zero_point);
@@ -353,10 +353,10 @@ void Snake::jiggle()
   const Tuple4 theta = getThetas(no);
   const Tuple4 alpha = getAlphas(theta);
 
-  const Tuple4 alpha_sum(alpha[0] + itsElem[i[0]].delta,
-                         alpha[1] + itsElem[i[1]].delta,
-                         alpha[2] + itsElem[i[2]].delta,
-                         alpha[3] + itsElem[i[3]].delta);
+  const Tuple4 delta(itsElem[i[0]].delta,
+                     itsElem[i[1]].delta,
+                     itsElem[i[2]].delta,
+                     itsElem[i[3]].delta);
 
   Vector new_no[4];
 
@@ -382,7 +382,7 @@ void Snake::jiggle()
       const Tuple4 new_theta = getThetas(new_no);
       const Tuple4 new_alpha = getAlphas(new_theta);
 
-      if (monteCarlo(alpha, new_alpha, alpha_sum))
+      if (monteCarlo(alpha, new_alpha, delta))
         break;
     }
 
