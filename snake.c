@@ -4,6 +4,7 @@
 
 #include <assert.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 namespace
@@ -78,21 +79,17 @@ namespace
                   distance(no[3], no[0]));
   }
 
+  float getTheta(const Vector& n1, const Vector& n2)
+  {
+    return atan2(n1.y - n2.y, n1.x - n2.x);
+  }
+
   Tuple4 getThetas(const Vector no[4])
   {
-    const float dx0     = no[1].x - no[0].x;
-    const float dy0     = no[1].y - no[0].y;
-    const float dx1     = no[2].x - no[1].x;
-    const float dy1     = no[2].y - no[1].y;
-    const float dx2     = no[3].x - no[2].x;
-    const float dy2     = no[3].y - no[2].y;
-    const float dx3     = no[0].x - no[3].x;
-    const float dy3     = no[0].y - no[3].y;
-
-    return Tuple4(atan2(dy0, dx0),
-                  atan2(dy1, dx1),
-                  atan2(dy2, dx2),
-                  atan2(dy3, dx3));
+    return Tuple4(getTheta(no[1], no[0]),
+                  getTheta(no[2], no[1]),
+                  getTheta(no[3], no[2]),
+                  getTheta(no[0], no[3]));
   }
 
   Tuple4 getAlphas(const Tuple4& theta)
