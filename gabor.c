@@ -1,4 +1,3 @@
-
 #include "gabor.h"
 
 #include "geom.h"
@@ -51,7 +50,7 @@ namespace
 
   int Theta2Index( double theta )
   {
-    theta = Zerotopi( theta );
+    theta = Zerotopi(theta);
 
     int index = int((theta + OFF_THETA) / DELTA_THETA);
 
