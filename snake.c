@@ -158,18 +158,18 @@ namespace
                         Vector* new_no2, Vector* new_no3,
                         double theta0, double incr)
   {
-    Vector no[4];
-    no[0] = *new_no0 = *no0;
-    no[1] =            *no1;
-    no[2] = *new_no2 = *no2;
-    no[3] = *new_no3 = *no3;
+    const double dist_0_1 = distance(*no0, *no1);
+    const double dist_1_2 = distance(*no1, *no2);
+    const double dist_2_3 = distance(*no2, *no3);
 
-    const Tuple4 a = getEdgeLengths(no);
+    *new_no0 = *no0;
+    *new_no2 = *no2;
+    *new_no3 = *no3;
 
-    new_no1->x = new_no0->x + a[0] * cos(theta0-incr);
-    new_no1->y = new_no0->y + a[0] * sin(theta0-incr);
+    new_no1->x = new_no0->x + dist_0_1 * cos(theta0-incr);
+    new_no1->y = new_no0->y + dist_0_1 * sin(theta0-incr);
 
-    return newApex(new_no1, new_no2, new_no3, a[1], a[2]);
+    return newApex(new_no1, new_no2, new_no3, dist_1_2, dist_2_3);
   }
 
   // This function must return true in order to accept the new set of nodes
