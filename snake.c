@@ -343,7 +343,6 @@ void Snake::computeDeltaTheta()
 void Snake::jiggle()
 {
   int n;
-  int ok = 0;
   float a[4], delta[4], alpha[4], theta[4], lo_alpha[4], hi_alpha[4],
     incr, new_alpha[4], new_theta[4], new_a[4];
   Vector no[4], new_no[4];
@@ -374,35 +373,14 @@ void Snake::jiggle()
     {
       incr = (drand48()<0.5) ? -increment : increment;
 
-      switch(int(4 * drand48()))
-        {
-        case 0:
-          ok = Squash_quadrangle(&no[0], &no[1], &no[2], &no[3],
-                                  &new_no[0], &new_no[1], &new_no[2], &new_no[3],
-                                  theta[0], incr);
-          break;
+      const int r = int(4 * drand48());
 
-        case 1:
-          ok = Squash_quadrangle(&no[1], &no[2], &no[3], &no[0],
-                                  &new_no[1], &new_no[2], &new_no[3], &new_no[0],
-                                  theta[1], incr);
-          break;
-
-        case 2:
-          ok = Squash_quadrangle(&no[2], &no[3], &no[0], &no[1],
-                                  &new_no[2], &new_no[3], &new_no[0], &new_no[1],
-                                  theta[2], incr);
-          break;
-
-        case 3:
-          ok = Squash_quadrangle(&no[3], &no[0], &no[1], &no[2],
-                                  &new_no[3], &new_no[0], &new_no[1], &new_no[2],
-                                  theta[3], incr);
-          break;
-
-        default:
-          break;
-        }
+      const int ok =
+        Squash_quadrangle(&no[(r+0)%4], &no[(r+1)%4],
+                          &no[(r+2)%4], &no[(r+3)%4],
+                          &new_no[(r+0)%4], &new_no[(r+1)%4],
+                          &new_no[(r+2)%4], &new_no[(r+3)%4],
+                          theta[r], incr);
 
       if (!ok)
         {
