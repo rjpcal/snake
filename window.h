@@ -1,5 +1,7 @@
 #include "defs.h"
 
+#include <math.h>
+
 class FakeWindow
 {
 public:
@@ -20,8 +22,16 @@ public:
       data[i] = col;
   }
 
+  void blendVal(int x, int y, double val)
+  {
+    if (x >=0 && x < sizeX && y >= 0 && y < sizeY)
+      if (fabs(data[x+y*sizeX]) < fabs(val))
+        data[x+y*sizeX] = val;
+  }
+
   void writePnm(const char* fname) const;
 
+private:
   const int sizeX;
   const int sizeY;
   double* const data;

@@ -285,34 +285,24 @@ Ground::Ground()
   BACKG_NUMBER = TOTAL_NUMBER - PATCH_NUMBER;
 }
 
-void Ground::renderInto(FakeWindow* wind, const GaborSet& g) const
+void Ground::renderInto(FakeWindow* w, const GaborSet& g) const
 {
-  float Theta[ MAX_FOREG_NUMBER ];
-  float Phi[ MAX_FOREG_NUMBER ];
-
-  for(int i=0; i<NPatch && i<FOREG_NUMBER; ++i)
-    {
-      Phi[i]   = Zerototwopi( TWOPI * drand48() );
-      Theta[i] = Zerototwopi( TWOPI * drand48() );
-    }
-
-  wind->clear(0.0);
+  w->clear(0.0);
 
   for(int i = 0; i < NPatch; ++i)
     {
-      float phi   = TWOPI * drand48();
-      float theta = TWOPI * drand48();
+      const float phi   = TWOPI * drand48();
+      const float randtheta = TWOPI * drand48();
 
-      if( i < FOREG_NUMBER )
-        {
-          phi   = Phi[ i ];
-          theta = Zerototwopi( array[i].theta + M_PI_2 );
-        }
+      const float theta =
+        (i < FOREG_NUMBER)
+        ? Zerototwopi( array[i].theta + M_PI_2 )
+        : randtheta;
 
       const int xcenter = (int)( array[i].xpos + DISPLAY_X / 2.0 + 0.5 );
       const int ycenter = (int)( array[i].ypos + DISPLAY_Y / 2.0 + 0.5 );
 
-      const double* patch = g.getPatch( theta, phi );
+      const double* p = g.getPatch( theta, phi );
 
       // bottom left:
       const int x0  = xcenter - GABOR_SIZE / 2;
@@ -321,14 +311,8 @@ void Ground::renderInto(FakeWindow* wind, const GaborSet& g) const
       const int x1 = x0 + GABOR_SIZE;
       const int y1 = y0 + GABOR_SIZE;
 
-      for (int yy = y0; yy < y1; ++yy)
-        for (int xx = x0; xx < x1; ++xx)
-          if (xx>=0 && xx<DISPLAY_X && yy>=0 && yy<DISPLAY_Y)
-            {
-              if (fabs(wind->data[xx+yy*DISPLAY_X])
-                  < fabs(patch[xx-x0+(yy-y0)*GABOR_SIZE]))
-                wind->data[xx+yy*DISPLAY_X] =
-                  patch[xx-x0+(yy-y0)*GABOR_SIZE];
-            }
+      for (int y = y0; y < y1; ++y)
+        for (int x = x0; x < x1; ++x)
+          w->blendVal(x, y, p[x-x0+(y-y0)*GABOR_SIZE]);
     }
 }
