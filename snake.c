@@ -394,42 +394,38 @@ void Snake::jiggle()
 void Snake::newNodes(int ni, int nj,
                      Vector new_no_i, Vector new_no_j)
 {
-  int n;
-  float dx, dy, dxp, dyp, l_2;
-  float a11, a12, a21, a22, b1, b2, c1, c2;
-
   /*                                              */
   /*   x'      c1        a11   a12     x - b1     */
   /* (   ) = (    ) + (             ) (      )    */
   /*   y'      c2        a21   a12     y - b2     */
   /*                                              */
 
-  b1  = itsElem[ni].xpos;
-  b2  = itsElem[ni].ypos;
+  const float b1  = itsElem[ni].xpos;
+  const float b2  = itsElem[ni].ypos;
 
-  dx  = itsElem[nj].xpos - b1;
-  dy  = itsElem[nj].ypos - b2;
+  const float dx  = itsElem[nj].xpos - b1;
+  const float dy  = itsElem[nj].ypos - b2;
 
-  c1  = new_no_i.x;
-  c2  = new_no_i.y;
+  const float c1  = new_no_i.x;
+  const float c2  = new_no_i.y;
 
-  dxp = new_no_j.x - c1;
-  dyp = new_no_j.y - c2;
+  const float dxp = new_no_j.x - c1;
+  const float dyp = new_no_j.y - c2;
 
-  l_2 = dx*dx + dy*dy;
+  const float l_2 = dx*dx + dy*dy;
 
-  a11 = (dxp*dx + dyp*dy)/l_2;
-  a12 = (dxp*dy - dyp*dx)/l_2;
+  const float a11 = (dxp*dx + dyp*dy)/l_2;
+  const float a12 = (dxp*dy - dyp*dx)/l_2;
 
-  a21 = (dyp*dx - dxp*dy)/l_2;
-  a22 = (dyp*dy + dxp*dx)/l_2;
+  const float a21 = (dyp*dx - dxp*dy)/l_2;
+  const float a22 = (dyp*dy + dxp*dx)/l_2;
 
-  for (n=(ni+1)%itsLength; n!=nj; n=(n+1)%itsLength)
+  for (int n = (ni+1)%itsLength; n != nj; n = (n+1)%itsLength)
     {
-      dx = itsElem[n].xpos - b1;
-      dy = itsElem[n].ypos - b2;
+      const float diffx = itsElem[n].xpos - b1;
+      const float diffy = itsElem[n].ypos - b2;
 
-      itsElem[n].xpos = c1 + a11*dx + a12*dy;
-      itsElem[n].ypos = c2 + a21*dx + a22*dy;
+      itsElem[n].xpos = c1 + a11*diffx + a12*diffy;
+      itsElem[n].ypos = c2 + a21*diffx + a22*diffy;
     }
 }
