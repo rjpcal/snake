@@ -27,16 +27,12 @@ int Ground::tooClose(double x, double y, int except)
 {
   for (int n = 0; n < totalNumber; ++n)
     {
-      double dx = fabs(array[n].pos.x - x);
-      if (dx > halfX)
-        dx = sizeX - dx;
+      const double dx = fabs(array[n].pos.x - x);
 
       if (dx > backgMinSpacing)
         continue;
 
-      double dy = fabs(array[n].pos.y - y);
-      if (dy > halfY)
-        dy = sizeY - dy;
+      const double dy = fabs(array[n].pos.y - y);
 
       if (dy > backgMinSpacing)
         continue;

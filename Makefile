@@ -21,9 +21,9 @@ tags:
 test:
 	rm -f regtest*.pnm
 	time ./makesnake regtest
-	for f in regtest*.pnm; do echo $$f; cmp $$f orig_cpp_6/$$f; done
+	for f in regtest*.pnm; do echo $$f; cmp $$f orig_cpp_7/$$f; done
 	for i in 0 1 2 3; do \
-	  pnmarith -difference regtest_$$i.pnm orig_cpp_6/regtest_$$i.pnm \
+	  pnmarith -difference regtest_$$i.pnm orig_cpp_7/regtest_$$i.pnm \
 	  > diff_$$i.pnm; done
 
 gabor.o: $(INC)
