@@ -66,7 +66,7 @@ namespace
     a[3] = distance(no[3], no[0]);
   }
 
-  void Get_angles(Vector no[], float alpha[], float theta[])
+  void getAngles(Vector no[], float alpha[], float theta[])
   {
     const float dx0     = no[1].x - no[0].x;
     const float dy0     = no[1].y - no[0].y;
@@ -77,10 +77,10 @@ namespace
     const float dx3     = no[0].x - no[3].x;
     const float dy3     = no[0].y - no[3].y;
 
-    theta[0] = atan2((double) dy0, (double) dx0);
-    theta[1] = atan2((double) dy1, (double) dx1);
-    theta[2] = atan2((double) dy2, (double) dx2);
-    theta[3] = atan2((double) dy3, (double) dx3);
+    theta[0] = atan2(dy0, dx0);
+    theta[1] = atan2(dy1, dx1);
+    theta[2] = atan2(dy2, dx2);
+    theta[3] = atan2(dy3, dx3);
 
     alpha[0]= Zerototwopi(M_PI - theta[0] + theta[3]);
     alpha[1]= Zerototwopi(M_PI - theta[1] + theta[0]);
@@ -353,7 +353,7 @@ void Snake::jiggle()
 
   getEdgeLengths(no, a);
 
-  Get_angles(no, alpha, theta);
+  getAngles(no, alpha, theta);
 
   for (n=0; n<4; n++)
     {
@@ -381,7 +381,7 @@ void Snake::jiggle()
         }
 
       getEdgeLengths(new_no, new_a);
-      Get_angles(new_no, new_alpha, new_theta);
+      getAngles(new_no, new_alpha, new_theta);
 
       if (Monte_Carlo(alpha, new_alpha, lo_alpha, hi_alpha))
         break;
