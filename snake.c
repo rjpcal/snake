@@ -359,13 +359,15 @@ void Snake::jiggle()
   const Tuple4 theta = getThetas(no);
   const Tuple4 alpha = getAlphas(theta);
 
-  Tuple4 lo_alpha;
-  Tuple4 hi_alpha;
-  for (int n = 0; n < 4; ++n)
-    {
-      lo_alpha[n] = alpha[n] - (HIDELTA - delta[n]);
-      hi_alpha[n] = alpha[n] + (delta[n] - LODELTA);
-    }
+  const Tuple4 lo_alpha(alpha[0] - (HIDELTA - delta[0]),
+                        alpha[1] - (HIDELTA - delta[1]),
+                        alpha[2] - (HIDELTA - delta[2]),
+                        alpha[3] - (HIDELTA - delta[3]));
+
+  const Tuple4 hi_alpha(alpha[0] + (delta[0] - LODELTA),
+                        alpha[1] + (delta[1] - LODELTA),
+                        alpha[2] + (delta[2] - LODELTA),
+                        alpha[3] + (delta[3] - LODELTA));
 
   Vector new_no[4];
 
