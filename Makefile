@@ -1,6 +1,6 @@
 SHELL	= /bin/sh
 
-CC      = gcc
+CC      = gcc -Wall -Werror
 CFLAGS	= -I./ -O4 -g
 #CFLAGS = -I./ -O -DKEEPTRACK
 LFLAGS  = -lgl  -lfm -lX11 -lm -lGL 
@@ -36,7 +36,7 @@ tags:
 
 test:
 	rm regtest*.ras
-	./makesnake regtest
+	time ./makesnake regtest
 	for f in regtest*.ras; do echo $$f; diff $$f orig/$$f; done
 
 main.o: $(INC)

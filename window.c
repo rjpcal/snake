@@ -41,7 +41,25 @@ void ShowArray( void )
         xtopright = xbotleft + GABOR_SIZE - 1;
         ytopright = ybotleft + GABOR_SIZE - 1;
 
-        rectwrite( xbotleft, ybotleft, xtopright, ytopright, *src, tempColor);
+        int xx,yy;
+        for (yy=ybotleft;yy<=ytopright;yy++)
+          for (xx=xbotleft;xx<=xtopright;xx++)
+            if (xx>=0 && xx<DISPLAY_X && yy>=0 && yy<DISPLAY_Y)
+              {
+                if(BLANK_SNAKE == 0)
+                  {
+                    if (fabs(win[xx+yy*DISPLAY_X] - tempColor) < fabs((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)] - tempColor))
+                      win[xx+yy*DISPLAY_X]=((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)]);
+                  }
+                else
+                  {
+                    if (fabs(win[xx+yy*DISPLAY_X]) < fabs((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)] - 595))
+                      {
+                        if (fabs((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)] - 595) > 50)
+                          win[xx+yy*DISPLAY_X]=((*src)[xx-xbotleft+(yy-ybotleft)*(xtopright-xbotleft+1)] - 595) ;
+                      }
+                  }
+              }
     }
 }
 

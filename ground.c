@@ -64,7 +64,7 @@ void MakeGround( void )
 
     InsideElements( TOTAL_NUMBER, FOREG_NUMBER, &PATCH_NUMBER );
 
-    printf( " FOREG_NUMBER %d    PATCH_NUMBER %d    TOTAL_NUMBER %d\n",
+    printf( " FOREG_NUMBER %d    PATCH_NUMBER ??    TOTAL_NUMBER %d\n",
               FOREG_NUMBER, TOTAL_NUMBER );
     if(BLANK_SNAKE == 1)
       printf( " RUNNING BLANK SNAKE MODE!\n");
