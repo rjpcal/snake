@@ -5,7 +5,9 @@
 
 struct Element
 {
-  int   flag;   /* 2 contour, 1 inside, 0 outside */
+  enum Type { OUTSIDE, INSIDE, CONTOUR };
+
+  Type  type;
   float theta;  /* angle to x-axis, 0 to TWOPI */
   float xpos;   /* x-position of node */
   float ypos;   /* y-position of node */

@@ -70,7 +70,7 @@ void Ground::insideElements()
 
       if (side)
         {
-          array[n].flag = 1;
+          array[n].type = Element::INSIDE;
           ++insideNumber;
         }
     }
@@ -84,7 +84,7 @@ void Ground::contourElements()
 
       if (snake.getElement(n, &x, &y, &theta))
         {
-          array[totalNumber].flag  = 2;
+          array[totalNumber].type  = Element::CONTOUR;
           array[totalNumber].xpos  = x;
           array[totalNumber].ypos  = y;
           array[totalNumber].theta = theta;
@@ -120,7 +120,7 @@ void Ground::gridElements()
           if (tooClose(snake.getLength(), x, y, snake.getLength()+1))
             continue;
 
-          array[totalNumber].flag = 0;
+          array[totalNumber].type = Element::OUTSIDE;
           array[totalNumber].xpos = x;
           array[totalNumber].ypos = y;
           array[totalNumber].theta = 2 * M_PI * drand48();
@@ -172,7 +172,7 @@ void Ground::fillElements()
       if (tooClose(npts, xl[i], yl[i], npts+1))
         continue;
 
-      array[npts].flag  = 0;
+      array[npts].type  = Element::OUTSIDE;
       array[npts].xpos  = xl[i];
       array[npts].ypos  = yl[i];
       array[npts].theta = 2 * M_PI * drand48();
@@ -312,10 +312,10 @@ void Ground::writeArray(const char* filestem, int displayCount) const
 
   for (int i = 0; i < totalNumber; ++i)
     {
-      const int o = (int)(RAD2DEG * array[i].theta + 0.5);
-      const int x = (int)(array[i].xpos + 0.5);
-      const int y = (int)(array[i].ypos + 0.5);
-      const int s = array[i].flag;
+      const int o = int(RAD2DEG * array[i].theta + 0.5);
+      const int x = int(array[i].xpos + 0.5);
+      const int y = int(array[i].ypos + 0.5);
+      const int s = int(array[i].type);
 
       fprintf(fp, "%-5d %-5d %-5d %-5d\n", x, y, o, s);
     }
