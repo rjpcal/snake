@@ -229,6 +229,26 @@ namespace
 
     return drand48() <= probability;
   }
+
+  void recenter(Vector* nodes, const int length)
+  {
+    Vector c;
+
+    for (int n = 0; n < length; ++n)
+      {
+        c.x += nodes[n].x;
+        c.y += nodes[n].y;
+      }
+
+    c.x /= length;
+    c.y /= length;
+
+    for (int n = 0; n < length; ++n)
+      {
+        nodes[n].x -= c.x;
+        nodes[n].y -= c.y;
+      }
+  }
 }
 
 Snake::Snake(int l, double sp) :
@@ -255,7 +275,7 @@ Snake::Snake(int l, double sp) :
       this->jiggle();
     }
 
-  this->center();
+  recenter(itsElem, itsLength);
 }
 
 Snake::~Snake()
@@ -275,26 +295,6 @@ Element Snake::getElement(int n) const
   result.theta = zerototwopi(-getTheta(elem(n+1), elem(n)));
 
   return result;
-}
-
-void Snake::center()
-{
-  Vector c;
-
-  for (int n = 0; n < itsLength; ++n)
-    {
-      c.x += itsElem[n].x;
-      c.y += itsElem[n].y;
-    }
-
-  c.x /= itsLength;
-  c.y /= itsLength;
-
-  for (int n = 0; n < itsLength; ++n)
-    {
-      itsElem[n].x -= c.x;
-      itsElem[n].y -= c.y;
-    }
 }
 
 /*        (pos.x[n],ypos[n])     position n                               */
