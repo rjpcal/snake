@@ -85,31 +85,27 @@ void Ground::insideElements()
     }
 }
 
-void Ground::contourElements()
+void Ground::hexGridElements()
 {
-  for (int n = 0; n < snake.getLength(); ++n)
-    {
-      pushElement(snake.getElement(n));
-    }
-}
+  // lay down a hexagonal grid of elements
 
-void Ground::gridElements()
-{
   const double dx = backgIniSpacing;
   const double dy = SQRT3 * backgIniSpacing / 2.0;
 
-  const int nx = int((2.0 * halfX - backgMinSpacing - 0.5*dx) / dx);
-  const int ny = int((2.0 * halfY - backgMinSpacing) / dy);
+  const int nx = int((sizeX - backgMinSpacing) / dx - 0.5);
+  const int ny = int((sizeY - backgMinSpacing) / dy);
 
-  const double ix =  -0.5 * (nx-1) * dx - 0.25 * dx;
-  const double iy =  -0.5 * (ny-1) * dy;
+  double y = -0.5 * (ny-1) * dy;
 
-  int i, j;
-  double x, y;
-
-  for (j = 0, y = iy; j < ny; ++j, y += dy)
+  for (int j = 0; j < ny; ++j, y += dy)
     {
-      for (i = 0, x = ix+0.5*(j%2)*dx; i < nx; ++i, x += dx)
+      double x = -0.5 * (nx-1) * dx - 0.25 * dx;
+
+      // this is a hexagonal grid, so every other row is staggered by half
+      // a step in the x direction
+      if (j%2) x += 0.5*dx;
+
+      for (int i = 0; i < nx; ++i, x += dx)
         {
           if (tooClose(snake.getLength(), x, y, snake.getLength()+1))
             continue;
@@ -205,9 +201,13 @@ Ground::Ground(const Snake& s, int sizeX_, int sizeY_,
   insideNumber(0),
   totalNumber(0)
 {
-  contourElements();
+  // pull in elements from the snake
+  for (int n = 0; n < snake.getLength(); ++n)
+    {
+      pushElement(snake.getElement(n));
+    }
 
-  gridElements();
+  hexGridElements();
 
   const int diffusionCycles = 10;
 
